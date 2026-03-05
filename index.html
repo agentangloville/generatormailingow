@@ -372,11 +372,13 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
 /* MODAL */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;overflow-y:auto;padding:16px}
 .modal.open{display:flex;align-items:flex-start;justify-content:center}
-.modal-box{background:#EEE;border-radius:14px;width:100%;max-width:640px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-box{background:#EEE;border-radius:14px;width:100%;max-width:680px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-box.desktop-mode{max-width:680px;}
+.modal-box.mobile-mode{max-width:420px;}
 .modal-head{background:var(--dk);padding:13px 18px;display:flex;justify-content:space-between;align-items:center}
 .modal-head span{font-family:'Syne',sans-serif;color:var(--y);font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase}
-.modal-head button{background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;transition:color .15s}
-.modal-head button:hover{color:#fff}
+.prev-mode-btn{background:transparent;border:none;color:rgba(255,255,255,.5);border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.prev-mode-btn.active{background:rgba(255,255,255,.15);color:#fff;}
 
 /* STATUS */
 .ok-box{
@@ -534,12 +536,18 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
 
 <!-- PREVIEW MODAL -->
 <div class="modal" id="prev-modal">
-  <div class="modal-box">
+  <div class="modal-box desktop-mode" id="prev-modal-box">
     <div class="modal-head">
       <span>Email Preview</span>
-      <button onclick="closePreview()">✕</button>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="prev-mode-btn active" id="prev-desktop-btn" onclick="setPreviewMode('desktop')">🖥 Desktop</button>
+        <button class="prev-mode-btn" id="prev-mobile-btn" onclick="setPreviewMode('mobile')">📱 Mobile</button>
+        <button onclick="closePreview()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;margin-left:6px;line-height:1;">✕</button>
+      </div>
     </div>
-    <div style="padding:14px" id="prev-content"></div>
+    <div style="background:#EBEBEB;padding:16px;overflow-y:auto;max-height:82vh;">
+      <div id="prev-content"></div>
+    </div>
   </div>
 </div>
 
@@ -1291,7 +1299,7 @@ function buildEmailHTML(c, ctaUrl, imgs) {
   const imgRow = (src) => `
 <tr><td style="padding:20px 20px 0;line-height:0;">
   <img src="${src}" alt="" width="100%"
-    style="display:block;width:100%;height:auto;border-radius:10px;object-fit:cover;border:0;">
+    style="display:block;width:100%;height:auto;max-height:220px;border-radius:10px;object-fit:cover;border:0;">
 </td></tr>`;
 
   const logoBar = `
@@ -1384,9 +1392,22 @@ function buildEmailHTML(c, ctaUrl, imgs) {
 // ═══════════════════════════════════════════════════════════
 //  PREVIEW
 // ═══════════════════════════════════════════════════════════
+function setPreviewMode(mode){
+  const box = document.getElementById('prev-modal-box');
+  const dBtn = document.getElementById('prev-desktop-btn');
+  const mBtn = document.getElementById('prev-mobile-btn');
+  if(mode === 'mobile'){
+    box.classList.remove('desktop-mode'); box.classList.add('mobile-mode');
+    mBtn.classList.add('active'); dBtn.classList.remove('active');
+  } else {
+    box.classList.remove('mobile-mode'); box.classList.add('desktop-mode');
+    dBtn.classList.add('active'); mBtn.classList.remove('active');
+  }
+}
 function showPreview(){
-  const c=getCurrent();const url=buildUrl()||'https://angloville.com/apply/';
+  const c=getCurrent(); const url=buildUrl()||'https://angloville.com/apply/';
   document.getElementById('prev-content').innerHTML=buildEmailHTML(c,url,selImgs);
+  setPreviewMode('desktop');
   document.getElementById('prev-modal').classList.add('open');
 }
 function closePreview(){document.getElementById('prev-modal').classList.remove('open');}
