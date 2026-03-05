@@ -3,256 +3,601 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Angloville — Email Campaign Generator</title>
-<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<title>Angloville — Email Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--y:#FCD23A;--b:#428BCA;--dk:#232323;--bg:#F2F2F2;--w:#fff;--txt:#333;--sub:#666;--brd:#DDD}
-body{font-family:'Funnel Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
-.hdr{background:var(--dk);padding:22px 20px 0}
-.hdr-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:12px}
-.hdr-icon{width:42px;height:42px;background:var(--y);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
-.hdr-lbl{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--y);text-transform:uppercase;margin-bottom:2px}
-.hdr h1{font-size:clamp(16px,2.8vw,26px);font-weight:800;color:#fff;line-height:1.2}
-.hdr-sub{max-width:860px;margin:8px auto 0;padding:0 20px;color:rgba(255,255,255,.55);font-size:12px;line-height:1.5}
-.mkt-tabs{max-width:860px;margin:14px auto 0;padding:0 20px;display:flex;gap:4px;flex-wrap:wrap}
-.mkt-tab{padding:8px 20px;background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-family:inherit;font-size:12px;font-weight:700;border-radius:8px 8px 0 0;cursor:pointer;transition:all .15s}
-.mkt-tab:hover:not(.active){border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.8)}
-.mkt-tab.active{background:var(--y);border-color:var(--y);color:var(--dk)}
-.main{max-width:860px;margin:0 auto;padding:24px 20px 60px}
-.card{background:var(--w);border-radius:12px;border:1.5px solid var(--brd);padding:18px 20px;margin-bottom:14px}
-.card-title{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--b);margin-bottom:12px}
-.prog-group{margin-bottom:14px}
-.prog-group:last-child{margin-bottom:0}
-.prog-group-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dk);padding:4px 9px;background:#EAEAEA;border-radius:5px;display:inline-block;margin-bottom:7px}
-.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
-.prog-btn{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border:1.5px solid var(--brd);background:var(--w);border-radius:9px;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:all .15s;position:relative}
-.prog-btn:hover{border-color:var(--y)}
-.prog-btn.on{border-color:var(--y);background:#FFFBEA}
-.prog-btn.on::after{content:'✓';position:absolute;top:7px;right:8px;font-size:10px;font-weight:800;color:var(--dk);background:var(--y);width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:16px;text-align:center}
-.prog-e{font-size:16px;flex-shrink:0;margin-top:1px}
-.prog-t{font-size:11px;font-weight:700;color:var(--dk);margin-bottom:2px;line-height:1.3;padding-right:20px}
+:root{
+  --y:#FCD23A; --b:#3A9AD9; --dk:#111318; --panel:#1C2030;
+  --bg:#F0F1F4; --w:#fff; --txt:#1C2030; --sub:#7A8099;
+  --brd:#E2E4EC; --accent:#FCD23A;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:var(--dk);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 32px; height:56px; position:sticky; top:0; z-index:100;
+  border-bottom:1px solid rgba(255,255,255,.07);
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-mark{
+  width:32px;height:32px;background:var(--y);border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--dk);
+  flex-shrink:0;
+}
+.logo-text{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:#fff;letter-spacing:.5px}
+.logo-badge{font-size:9px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.4);padding:2px 7px;border:1px solid rgba(255,255,255,.12);border-radius:20px}
+
+/* ── MARKET SWITCHER ── */
+.mkt-pills{display:flex;gap:4px;background:rgba(255,255,255,.06);border-radius:8px;padding:4px}
+.mkt-pill{
+  padding:5px 14px;border:none;background:transparent;
+  color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;
+  transition:all .18s; white-space:nowrap;
+}
+.mkt-pill:hover:not(.active){color:rgba(255,255,255,.8)}
+.mkt-pill.active{background:var(--y);color:var(--dk);font-weight:700}
+
+/* ── LAYOUT ── */
+.wrap{max-width:900px;margin:0 auto;padding:28px 24px 80px}
+
+/* ── STEPS ── */
+.step{
+  background:var(--w);border-radius:14px;
+  border:1px solid var(--brd);
+  margin-bottom:12px;
+  overflow:hidden;
+}
+.step-head{
+  display:flex;align-items:center;gap:12px;
+  padding:16px 20px;
+  border-bottom:1px solid var(--brd);
+  background:#FAFBFD;
+}
+.step-num{
+  width:24px;height:24px;border-radius:6px;
+  background:var(--dk);color:var(--y);
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-lbl{font-size:13px;font-weight:600;color:var(--txt)}
+.step-hint{font-size:11px;color:var(--sub);margin-left:auto}
+.step-body{padding:18px 20px}
+
+/* ── PROGRAMMES ── */
+.prog-section{margin-bottom:16px}
+.prog-section:last-child{margin-bottom:0}
+.prog-section-lbl{
+  font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--sub);margin-bottom:8px;
+}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:6px}
+.prog-btn{
+  display:flex;align-items:flex-start;gap:8px;
+  padding:9px 10px 9px 10px;
+  border:1.5px solid var(--brd);background:var(--w);
+  border-radius:9px;cursor:pointer;text-align:left;
+  width:100%;font-family:'DM Sans',sans-serif;
+  transition:border-color .15s, background .15s;
+  position:relative;
+}
+.prog-btn:hover{border-color:#C8CAFF}
+.prog-btn.on{border-color:var(--y);background:#FFFCEE}
+.prog-btn.on::after{
+  content:'✓';position:absolute;top:6px;right:7px;
+  font-size:9px;font-weight:800;color:var(--dk);
+  background:var(--y);width:15px;height:15px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;line-height:15px;
+}
+.prog-e{font-size:15px;flex-shrink:0;margin-top:1px;line-height:1}
+.prog-t{font-size:11px;font-weight:600;color:var(--txt);margin-bottom:1px;padding-right:18px;line-height:1.3}
 .prog-d{font-size:10px;color:var(--sub);line-height:1.3}
-.sel-count{font-size:11px;color:var(--b);font-weight:600;margin-top:8px;min-height:16px}
+.sel-bar{
+  margin-top:12px;padding:9px 14px;
+  background:linear-gradient(135deg,#FFFCEE,#FFF8D6);
+  border:1.5px solid var(--y);border-radius:9px;
+  font-size:11px;font-weight:600;color:var(--txt);
+  min-height:0; display:none;
+}
+.sel-bar.show{display:block}
 
-/* IMAGE LIBRARY */
-.img-lib-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.lib-tab{padding:5px 13px;background:transparent;border:1.5px solid var(--brd);color:var(--sub);font-family:inherit;font-size:11px;font-weight:600;border-radius:6px;cursor:pointer;transition:all .15s}
-.lib-tab:hover{border-color:var(--b)}
-.lib-tab.active{background:var(--b);border-color:var(--b);color:#fff}
-.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px}
-.lib-img{position:relative;aspect-ratio:16/9;border-radius:9px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;transition:all .15s;background:#EEE}
-.lib-img img{width:100%;height:100%;object-fit:cover;display:block}
-.lib-img:hover{border-color:var(--y)}
-.lib-img.sel{border-color:var(--y);box-shadow:0 0 0 2px var(--y)}
-.lib-img .sel-badge{position:absolute;top:4px;right:4px;background:var(--y);color:var(--dk);font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;line-height:18px;text-align:center}
-.lib-img.sel .sel-badge{display:flex}
-.lib-img .img-num{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700}
-.lib-sep{display:flex;align-items:center;gap:8px;margin:10px 0;color:var(--sub);font-size:11px}
-.lib-sep::before,.lib-sep::after{content:'';flex:1;height:1px;background:var(--brd)}
-.custom-inp-row{display:flex;gap:7px}
-.custom-inp-row input{flex:1;padding:8px 11px;border:1.5px solid var(--brd);border-radius:7px;font-family:inherit;font-size:12px;color:var(--txt)}
-.custom-inp-row input:focus{outline:none;border-color:var(--b)}
-.custom-inp-row button{padding:8px 14px;background:var(--dk);color:#fff;border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
-.custom-inp-row button:hover{background:#444}
-.sel-summary{margin-top:10px;background:#FFFBEA;border:1.5px solid var(--y);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--dk);min-height:0;display:none}
-.sel-summary.show{display:block}
-.sel-imgs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.sel-img-thumb{position:relative;width:60px;height:40px;border-radius:6px;overflow:hidden;border:2px solid var(--y);flex-shrink:0}
-.sel-img-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.sel-img-thumb .rm{position:absolute;top:1px;right:1px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:3px;padding:0 4px;font-size:10px;cursor:pointer;line-height:16px}
+/* ── IMAGE SECTION ── */
+.img-tabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap}
+.img-tab{
+  padding:4px 12px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--sub);
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;
+  border-radius:6px;cursor:pointer;transition:all .15s;
+}
+.img-tab:hover{border-color:var(--b);color:var(--b)}
+.img-tab.on{background:var(--dk);border-color:var(--dk);color:var(--y)}
 
-textarea.notes{width:100%;padding:10px 12px;border:1.5px solid var(--brd);border-radius:8px;font-family:inherit;font-size:13px;color:var(--txt);resize:vertical;line-height:1.6}
+.img-gallery{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));
+  gap:7px;margin-bottom:12px;
+}
+.gal-item{
+  position:relative;aspect-ratio:16/9;
+  border-radius:8px;overflow:hidden;
+  cursor:pointer;border:2.5px solid transparent;
+  transition:all .15s;background:#EEE;
+}
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-item:hover{border-color:var(--y);transform:translateY(-1px)}
+.gal-item.on{border-color:var(--y);box-shadow:0 0 0 2px var(--y)}
+.gal-item .gnum{
+  position:absolute;top:4px;right:4px;
+  background:var(--y);color:var(--dk);
+  font-size:9px;font-weight:800;
+  width:16px;height:16px;border-radius:4px;
+  display:none;align-items:center;justify-content:center;
+}
+.gal-item.on .gnum{display:flex}
+.gal-item .gdel{
+  position:absolute;top:4px;left:4px;
+  background:rgba(0,0,0,.65);color:#fff;border:none;
+  border-radius:4px;padding:0 5px;font-size:10px;
+  cursor:pointer;line-height:18px;display:none;z-index:3;
+}
+.gal-item:hover .gdel{display:block}
+.gal-item .glbl{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);
+  color:#fff;font-size:9px;padding:10px 5px 4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+.img-divider{
+  display:flex;align-items:center;gap:8px;
+  color:var(--sub);font-size:11px;margin:12px 0;
+}
+.img-divider::before,.img-divider::after{content:'';flex:1;height:1px;background:var(--brd)}
+
+/* UPLOAD ZONE */
+.upload-zone{
+  border:2px dashed var(--brd);border-radius:10px;
+  padding:20px;text-align:center;cursor:pointer;
+  transition:all .18s;background:#FAFBFD;position:relative;
+}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--y);background:#FFFCEE}
+.upload-zone input[type=file]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;
+}
+.upload-zone .uz-icon{font-size:24px;margin-bottom:6px;display:block}
+.upload-zone .uz-txt{font-size:12px;color:var(--sub);line-height:1.6}
+.upload-zone .uz-txt strong{color:var(--txt)}
+
+.url-row{display:flex;gap:7px;margin-top:8px}
+.url-row input{
+  flex:1;padding:9px 12px;border:1.5px solid var(--brd);
+  border-radius:8px;font-family:'DM Sans',sans-serif;
+  font-size:12px;color:var(--txt);background:var(--w);
+}
+.url-row input:focus{outline:none;border-color:var(--b)}
+.url-row button{
+  padding:9px 16px;background:var(--dk);color:#fff;
+  border:none;border-radius:8px;font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:background .15s;
+}
+.url-row button:hover{background:#2C3450}
+
+/* SELECTED IMAGES ROW */
+.sel-imgs-wrap{margin-top:12px;display:none}
+.sel-imgs-wrap.show{display:block}
+.sel-imgs-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:7px}
+.sel-imgs-row{display:flex;gap:7px;flex-wrap:wrap}
+.sel-thumb{
+  position:relative;width:72px;height:46px;
+  border-radius:7px;overflow:hidden;
+  border:2px solid var(--y);flex-shrink:0;
+}
+.sel-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.sel-thumb .rm{
+  position:absolute;top:2px;right:2px;
+  background:rgba(0,0,0,.7);color:#fff;border:none;
+  border-radius:3px;padding:0 4px;font-size:10px;
+  cursor:pointer;line-height:16px;
+}
+.sel-thumb .sn{
+  position:absolute;bottom:2px;left:3px;
+  background:var(--y);color:var(--dk);
+  font-size:8px;font-weight:800;padding:1px 4px;border-radius:3px;
+}
+
+/* FOOTER SELECTOR */
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.footer-opt{
+  padding:11px 13px;border:1.5px solid var(--brd);
+  background:var(--w);border-radius:9px;cursor:pointer;
+  transition:all .15s;text-align:left;font-family:'DM Sans',sans-serif;
+  width:100%;
+}
+.footer-opt:hover{border-color:var(--b)}
+.footer-opt.on{border-color:var(--y);background:#FFFCEE}
+.footer-opt-name{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:3px}
+.footer-opt-prev{font-size:10px;color:var(--sub);line-height:1.4}
+
+/* NOTES */
+textarea.notes{
+  width:100%;padding:11px 13px;
+  border:1.5px solid var(--brd);border-radius:9px;
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  color:var(--txt);resize:vertical;line-height:1.6;
+  background:var(--w);
+}
 textarea.notes:focus{outline:none;border-color:var(--b)}
-.btn-gen{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:var(--y);color:var(--dk);font-family:inherit;font-size:14px;font-weight:800;border:none;border-radius:9px;cursor:pointer;transition:all .15s}
-.btn-gen:hover{filter:brightness(1.06);transform:translateY(-1px)}
-.btn-gen:disabled{opacity:.4;cursor:not-allowed;transform:none}
-.btn-sec{padding:9px 18px;background:transparent;border:1.5px solid var(--brd);color:var(--txt);font-family:inherit;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;transition:all .15s}
-.btn-sec:hover{border-color:var(--dk)}
-.btn-cp{padding:3px 9px;background:transparent;border:1px solid var(--brd);color:var(--sub);font-size:10px;border-radius:4px;cursor:pointer;font-family:monospace}
-.btn-cp:hover,.btn-cp.ok{border-color:var(--b);color:var(--b)}
-.loader{display:flex;gap:6px;justify-content:center;padding:6px 0}
-.loader span{width:8px;height:8px;border-radius:50%;background:var(--y);animation:dot 1s infinite}
-.loader span:nth-child(2){animation-delay:.18s}
-.loader span:nth-child(3){animation-delay:.36s}
-@keyframes dot{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-8px);opacity:1}}
-.loader-txt{text-align:center;font-size:12px;color:var(--sub);margin-top:6px}
-.err{background:#FFF0F0;border:1px solid #FFCCCC;border-radius:8px;padding:12px 15px;color:#C00;font-size:12px;margin-top:10px}
-.res-hdr{background:var(--dk);border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.res-hdr .lbl{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--y);text-transform:uppercase;margin-bottom:2px}
-.res-hdr .meta{color:rgba(255,255,255,.6);font-size:11px}
-.res-btns{display:flex;gap:7px;flex-wrap:wrap}
-.rb{background:var(--w);border-left:3px solid var(--y);border-radius:0 9px 9px 0;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.rb.bl{border-left-color:var(--b)}
-.rb.gr{border-left-color:#27AE60}
-.rb.pu{border-left-color:#9B59B6}
-.rb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.rb-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--b)}
-.ef-wrap{margin-bottom:9px}
-.ef-lbl{font-size:10px;font-weight:700;color:var(--sub);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
-textarea.ef,input.ef{width:100%;padding:8px 11px;border:1.5px solid var(--brd);border-radius:7px;font-family:inherit;font-size:13px;color:var(--txt);line-height:1.6;resize:vertical}
-textarea.ef:focus,input.ef:focus{outline:none;border-color:var(--b)}
-.utm-box{background:#F8FBFF;border:1.5px solid #D0E8F8;border-radius:9px;padding:13px 15px;margin-top:8px}
+
+/* GENERATE BTN */
+.gen-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px}
+.btn-gen{
+  display:inline-flex;align-items:center;gap:9px;
+  padding:14px 32px;background:var(--y);color:var(--dk);
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;
+  border:none;border-radius:10px;cursor:pointer;
+  transition:all .18s;letter-spacing:.3px;
+}
+.btn-gen:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(252,210,58,.35)}
+.btn-gen:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.prog-req{font-size:12px;color:var(--sub)}
+
+/* LOADER */
+.loader-wrap{display:none;padding:32px 0;text-align:center}
+.loader{display:inline-flex;gap:7px;margin-bottom:10px}
+.loader span{
+  width:9px;height:9px;border-radius:50%;background:var(--y);
+  animation:bounce 1s infinite;
+}
+.loader span:nth-child(2){animation-delay:.15s}
+.loader span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-10px);opacity:1}}
+.loader-txt{font-size:13px;color:var(--sub)}
+
+/* ERROR */
+.err-box{
+  background:#FFF2F2;border:1px solid #FFCCCC;
+  border-radius:9px;padding:13px 16px;color:#CC0000;
+  font-size:12px;margin-top:12px;display:none;
+}
+
+/* ── RESULTS ── */
+.results-wrap{margin-top:20px;display:none}
+.res-banner{
+  background:var(--dk);border-radius:12px;
+  padding:16px 20px;margin-bottom:16px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;
+}
+.res-banner-left .tag{
+  font-size:9px;font-weight:700;letter-spacing:3px;
+  text-transform:uppercase;color:var(--y);margin-bottom:3px;
+}
+.res-banner-left .meta{color:rgba(255,255,255,.55);font-size:11px}
+.res-actions{display:flex;gap:6px}
+
+.rcard{
+  background:var(--w);border:1px solid var(--brd);
+  border-radius:12px;padding:14px 16px;
+  margin-bottom:8px;
+}
+.rcard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.rcard-tag{
+  font-size:9px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;padding:3px 8px;border-radius:4px;
+}
+.tag-y{background:#FFF8D0;color:#9A7700}
+.tag-b{background:#E8F4FF;color:#1A6FA3}
+.tag-g{background:#E6FFF0;color:#1A7A40}
+.tag-p{background:#F3EEFF;color:#5C2FBB}
+
+.ef-group{margin-bottom:10px}
+.ef-label{
+  font-size:10px;font-weight:700;color:var(--sub);
+  letter-spacing:.5px;margin-bottom:4px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+input.ef{
+  width:100%;padding:9px 12px;border:1.5px solid var(--brd);
+  border-radius:8px;font-family:'DM Sans',sans-serif;
+  font-size:13px;color:var(--txt);background:var(--w);
+}
+textarea.ef{
+  width:100%;padding:9px 12px;border:1.5px solid var(--brd);
+  border-radius:8px;font-family:'DM Sans',sans-serif;
+  font-size:13px;color:var(--txt);background:var(--w);
+  resize:vertical;line-height:1.6;
+}
+input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
+
+/* UTM */
+.utm-wrap{background:#F7FBFF;border:1.5px solid #CCE8F8;border-radius:10px;padding:14px 16px}
 .utm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
-.utm-preview{background:var(--w);border:1px solid var(--brd);border-radius:6px;padding:8px 10px;font-family:monospace;font-size:10px;color:var(--sub);word-break:break-all;line-height:1.6;margin-top:6px}
-.mc-box{border:2px solid var(--y);border-radius:12px;padding:15px 18px;background:#FFFBEA;margin-top:18px}
-.mc-box h3{font-size:13px;font-weight:800;color:var(--dk);margin-bottom:4px}
-.mc-box p{font-size:12px;color:var(--sub);margin-bottom:11px;line-height:1.6}
+.utm-out{
+  background:var(--w);border:1px solid var(--brd);border-radius:7px;
+  padding:9px 11px;font-family:'DM Mono',monospace,monospace;
+  font-size:10px;color:var(--sub);word-break:break-all;line-height:1.6;margin-top:6px;
+}
+
+/* BUTTONS */
+.btn-ghost{
+  padding:7px 15px;background:transparent;
+  border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.75);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  border-radius:8px;cursor:pointer;transition:all .15s;
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,.5);color:#fff}
+.btn-out{
+  padding:8px 16px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--txt);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+  border-radius:8px;cursor:pointer;transition:all .15s;
+}
+.btn-out:hover{border-color:var(--txt)}
+.btn-cp{
+  padding:3px 8px;background:transparent;
+  border:1px solid var(--brd);color:var(--sub);
+  font-size:10px;border-radius:4px;cursor:pointer;
+  font-family:monospace;transition:all .15s;
+}
+.btn-cp:hover,.btn-cp.ok{border-color:var(--b);color:var(--b)}
+
+/* MC BOX */
+.mc-box{
+  border:2px solid var(--y);border-radius:12px;
+  padding:16px 20px;background:linear-gradient(135deg,#FFFEF0,#FFF8D0);
+  margin-top:16px;
+}
+.mc-box h3{
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;
+  color:var(--dk);margin-bottom:4px;
+}
+.mc-box p{font-size:12px;color:var(--sub);margin-bottom:13px;line-height:1.6}
 .mc-btns{display:flex;gap:8px;flex-wrap:wrap}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;overflow-y:auto;padding:16px}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;overflow-y:auto;padding:16px}
 .modal.open{display:flex;align-items:flex-start;justify-content:center}
-.modal-box{background:#F0F0F0;border-radius:12px;width:100%;max-width:640px;overflow:hidden}
-.modal-hdr{background:var(--dk);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.modal-hdr span{color:var(--y);font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase}
-.modal-hdr button{background:none;border:none;color:#fff;font-size:17px;cursor:pointer;line-height:1}
-@media(max-width:580px){.utm-grid,.prog-grid{grid-template-columns:1fr}.res-hdr{flex-direction:column;align-items:flex-start}}
+.modal-box{background:#EEE;border-radius:14px;width:100%;max-width:640px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-head{background:var(--dk);padding:13px 18px;display:flex;justify-content:space-between;align-items:center}
+.modal-head span{font-family:'Syne',sans-serif;color:var(--y);font-weight:800;font-size:12px;letter-spacing:2px;text-transform:uppercase}
+.modal-head button{background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;transition:color .15s}
+.modal-head button:hover{color:#fff}
+
+/* STATUS */
+.ok-box{
+  margin-top:10px;background:#F0FDF8;border:1px solid #C0E8D4;
+  border-radius:8px;padding:11px 14px;font-size:12px;color:#2D7A5A;
+}
+
+@media(max-width:580px){
+  .topbar{padding:0 16px}
+  .logo-badge{display:none}
+  .wrap{padding:16px 14px 60px}
+  .utm-grid,.prog-grid,.footer-grid{grid-template-columns:1fr}
+  .res-banner{flex-direction:column;align-items:flex-start}
+  .img-gallery{grid-template-columns:repeat(3,1fr)}
+}
 </style>
 </head>
 <body>
 
-<div class="hdr">
-  <div class="hdr-inner">
-    <div class="hdr-icon">✦</div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">A</div>
     <div>
-      <div class="hdr-lbl">Angloville AI</div>
-      <h1>Email Campaign Generator</h1>
+      <div class="logo-text">Angloville</div>
     </div>
+    <div class="logo-badge">Email Generator</div>
   </div>
-  <p class="hdr-sub">Choose market → pick programme(s) → add images → generate → Mailchimp</p>
-  <div class="mkt-tabs">
-    <button class="mkt-tab active" onclick="setMarket('com',this)">🇬🇧 Native Speakers</button>
-    <button class="mkt-tab" onclick="setMarket('pl',this)">🇵🇱 Polska</button>
-    <button class="mkt-tab" onclick="setMarket('it',this)">🇮🇹 Italia</button>
+  <div class="mkt-pills">
+    <button class="mkt-pill active" onclick="setMarket('com',this)">🇬🇧 Native Speakers</button>
+    <button class="mkt-pill" onclick="setMarket('pl',this)">🇵🇱 Polska</button>
+    <button class="mkt-pill" onclick="setMarket('it',this)">🇮🇹 Italia</button>
   </div>
 </div>
 
-<div class="main">
+<div class="wrap">
 
-  <div class="card">
-    <div class="card-title">1 — Choose programme(s) — multiple selection allowed</div>
-    <div id="prog-container"></div>
-    <div class="sel-count" id="sel-count"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">2 — Choose images for the email</div>
-    <div class="img-lib-tabs" id="lib-tabs"></div>
-    <div class="lib-grid" id="lib-grid"></div>
-    <div class="lib-sep">or paste your own URL</div>
-    <div class="custom-inp-row">
-      <input id="custom-url" placeholder="Paste image URL or YouTube link…" onkeydown="if(event.key==='Enter')addCustomImg()">
-      <button onclick="addCustomImg()">+ Add</button>
+  <!-- STEP 1: PROGRAMMES -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-lbl">Choose programme(s)</div>
+      <div class="step-hint">Multiple selection allowed</div>
     </div>
-    <div class="sel-summary" id="sel-summary">
-      <strong>Selected images:</strong>
-      <div class="sel-imgs" id="sel-imgs-row"></div>
+    <div class="step-body">
+      <div id="prog-container"></div>
+      <div class="sel-bar" id="sel-bar"></div>
     </div>
   </div>
 
-  <div class="card">
-    <div class="card-title">3 — Additional instructions (optional)</div>
-    <textarea class="notes" id="extra" rows="3"
-      placeholder="e.g. Early bird discount ends Friday, limited spots, focus on summer dates 21 June – 8 August…"></textarea>
+  <!-- STEP 2: IMAGES -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div class="step-lbl">Choose images</div>
+      <div class="step-hint">Optional — appear between content sections</div>
+    </div>
+    <div class="step-body">
+      <div class="img-tabs" id="img-tabs"></div>
+      <div class="img-gallery" id="img-gallery"></div>
+
+      <div class="img-divider">or add your own</div>
+
+      <!-- UPLOAD -->
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" accept="image/*" multiple onchange="handleFileUpload(event)">
+        <span class="uz-icon">📁</span>
+        <div class="uz-txt"><strong>Click to upload</strong> or drag & drop<br>JPG, PNG, GIF, WebP</div>
+      </div>
+      <div class="url-row" style="margin-top:8px">
+        <input id="img-url-inp" placeholder="or paste image URL / YouTube link…" onkeydown="if(event.key==='Enter')addUrl()">
+        <button onclick="addUrl()">Add</button>
+      </div>
+      <p style="font-size:10px;color:var(--sub);margin-top:6px;line-height:1.6">
+        ⚠️ Uploaded files show in preview — for Mailchimp use a public image URL.
+        YouTube links → thumbnail auto-extracted.
+      </p>
+
+      <div class="sel-imgs-wrap" id="sel-imgs-wrap">
+        <div class="sel-imgs-lbl">Selected for email</div>
+        <div class="sel-imgs-row" id="sel-imgs-row"></div>
+      </div>
+    </div>
   </div>
 
-  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-    <button class="btn-gen" id="gen-btn" onclick="generate()">✦ Generate Campaign</button>
-    <span id="prog-hint" style="font-size:12px;color:var(--sub)">← Select at least one programme</span>
+  <!-- STEP 3: FOOTER -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div class="step-lbl">Email footer</div>
+      <div class="step-hint">Choose domain footer</div>
+    </div>
+    <div class="step-body">
+      <div class="footer-grid" id="footer-grid"></div>
+      <div style="margin-top:12px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">
+          <span>Footer content — editable</span>
+          <button class="btn-cp" onclick="resetFooter()">&#8635; Reset to default</button>
+        </div>
+        <textarea id="footer-editor" rows="4"
+          style="width:100%;padding:9px 12px;border:1.5px solid var(--brd);border-radius:8px;font-family:monospace;font-size:11px;color:var(--txt);resize:vertical;line-height:1.6;background:var(--w)"
+          oninput="this.dataset.edited='1'"
+          placeholder="Footer HTML will appear here after selecting a domain above…"></textarea>
+        <p style="font-size:10px;color:var(--sub);margin-top:4px;line-height:1.5">
+          Edit HTML directly. Mailchimp tags: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UNSUB|*</code> &nbsp; <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UPDATE_PROFILE|*</code>
+        </p>
+      </div>
+    </div>
   </div>
 
-  <div id="loader" style="display:none;margin-top:22px">
+  <!-- STEP 4: NOTES -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div class="step-lbl">Additional instructions</div>
+      <div class="step-hint">Optional — AI will follow these</div>
+    </div>
+    <div class="step-body">
+      <textarea class="notes" id="extra" rows="3"
+        placeholder="e.g. Early bird discount ends Friday, only 5 spots left, focus on summer dates 21 June – 8 August…"></textarea>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="gen-row">
+    <button class="btn-gen" id="gen-btn" onclick="generate()">
+      <span>✦</span> Generate Campaign
+    </button>
+    <span class="prog-req" id="prog-hint">← Select at least one programme</span>
+  </div>
+
+  <div class="loader-wrap" id="loader-wrap">
     <div class="loader"><span></span><span></span><span></span></div>
     <div class="loader-txt" id="loader-txt">Crafting your campaign…</div>
   </div>
-  <div id="error-box" class="err" style="display:none"></div>
-  <div id="results" style="display:none;margin-top:36px"></div>
+  <div class="err-box" id="err-box"></div>
+
+  <!-- RESULTS -->
+  <div class="results-wrap" id="results"></div>
+
 </div>
 
-<div class="modal" id="preview-modal">
+<!-- PREVIEW MODAL -->
+<div class="modal" id="prev-modal">
   <div class="modal-box">
-    <div class="modal-hdr">
+    <div class="modal-head">
       <span>Email Preview</span>
       <button onclick="closePreview()">✕</button>
     </div>
-    <div style="padding:16px" id="preview-content"></div>
+    <div style="padding:14px" id="prev-content"></div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════
-//  BUILT-IN IMAGE LIBRARY
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  IMAGE LIBRARY (Angloville CDN)
+// ═══════════════════════════════════════════════════════════
 const IMG_LIB = {
-  com: {
-    'Poland': [
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png', lbl:'Valbonella venue'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png', lbl:'Casal Cerqueto'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7-f9cb-f93a16385edd.png', lbl:'Torre Burchio'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png', lbl:'Madonna delle Nevi'},
+  com:{
+    'Italy Venues':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png',lbl:'Valbonella'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png',lbl:'Casal Cerqueto'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7-f9cb-f93a16385edd.png',lbl:'Torre Burchio'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png',lbl:'Madonna Delle Nevi'},
     ],
-    'Italy': [
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png', lbl:'Italy hero'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png', lbl:'Italy team'},
-    ],
-    'General': [
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png', lbl:'Angloville logo'},
-      {url:'https://angloville.com/wp-content/uploads/2024/04/av-hero.jpg', lbl:'Angloville hero'},
-      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-group.jpg', lbl:'Group activity'},
-      {url:'https://angloville.com/wp-content/uploads/2023/09/angloville-native-speakers.jpg', lbl:'Native speakers'},
+    'Programme':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png',lbl:'Italy programme hero'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png',lbl:'Italy group'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png',lbl:'Angloville logo'},
     ],
   },
-  pl: {
-    'Dorośli': [
-      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-doroslych-wioski.jpg', lbl:'Wioska Dorosłych'},
-      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-wioska.jpg', lbl:'Wioska językowa'},
-      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-native-speakers-pl.jpg', lbl:'Native speakers PL'},
+  pl:{
+    'Polska':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png',lbl:'Wioska Językowa'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png',lbl:'Venue Włochy'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png',lbl:'Obóz hero'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png',lbl:'Uczestnicy'},
     ],
-    'Dzieci & Młodzież': [
-      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-junior-2024.jpg', lbl:'Obóz Junior'},
-      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-kids-2024.jpg', lbl:'Obóz Kids'},
-      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-malta-oboz.jpg', lbl:'Malta obóz'},
-      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-uk-trip.jpg', lbl:'UK Trip'},
-    ],
-    'Wyjazdy': [
-      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-nowy-jork.jpg', lbl:'Nowy Jork'},
-      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-japonia.jpg', lbl:'Japonia'},
-      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-kalifornia.jpg', lbl:'Kalifornia'},
+    'Ogólne':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png',lbl:'Logo Angloville'},
     ],
   },
-  it: {
-    'In Italia': [
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png', lbl:'Valbonella'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png', lbl:'Casal Cerqueto'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7f9cb-f93a16385edd.png', lbl:'Torre Burchio'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png', lbl:'Madonna delle Nevi'},
+  it:{
+    'Sedi Italia':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png',lbl:'Valbonella'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png',lbl:'Casal Cerqueto'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7-f9cb-f93a16385edd.png',lbl:'Torre Burchio'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png',lbl:'Madonna Delle Nevi'},
     ],
-    'Estero': [
-      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-malta.jpg', lbl:'Malta'},
-      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-londra.jpg', lbl:'Londra'},
-      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-newyork.jpg', lbl:'New York'},
-    ],
-    'Generale': [
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png', lbl:'Hero Italy'},
-      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png', lbl:'Gruppo ragazzi'},
+    'Generale':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png',lbl:'Hero Italia'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png',lbl:'Gruppo ragazzi'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png',lbl:'Logo Angloville'},
     ],
   },
 };
 
-// ══════════════════════════════════════════════════════════
-//  MARKETS
-// ══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  FOOTERS
+// ═══════════════════════════════════════════════════════════
+const FOOTERS = {
+  com:[
+    {id:'com-en',name:'angloville.com (EN)',prev:'hello@angloville.com · Unsubscribe · Privacy Policy',
+     html:`Want to change how you receive these emails?<br>You can <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">update your preferences</a> or <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">unsubscribe from this list</a>.<br><br>Your personal data controller is Angloville International Ltd. <a href="https://angloville.com/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
+  ],
+  pl:[
+    {id:'pl-pl',name:'angloville.pl (PL)',prev:'kontakt@angloville.pl · Wypisz się · Polityka prywatności',
+     html:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville International Ltd. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
+    {id:'pl-biz',name:'angloville.pl – B2B',prev:'Firmy · Wypisz się · Polityka prywatności',
+     html:`To jest wiadomość biznesowa. Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się</a>.<br><br>Angloville International Ltd. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
+  ],
+  it:[
+    {id:'it-it',name:'angloville.it (IT)',prev:'info@angloville.it · Cancellati · Privacy Policy',
+     html:`Vuoi modificare come ricevi queste email?<br>Puoi <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">aggiornare le preferenze</a> o <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">cancellarti dalla lista</a>.<br><br>Il titolare del trattamento dati è Angloville International Ltd. <a href="https://angloville.it/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
+  ],
+};
+
+// ═══════════════════════════════════════════════════════════
+//  MARKET DATA
+// ═══════════════════════════════════════════════════════════
 const MKT = {
   com:{
     lang:'en-gb',
-    ph:'e.g. Early bird discount ends Friday, limited spots, focus on summer 21 June – 8 August…',
+    ph:'e.g. Early bird ends Friday, only 5 spots left, focus on Italy 21 June–8 August, mention 3-programme package…',
     ltxt:'Claude is crafting your campaign…',
-    brand:`Angloville.com – international sponsored cultural exchange programmes since 2011.
-Target: native English speakers – gap year, travel, teaching experience.
-NEVER use volunteer/volunteering. Say "sponsored place", "sponsored programme", "cultural exchange".
-Voice: adventurous, warm, community-driven. British English (programme, colour, travelling, organised).
-Key messages: fully sponsored (free accommodation + meals), no teaching experience required, international friendships.`,
+    brand:`Angloville.com – international sponsored cultural exchange since 2011.
+Target: native English speakers – gap year, teaching abroad, cultural exchange.
+CRITICAL: NEVER use "volunteer/volunteering". Always say "sponsored place", "sponsored programme" or "cultural exchange".
+Voice: adventurous, warm, community-driven. British English only (programme, colour, travelling, organised).
+Key messages: fully sponsored (free accommodation + meals), no teaching experience required, make international friends.`,
     groups:[
-      {lbl:'Junior Programmes', progs:[
+      {lbl:'Junior Programmes',progs:[
         {id:'poland-jr',  e:'🇵🇱',t:'Poland Junior Programmes',     d:'Warsaw, Wroclaw, Krakow & Poznan'},
         {id:'italy-jr',   e:'🇮🇹',t:'Italy Junior Programmes',      d:'Bologna, Florence, Rome & Milan'},
         {id:'malta-jr',   e:'🇲🇹',t:'Malta Junior Programmes',      d:'Valletta, Gozo & Mdina'},
@@ -260,21 +605,21 @@ Key messages: fully sponsored (free accommodation + meals), no teaching experien
         {id:'roehampton', e:'🏛', t:'Roehampton & Kent (UK)',        d:'London, Cambridge & Canterbury'},
         {id:'uk-trip',    e:'🎡', t:'UK Trip',                       d:'London, Oxford & Cambridge'},
       ]},
-      {lbl:'Adult Programmes', progs:[
+      {lbl:'Adult Programmes',progs:[
         {id:'poland-adult',e:'🏡',t:'Poland Adult Programmes',       d:'Warsaw, Wroclaw & Krakow'},
       ]},
-      {lbl:'Sponsored Roles', progs:[
+      {lbl:'Sponsored Roles',progs:[
         {id:'esl-mentor', e:'🎓',t:'ESL Mentor – Sponsored Place',  d:'Help learners practise English, no experience needed'},
         {id:'act-leader', e:'🏃',t:'Activity Leader – Sponsored',   d:'Lead activities and cultural exchange'},
         {id:'prog-coord', e:'📋',t:'Programme Coordinator',         d:'Organise and run programmes across Europe'},
       ]},
-      {lbl:'TEFL in Asia', progs:[
+      {lbl:'TEFL in Asia',progs:[
         {id:'tefl-th',    e:'🇹🇭',t:'TEFL – Thailand',              d:'Paid teaching placement in Thailand'},
         {id:'tefl-kr',    e:'🇰🇷',t:'TEFL – South Korea',          d:'Paid teaching placement in South Korea'},
         {id:'tefl-jp',    e:'🇯🇵',t:'TEFL – Japan',                 d:'Paid teaching placement in Japan'},
         {id:'tefl-vn',    e:'🇻🇳',t:'TEFL – Vietnam',              d:'Paid teaching placement in Vietnam'},
       ]},
-      {lbl:'AV Travel', progs:[
+      {lbl:'AV Travel',progs:[
         {id:'travel-east',e:'🗽',t:'AV Travel – USA East Coast',   d:'New York, Washington & Boston'},
         {id:'travel-west',e:'🌴',t:'AV Travel – USA West Coast',   d:'Los Angeles, San Francisco & Grand Canyon'},
         {id:'travel-jp',  e:'⛩', t:'AV Travel – Japan',            d:'Tokyo, Kyoto & Osaka'},
@@ -283,7 +628,7 @@ Key messages: fully sponsored (free accommodation + meals), no teaching experien
   },
   pl:{
     lang:'pl',
-    ph:'np. Promocja -15%, ostatnie miejsca, nowy termin wakacyjny, wczesnorejestracyjna…',
+    ph:'np. Promocja -15% do piątku, ostatnie 5 miejsc, nowy termin wakacyjny…',
     ltxt:'Claude tworzy Twoją kampanię…',
     brand:`Angloville.pl – lider turystyki edukacyjnej w Polsce od 2011 roku.
 Odbiorcy: Polacy – rodzice dzieci, dorośli z barierą językową, menedżerowie.
@@ -291,7 +636,7 @@ Głos: ciepły, energiczny, motywujący. Aktywny język polski. Konkretne korzy�
 Wartości: pełna immersja – 0 książek – 0 klasy. 7000+ uczestników rocznie. 4.8★
 Język: WYŁĄCZNIE po polsku.`,
     groups:[
-      {lbl:'Dorośli', progs:[
+      {lbl:'Dorośli',progs:[
         {id:'wioska-d',  e:'🏡',t:'Angielska Wioska – Dorośli',       d:'70h 1:1 z native speakerami w 6 dni'},
         {id:'wioska-p',  e:'🌱',t:'Angielska Wioska – Początkujący',  d:'Kurs online + wyjazd z native speakerami'},
         {id:'biz-en',    e:'💼',t:'Business English dla firm',         d:'Blended learning dla firm i korporacji'},
@@ -299,12 +644,12 @@ Język: WYŁĄCZNIE po polsku.`,
         {id:'nyc-40',    e:'🗽',t:'Nowy Jork + Toronto 40+',          d:'Wyjazd językowy dla dorosłych 40+'},
         {id:'jap-40',    e:'🗾',t:'Japonia – Dorośli 40+',            d:'Turystyczno-językowy wyjazd do Japonii'},
       ]},
-      {lbl:'Obozy Polska', progs:[
+      {lbl:'Obozy w Polsce',progs:[
         {id:'kids',      e:'🧒',t:'Angloville Kids 7–11 lat',         d:'Obóz językowy w Polsce przez zabawę'},
         {id:'junior',    e:'🎒',t:'Angloville Junior 11–18 lat',      d:'Obóz językowy dla młodzieży w Polsce'},
         {id:'family',    e:'👨‍👩‍👧',t:'Angloville Family',              d:'Obóz językowy dla całych rodzin'},
       ]},
-      {lbl:'Obozy Zagranica', progs:[
+      {lbl:'Obozy za Granicą',progs:[
         {id:'malta',     e:'🇲🇹',t:'Junior International – Malta',    d:'13–18 lat'},
         {id:'anglia',    e:'🇬🇧',t:'Junior International – Anglia',   d:'13–18 lat'},
         {id:'uk-trip',   e:'🎡',t:'Junior Plus – UK Trip',            d:'Londyn, Oxford, Cambridge 12–18'},
@@ -316,7 +661,7 @@ Język: WYŁĄCZNIE po polsku.`,
         {id:'miami',     e:'🏖',t:'Junior – Miami 14–18',             d:'Z native speakerami'},
         {id:'japonia',   e:'⛩', t:'Junior – Japonia 14–18',           d:'Z native speakerami'},
       ]},
-      {lbl:'Wymiana Licealna', progs:[
+      {lbl:'Wymiana Licealna',progs:[
         {id:'usa',       e:'🏫',t:'Rok w USA – Wymiana licealna',     d:'US High School 15–18.5 lat'},
         {id:'kanada',    e:'🍁',t:'Rok w Kanadzie',                   d:'Kanadyjskie liceum'},
         {id:'online',    e:'💻',t:'Amerykańskie Liceum Online',       d:'US program bez wyjazdu'},
@@ -325,66 +670,93 @@ Język: WYŁĄCZNIE po polsku.`,
   },
   it:{
     lang:'it',
-    ph:"es. Sconto -15% fino al 30 giugno, ultimi posti disponibili, nuove date aggiunte…",
+    ph:"es. Sconto -15% fino a venerdì, ultimi 5 posti, nuove date estive aggiunte…",
     ltxt:'Claude sta creando la tua campagna…',
     brand:`Angloville.it – leader full immersion inglese in Italia e in Europa dal 2011.
-Voce: calda, coinvolgente, motivante. Italiano naturale. Parlare ai genitori o direttamente ai ragazzi.
-Valori: Full immersion – 0 libri – 0 lezioni. 70-100h con madrelingua. Metodo naturale e divertente.
+Voce: calda, coinvolgente, motivante. Italiano naturale. Parlare direttamente ai genitori o ai ragazzi.
+Valori: Full immersion – 0 libri – 0 lezioni. 70-100h con madrelingua. Metodo naturale.
 Lingua: SOLO italiano.`,
     groups:[
-      {lbl:'Programmi in Italia', progs:[
+      {lbl:'Programmi in Italia',progs:[
         {id:'kids-it',   e:'🧒',t:'Villaggio Inglese – Bambini 7–11', d:'60h con madrelingua in 7 giorni in Italia'},
-        {id:'jr-it',     e:'🎒',t:'Villaggio Inglese – Ragazzi 12–17',d:'70h full immersion con madrelingua in Italia'},
-        {id:'adult-it',  e:'🏡',t:'Corsi per Adulti – Full Immersion',d:'Full immersion in inglese per adulti'},
+        {id:'jr-it',     e:'🎒',t:'Villaggio Inglese – Ragazzi 12–17',d:'70h full immersion con madrelingua'},
+        {id:'adult-it',  e:'🏡',t:'Corsi per Adulti – Full Immersion',d:'Full immersion per adulti'},
       ]},
-      {lbl:"Programmi all'Estero", progs:[
+      {lbl:"Programmi all'Estero",progs:[
         {id:'londra',    e:'🇬🇧',t:'Vacanza Studio – Londra 13–19',  d:'College a Londra'},
         {id:'malta-it',  e:'🇲🇹',t:'Vacanza Studio – Malta 12–17',   d:'Residence a Malta'},
         {id:'baltic-it', e:'🌊',t:'Junior Plus – Baltic Trip 13–19', d:'Paesi Baltici'},
         {id:'euro-it',   e:'🌍',t:'Junior Plus – Eurotrip 13–19',    d:'Parigi, Berlino, Bruxelles'},
       ]},
-      {lbl:'Junior Adventure', progs:[
+      {lbl:'Junior Adventure',progs:[
         {id:'ny-it',     e:'🗽',t:'Junior Adventure – New York 13–19',d:'Times Square, Central Park'},
-        {id:'miami-it',  e:'🏖',t:'Junior Adventure – Miami 13–19',  d:'Florida e Miami'},
-        {id:'jap-it',    e:'⛩', t:'Junior Adventure – Giappone 13–19',d:'Tokyo, Kyoto e Osaka'},
+        {id:'miami-it',  e:'🏖',t:'Junior Adventure – Miami 13–19',  d:'Florida'},
+        {id:'jap-it',    e:'⛩', t:'Junior Adventure – Giappone 13–19',d:'Tokyo, Kyoto, Osaka'},
       ]},
-      {lbl:"Anno all'Estero", progs:[
+      {lbl:"Anno all'Estero",progs:[
         {id:'anno-usa',  e:'🏫',t:"Anno all'estero in USA",           d:'Liceo americano 12–18 anni'},
       ]},
     ],
   },
 };
 
-// ══ STATE ══════════════════════
-let market    = 'com';
-let selected  = new Set();
-let selImgs   = [];     // {url, thumb, label}
-let libCat    = null;   // current lib category tab
-
-// ══ MARKET ═════════════════════
-function setMarket(mkt, btn) {
-  market = mkt;
-  selected.clear();
-  selImgs = [];
-  libCat  = null;
-  document.querySelectorAll('.mkt-tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  const M = MKT[mkt];
-  document.getElementById('extra').placeholder    = M.ph;
-  document.getElementById('loader-txt').textContent = M.ltxt;
-  document.getElementById('results').style.display   = 'none';
-  document.getElementById('error-box').style.display = 'none';
-  renderProgs(); updateCount();
-  renderLibTabs(); renderLib();
-  renderSelSummary();
+// ═══════════════════════════════════════════════════════════
+//  CUSTOM IMAGE LIBRARY (persists in localStorage between sessions)
+// ═══════════════════════════════════════════════════════════
+const LS_KEY = 'av_custom_imgs_v1';
+function loadCustom(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch{ return []; } }
+function saveCustom(arr){ try{ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }catch{} }
+function addToCustomLib(img){
+  if(img.url.startsWith('data:')) return; // skip base64 – too large to store
+  const arr=loadCustom();
+  if(!arr.find(x=>x.url===img.url)){ arr.unshift(img); saveCustom(arr); }
+}
+function removeFromCustomLib(url){
+  saveCustom(loadCustom().filter(x=>x.url!==url));
+  // also remove from current selImgs if selected
+  const i=selImgs.findIndex(s=>s.url===url);
+  if(i>=0){ selImgs.splice(i,1); }
+  if(libCat==='⭐ My Images') renderGallery();
+  renderSelImgs();
 }
 
-// ══ PROGRAMMES ═════════════════
-function renderProgs() {
-  const M = MKT[market];
-  document.getElementById('prog-container').innerHTML = M.groups.map(g=>`
-    <div class="prog-group">
-      <div class="prog-group-lbl">${g.lbl}</div>
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+let market   = 'com';
+let selected = new Set();
+let selImgs  = [];
+let selFoot  = null;
+let libCat   = null;
+
+// ═══════════════════════════════════════════════════════════
+//  INIT / MARKET SWITCH
+// ═══════════════════════════════════════════════════════════
+function setMarket(mkt, btn) {
+  market = mkt; selected.clear(); selImgs = []; selFoot = null; libCat = null;
+  document.querySelectorAll('.mkt-pill').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('extra').placeholder = MKT[mkt].ph;
+  document.getElementById('loader-txt').textContent = MKT[mkt].ltxt;
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('err-box').style.display = 'none';
+  renderAll();
+}
+
+function renderAll(){
+  renderProgs(); updateSelBar();
+  initLibCat(); renderLibTabs(); renderGallery();
+  renderSelImgs(); renderFooters();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PROGRAMMES
+// ═══════════════════════════════════════════════════════════
+function renderProgs(){
+  document.getElementById('prog-container').innerHTML = MKT[market].groups.map(g=>`
+    <div class="prog-section">
+      <div class="prog-section-lbl">${g.lbl}</div>
       <div class="prog-grid">
         ${g.progs.map(p=>`
           <button type="button" class="prog-btn${selected.has(p.id)?' on':''}" onclick="toggleP('${p.id}')">
@@ -394,194 +766,284 @@ function renderProgs() {
       </div>
     </div>`).join('');
 }
-function toggleP(id) {
-  selected.has(id) ? selected.delete(id) : selected.add(id);
-  renderProgs(); updateCount();
-  if (selected.size>0) document.getElementById('prog-hint').style.display='none';
+function toggleP(id){
+  selected.has(id)?selected.delete(id):selected.add(id);
+  renderProgs(); updateSelBar();
+  if(selected.size>0) document.getElementById('prog-hint').style.display='none';
 }
-function updateCount() {
-  const el=document.getElementById('sel-count');
-  if (!selected.size){el.textContent='';return;}
+function updateSelBar(){
+  const el=document.getElementById('sel-bar');
+  if(!selected.size){el.classList.remove('show');return;}
   const all=MKT[market].groups.flatMap(g=>g.progs);
-  el.textContent='✓ Selected: '+[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
+  el.textContent='✓ '+[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
+  el.classList.add('show');
 }
 
-// ══ IMAGE LIBRARY ══════════════
-function renderLibTabs() {
-  const cats = Object.keys(IMG_LIB[market]||{});
-  if (!libCat || !cats.includes(libCat)) libCat = cats[0] || null;
-  document.getElementById('lib-tabs').innerHTML = cats.map(c=>`
-    <button type="button" class="lib-tab${libCat===c?' active':''}" onclick="switchLibCat('${c}')">${c}</button>
-  `).join('');
+// ═══════════════════════════════════════════════════════════
+//  IMAGE LIBRARY
+// ═══════════════════════════════════════════════════════════
+function initLibCat(){
+  const cats=['⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
+  if(!libCat||!cats.includes(libCat)) libCat=cats[0];
 }
-function switchLibCat(cat) {
-  libCat = cat;
-  renderLibTabs();
-  renderLib();
+function renderLibTabs(){
+  const cats=['⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
+  document.getElementById('img-tabs').innerHTML=cats.map(cat=>
+    `<button type="button" class="img-tab${libCat===cat?' on':''}" onclick="switchCat('${escAttr(cat)}')">${cat}</button>`
+  ).join('');
 }
-function renderLib() {
-  const imgs = (IMG_LIB[market]||{})[libCat] || [];
-  const already = new Set(selImgs.map(i=>i.url));
-  const orderMap = {};
-  selImgs.forEach((si,i)=>{ orderMap[si.url]=i+1; });
-  document.getElementById('lib-grid').innerHTML = imgs.map((img,i)=>{
-    const isSel = already.has(img.url);
-    const num   = orderMap[img.url]||'';
-    return `<div class="lib-img${isSel?' sel':''}" onclick="toggleLibImg('${img.url}','${img.url}','${esc(img.lbl)}')">
-      <img src="${img.url}" alt="${esc(img.lbl)}" loading="lazy"
-        onerror="this.parentElement.style.background='#EEE';this.style.display='none'">
-      <div class="sel-badge">${num}</div>
-      <div class="img-num">${esc(img.lbl)}</div>
+function escAttr(s){ return s.replace(/'/g,"\\'"); }
+function switchCat(c){libCat=c; renderLibTabs(); renderGallery();}
+function renderGallery(){
+  const isMyLib = libCat==='⭐ My Images';
+  const imgs = isMyLib ? loadCustom() : (IMG_LIB[market]||{})[libCat]||[];
+  const selUrls=new Set(selImgs.map(i=>i.url));
+  const orderMap={};selImgs.forEach((s,i)=>orderMap[s.url]=i+1);
+  if(isMyLib && imgs.length===0){
+    document.getElementById('img-gallery').innerHTML=`<div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">No saved images yet — add URLs or upload files below ↓</div>`;
+    return;
+  }
+  document.getElementById('img-gallery').innerHTML=imgs.map(img=>{
+    const lbl=img.lbl||img.label||'';
+    const on=selUrls.has(img.url);
+    const delBtn=isMyLib?`<div class="gdel" onclick="event.stopPropagation();removeFromCustomLib('${img.url.replace(/'/g,"\\\'")}');renderGallery();">✕</div>`:'';
+    return `<div class="gal-item${on?' on':''}" onclick="toggleGalImg('${img.url.replace(/'/g,"\\\'")}','${img.url.replace(/'/g,"\\\'")}','${esc(lbl)}')">
+      <img src="${img.url}" alt="${esc(lbl)}" loading="lazy"
+        onerror="this.parentElement.style.background='#DDD';this.style.display='none'">
+      <div class="gnum">${on?orderMap[img.url]:''}</div>
+      <div class="glbl">${esc(lbl)}</div>
+      ${delBtn}
     </div>`;
   }).join('');
 }
-function toggleLibImg(url, thumb, label) {
-  const idx = selImgs.findIndex(i=>i.url===url);
-  if (idx>=0) selImgs.splice(idx,1);
-  else selImgs.push({url, thumb, label});
-  renderLib(); renderSelSummary();
+function toggleGalImg(url,thumb,label){
+  const i=selImgs.findIndex(s=>s.url===url);
+  if(i>=0) selImgs.splice(i,1); else selImgs.push({url,thumb,label});
+  renderGallery(); renderSelImgs();
 }
-function addCustomImg() {
-  const url = document.getElementById('custom-url').value.trim();
-  if (!url) return;
-  const yt  = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  const thumb = yt ? 'https://img.youtube.com/vi/'+yt[1]+'/hqdefault.jpg' : url;
-  const label = url.split('/').pop().split('?')[0]||'image';
-  selImgs.push({url, thumb, label});
-  document.getElementById('custom-url').value='';
-  renderLib(); renderSelSummary();
+
+// ═══════════════════════════════════════════════════════════
+//  FILE UPLOAD
+// ═══════════════════════════════════════════════════════════
+const zone=document.getElementById('upload-zone');
+zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag');});
+zone.addEventListener('dragleave',()=>zone.classList.remove('drag'));
+zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');handleFiles(e.dataTransfer.files);});
+
+function handleFileUpload(e){handleFiles(e.target.files);}
+function handleFiles(files){
+  [...files].forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=ev=>{
+      const img={url:ev.target.result,thumb:ev.target.result,label:file.name.replace(/\.[^.]+$/,''),lbl:file.name.replace(/\.[^.]+$/,'')};
+      selImgs.push(img);
+      // Note: uploaded files (base64) are NOT saved to library — use a public URL for permanent storage
+      renderGallery(); renderSelImgs();
+    };
+    reader.readAsDataURL(file);
+  });
 }
-function removeSelImg(idx) {
-  selImgs.splice(idx,1);
-  renderLib(); renderSelSummary();
+function addUrl(){
+  const url=document.getElementById('img-url-inp').value.trim();
+  if(!url) return;
+  const yt=url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  const thumb=yt?'https://img.youtube.com/vi/'+yt[1]+'/hqdefault.jpg':url;
+  const label=url.split('/').pop().split('?')[0]||'image';
+  const img={url,thumb,label,lbl:label};
+  selImgs.push(img);
+  addToCustomLib(img); // 💾 save to library
+  document.getElementById('img-url-inp').value='';
+  renderGallery(); renderSelImgs();
 }
-function renderSelSummary() {
-  const box = document.getElementById('sel-summary');
-  const row = document.getElementById('sel-imgs-row');
-  if (!selImgs.length) { box.classList.remove('show'); return; }
-  box.classList.add('show');
-  row.innerHTML = selImgs.map((img,i)=>`
-    <div class="sel-img-thumb">
-      <img src="${img.thumb}" alt="${esc(img.label)}"
-        onerror="this.style.display='none'">
+function removeSelImg(i){
+  selImgs.splice(i,1); renderGallery(); renderSelImgs();
+}
+function renderSelImgs(){
+  const wrap=document.getElementById('sel-imgs-wrap');
+  const row=document.getElementById('sel-imgs-row');
+  if(!selImgs.length){wrap.classList.remove('show');return;}
+  wrap.classList.add('show');
+  row.innerHTML=selImgs.map((img,i)=>`
+    <div class="sel-thumb">
+      <img src="${img.thumb}" alt="${esc(img.label)}" onerror="this.style.display='none'">
       <button class="rm" onclick="removeSelImg(${i})">✕</button>
+      <div class="sn">${i+1}</div>
     </div>`).join('');
 }
 
-// ══ GENERATE ═══════════════════
-async function generate() {
-  if (!selected.size) { document.getElementById('prog-hint').style.display=''; return; }
-  const M   = MKT[market];
-  const all = M.groups.flatMap(g=>g.progs);
-  const progs = [...selected].map(id=>{ const p=all.find(x=>x.id===id); return p?p.t+' – '+p.d:id; });
+// ═══════════════════════════════════════════════════════════
+//  FOOTERS
+// ═══════════════════════════════════════════════════════════
+function renderFooters(){
+  const opts=FOOTERS[market]||[];
+  if(!selFoot&&opts.length) selFoot=opts[0].id;
+  // Set textarea to current footer html if not yet customised
+  const current=opts.find(f=>f.id===selFoot)||opts[0];
+  const el=document.getElementById('footer-editor');
+  if(el && !el.dataset.edited) el.value=current?.html||'';
 
-  document.getElementById('loader').style.display    = 'block';
-  document.getElementById('error-box').style.display = 'none';
-  document.getElementById('results').style.display   = 'none';
-  document.getElementById('gen-btn').disabled = true;
+  document.getElementById('footer-grid').innerHTML=opts.map(f=>`
+    <button type="button" class="footer-opt${selFoot===f.id?' on':''}" onclick="selectFoot('${f.id}')">
+      <div class="footer-opt-name">${f.name}</div>
+      <div class="footer-opt-prev">${f.prev}</div>
+    </button>`).join('');
+}
+function selectFoot(id){
+  selFoot=id;
+  // Update editor with this footer's default html, reset edited flag
+  const opts=FOOTERS[market]||[];
+  const f=opts.find(x=>x.id===id);
+  const el=document.getElementById('footer-editor');
+  if(el){ el.value=f?.html||''; delete el.dataset.edited; }
+  renderFooters();
+}
+function resetFooter(){
+  const opts=FOOTERS[market]||[];
+  const f=opts.find(x=>x.id===selFoot)||opts[0];
+  const el=document.getElementById('footer-editor');
+  if(el){ el.value=f?.html||''; delete el.dataset.edited; }
+}
+function getFooterHtml(){
+  const el=document.getElementById('footer-editor');
+  if(el&&el.value.trim()) return el.value.trim();
+  const opts=FOOTERS[market]||[];
+  return (opts.find(f=>f.id===selFoot)||opts[0])?.html||'';
+}
 
-  try {
-    const res = await fetch('/api/proxy', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        action:'generate', market, lang:M.lang, brand:M.brand,
-        programmes:progs, extra:document.getElementById('extra').value,
-        imageCount:selImgs.length,
-      })
+// ═══════════════════════════════════════════════════════════
+//  GENERATE
+// ═══════════════════════════════════════════════════════════
+async function generate(){
+  if(!selected.size){document.getElementById('prog-hint').style.display='';return;}
+  const M=MKT[market];
+  const all=M.groups.flatMap(g=>g.progs);
+  const progs=[...selected].map(id=>{const p=all.find(x=>x.id===id);return p?p.t+' – '+p.d:id;});
+
+  document.getElementById('loader-wrap').style.display='block';
+  document.getElementById('err-box').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('gen-btn').disabled=true;
+
+  try{
+    const res=await fetch('/api/proxy',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'generate',market,lang:M.lang,brand:M.brand,
+        programmes:progs,extra:document.getElementById('extra').value,
+        imageCount:selImgs.length})
     });
-    const raw = await res.text();
+    const raw=await res.text();
     let data;
-    try { data=JSON.parse(raw); } catch { showErr('Server error: '+raw.slice(0,300)); return; }
-    if (!data.ok) throw new Error(data.error||'Unknown error');
-    renderResults(data.campaign, progs);
-  } catch(e) { showErr('Error: '+e.message); }
+    try{data=JSON.parse(raw);}catch{showErr('Server error: '+raw.slice(0,300));return;}
+    if(!data.ok) throw new Error(data.error||'Unknown error');
+    renderResults(data.campaign,progs);
+  }catch(e){showErr('Error: '+e.message);}
 
-  document.getElementById('loader').style.display='none';
+  document.getElementById('loader-wrap').style.display='none';
   document.getElementById('gen-btn').disabled=false;
 }
 
-// ══ RENDER RESULTS ═════════════
+// ═══════════════════════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════════════════════
 function fa(id,val,rows){
-  if(rows===1) return '<input type="text" class="ef" id="'+id+'" value="'+esc(val)+'">';
-  return '<textarea class="ef" id="'+id+'" rows="'+rows+'">'+esc(val)+'</textarea>';
+  if(rows===1) return `<input type="text" class="ef" id="${id}" value="${esc(val)}">`;
+  return `<textarea class="ef" id="${id}" rows="${rows}">${esc(val)}</textarea>`;
+}
+function rcard(tag,tagCls,fields,extraHead){
+  let h=`<div class="rcard"><div class="rcard-head"><span class="rcard-tag ${tagCls}">${tag}</span>${extraHead||''}</div>`;
+  fields.forEach(([id,lbl,val,rows])=>{
+    h+=`<div class="ef-group">
+      <div class="ef-label"><span>${lbl}</span><button class="btn-cp" onclick="cp('${id}',this)">copy</button></div>
+      ${fa(id,val,rows||1)}
+    </div>`;
+  });
+  return h+'</div>';
 }
 
-function renderResults(c, progs) {
+function renderResults(c,progs){
   const all=MKT[market].groups.flatMap(g=>g.progs);
   const names=[...selected].map(id=>all.find(p=>p.id===id)?.t||id);
 
-  let h=`<div class="res-hdr">
-    <div><div class="lbl">✦ Campaign Ready</div><div class="meta">${esc(names.join(' + '))}</div></div>
-    <div class="res-btns">
-      <button class="btn-sec" style="color:#fff;border-color:rgba(255,255,255,.3)" onclick="showPreview()">👁 Preview</button>
-      <button class="btn-sec" style="color:#fff;border-color:rgba(255,255,255,.3)" onclick="cpAll()">⬇ Copy all</button>
-    </div></div>`;
+  let h=`<div class="res-banner">
+    <div class="res-banner-left">
+      <div class="tag">✦ Campaign Ready</div>
+      <div class="meta">${esc(names.join(' + '))}</div>
+    </div>
+    <div class="res-actions">
+      <button class="btn-ghost" onclick="showPreview()">👁 Preview</button>
+      <button class="btn-ghost" onclick="cpAll()">⬇ Copy all</button>
+    </div>
+  </div>`;
 
-  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">Subject Line</span><button class="btn-cp" onclick="cp('e-sub',this)">copy</button></div>
-    <div class="ef-wrap">${fa('e-sub',c.subject,1)}</div>
-    <div class="ef-lbl"><span>With emoji</span><button class="btn-cp" onclick="cp('e-sub-em',this)">copy</button></div>
-    ${fa('e-sub-em',c.subject_emoji,1)}</div>`;
+  h+=rcard('Subject Lines','tag-y',[
+    ['e-sub','Without emoji',c.subject,1],
+    ['e-sub-em','With emoji',c.subject_emoji,1],
+    ['e-pre','Preheader',c.preheader,1],
+  ]);
 
-  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">Preheader</span><button class="btn-cp" onclick="cp('e-pre',this)">copy</button></div>
-    ${fa('e-pre',c.preheader,1)}</div>`;
+  h+=rcard('Headline + Opening','tag-b',[
+    ['e-h1','Headline (H2 in email)',c.headline,1],
+    ['e-intro','Opening paragraph',c.intro,3],
+  ]);
 
-  h+=`<div class="rb bl"><div class="rb-head"><span class="rb-lbl">Headline + Opening</span></div>
-    <div class="ef-lbl"><span>Headline</span><button class="btn-cp" onclick="cp('e-h1',this)">copy</button></div>
-    <div class="ef-wrap">${fa('e-h1',c.headline,1)}</div>
-    <div class="ef-lbl"><span>Opening paragraph</span><button class="btn-cp" onclick="cp('e-intro',this)">copy</button></div>
-    ${fa('e-intro',c.intro,3)}</div>`;
+  h+=rcard('Body','tag-b',[
+    ['e-p1','Section 1',c.body_p1,3],
+    ['e-p2','Section 2',c.body_p2,3],
+    ['e-p3','Section 3',c.body_p3,3],
+  ]);
 
-  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">Body</span></div>
-    <div class="ef-lbl"><span>Section 1</span><button class="btn-cp" onclick="cp('e-p1',this)">copy</button></div>
-    <div class="ef-wrap">${fa('e-p1',c.body_p1,3)}</div>
-    <div class="ef-lbl"><span>Section 2</span><button class="btn-cp" onclick="cp('e-p2',this)">copy</button></div>
-    <div class="ef-wrap">${fa('e-p2',c.body_p2,3)}</div>
-    <div class="ef-lbl"><span>Section 3</span><button class="btn-cp" onclick="cp('e-p3',this)">copy</button></div>
-    ${fa('e-p3',c.body_p3,3)}</div>`;
+  h+=rcard('CTA Buttons + PS','tag-g',[
+    ['e-cta1','Primary CTA (yellow button)',c.cta,1],
+    ['e-cta2','Secondary CTA (blue button)',c.cta2||c.cta,1],
+    ['e-ps','PS line',c.ps||'',1],
+  ]);
 
-  h+=`<div class="rb gr"><div class="rb-head"><span class="rb-lbl">CTA Buttons + PS</span></div>
-    <div class="ef-lbl"><span>Primary CTA (yellow)</span><button class="btn-cp" onclick="cp('e-cta1',this)">copy</button></div>
-    <div class="ef-wrap">${fa('e-cta1',c.cta,1)}</div>
-    <div class="ef-lbl"><span>Secondary CTA (blue)</span><button class="btn-cp" onclick="cp('e-cta2',this)">copy</button></div>
-    <div class="ef-wrap">${fa('e-cta2',c.cta2||c.cta,1)}</div>
-    <div class="ef-lbl"><span>PS line</span><button class="btn-cp" onclick="cp('e-ps',this)">copy</button></div>
-    ${fa('e-ps',c.ps||'',1)}</div>`;
-
-  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">URL + UTM Builder</span></div>
-    <div class="utm-box">
-      <div class="ef-lbl">Destination URL</div>
-      <div class="ef-wrap"><input type="text" class="ef" id="utm-base" placeholder="https://angloville.com/apply/" oninput="utmPrev()"></div>
-      <div class="utm-grid">
-        <div><div class="ef-lbl">utm_source</div><input type="text" class="ef" id="utm-src" value="mailchimp" oninput="utmPrev()"></div>
-        <div><div class="ef-lbl">utm_medium</div><input type="text" class="ef" id="utm-med" value="email" oninput="utmPrev()"></div>
-        <div><div class="ef-lbl">utm_campaign</div><input type="text" class="ef" id="utm-cmp" value="${esc(market+'-campaign')}" oninput="utmPrev()"></div>
-        <div><div class="ef-lbl">utm_content</div><input type="text" class="ef" id="utm-cnt" placeholder="cta_button" oninput="utmPrev()"></div>
+  // UTM
+  h+=`<div class="rcard">
+    <div class="rcard-head"><span class="rcard-tag tag-p">URL + UTM</span></div>
+    <div class="utm-wrap">
+      <div class="ef-group">
+        <div class="ef-label">Destination URL</div>
+        <input type="text" class="ef" id="utm-base" placeholder="https://angloville.com/apply/" oninput="utmPrev()">
       </div>
-      <div class="ef-lbl"><span>Full URL</span><button class="btn-cp" onclick="cp2(buildUrl(),this)">copy</button></div>
-      <div class="utm-preview" id="utm-prev">← fill in URL above</div>
-    </div></div>`;
+      <div class="utm-grid">
+        <div class="ef-group"><div class="ef-label">utm_source</div><input type="text" class="ef" id="utm-src" value="mailchimp" oninput="utmPrev()"></div>
+        <div class="ef-group"><div class="ef-label">utm_medium</div><input type="text" class="ef" id="utm-med" value="email" oninput="utmPrev()"></div>
+        <div class="ef-group"><div class="ef-label">utm_campaign</div><input type="text" class="ef" id="utm-cmp" value="${esc(market+'-campaign')}" oninput="utmPrev()"></div>
+        <div class="ef-group"><div class="ef-label">utm_content</div><input type="text" class="ef" id="utm-cnt" placeholder="cta_button" oninput="utmPrev()"></div>
+      </div>
+      <div class="ef-label"><span>Full URL</span><button class="btn-cp" onclick="cp2(buildUrl(),this)">copy</button></div>
+      <div class="utm-out" id="utm-out">← fill in URL above</div>
+    </div>
+  </div>`;
 
-  h+=`<div class="rb pu"><div class="rb-head"><span class="rb-lbl">A/B Subject Variants</span></div>
-    <div class="ef-wrap">${fa('e-ab1',c.ab1,1)}</div>
-    ${fa('e-ab2',c.ab2,1)}</div>`;
+  h+=rcard('A/B Subject Variants','tag-p',[
+    ['e-ab1','Variant A',c.ab1,1],
+    ['e-ab2','Variant B',c.ab2,1],
+  ]);
 
-  if(c.send_time) h+=`<div style="background:#F0FDF8;border:1px solid #C0E8D4;border-radius:8px;padding:10px 14px;font-size:12px;color:#2D7A5A;margin-bottom:8px">⏱ ${esc(c.send_time)}</div>`;
+  if(c.send_time) h+=`<div style="background:#F0FDF8;border:1px solid #C0E8D4;border-radius:9px;padding:10px 14px;font-size:12px;color:#2D7A5A;margin-bottom:8px">⏱ ${esc(c.send_time)}</div>`;
 
-  h+=`<div class="mc-box"><h3>📧 Send to Mailchimp</h3>
-    <p>All edits, images with rounded corners and Angloville layout will be included automatically.</p>
+  h+=`<div class="mc-box">
+    <h3>📧 Send to Mailchimp</h3>
+    <p>Email is built automatically with Angloville layout, rounded images and correct footer.</p>
     <div class="mc-btns">
-      <button class="btn-sec" onclick="showPreview()">👁 Preview email</button>
-      <button class="btn-gen" id="mc-btn" onclick="sendMC()" style="padding:9px 20px;font-size:13px">📧 Create draft</button>
-    </div><div id="mc-status"></div></div>`;
+      <button class="btn-out" onclick="showPreview()">👁 Preview email</button>
+      <button class="btn-gen" id="mc-btn" onclick="sendMC()" style="padding:10px 22px;font-size:13px">📧 Create Mailchimp draft</button>
+    </div>
+    <div id="mc-status"></div>
+  </div>`;
 
-  h+=`<div style="text-align:center;margin-top:20px"><button class="btn-sec" onclick="resetAll()">← New campaign</button></div>`;
+  h+=`<div style="text-align:center;margin-top:20px"><button class="btn-out" onclick="resetAll()">← New campaign</button></div>`;
 
   const el=document.getElementById('results');
   el.innerHTML=h; el.style.display='block';
   el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ══ UTM ════════════════════════
+// ═══════════════════════════════════════════════════════════
+//  UTM
+// ═══════════════════════════════════════════════════════════
 function buildUrl(){
   const base=(document.getElementById('utm-base')?.value||'').trim();
   if(!base) return '';
@@ -592,34 +1054,57 @@ function buildUrl(){
   });
   return base+(pts.length?(base.includes('?')?'&':'?')+pts.join('&'):'');
 }
-function utmPrev(){const el=document.getElementById('utm-prev');if(el)el.textContent=buildUrl()||'← fill in URL above';}
+function utmPrev(){const el=document.getElementById('utm-out');if(el)el.textContent=buildUrl()||'← fill in URL above';}
 
-// ══ PREVIEW ════════════════════
-function showPreview(){
-  const c=getCurrent(); const url=buildUrl()||'https://angloville.com/apply/';
-  document.getElementById('preview-content').innerHTML=buildEmailHTML(c,url,selImgs);
-  document.getElementById('preview-modal').classList.add('open');
-}
-function closePreview(){document.getElementById('preview-modal').classList.remove('open');}
-
-function buildEmailHTML(c, ctaUrl, imgs) {
+// ═══════════════════════════════════════════════════════════
+//  EMAIL HTML BUILDER
+// ═══════════════════════════════════════════════════════════
+function buildEmailHTML(c,ctaUrl,imgs){
   const e=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const footerHtml=getFooterHtml();
+
   const imgBlock=img=>`
 <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
   <tr><td style="padding:0 9px 9px;">
     <img src="${img.thumb||img.url}" alt="" width="100%"
       style="display:block;width:100%;height:auto;border-radius:14px;max-height:300px;object-fit:cover;border:0;">
-  </td></tr></table>`;
-  const div=`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;table-layout:fixed!important;"><tr><td style="padding:18px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:2px solid #EAEAEA;border-collapse:collapse;"><tr><td></td></tr></table></td></tr></table>`;
-  const txt=html=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;"><tr><td style="padding:0 18px 9px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;line-height:150%;color:#202020;">${html}</td></tr></table>`;
-  const btn=(lbl,href,bg,col)=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;"><tr><td style="padding:0 18px 18px;" align="center"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate!important;border-radius:6px;background-color:${bg};"><tr><td align="center" style="font-family:Arial,sans-serif;font-size:16px;padding:15px 28px;"><a href="${href}" target="_blank" style="font-weight:bold;text-decoration:none;color:${col};display:block;">${e(lbl)}</a></td></tr></table></td></tr></table>`;
+  </td></tr>
+</table>`;
 
-  let b='';
+  const div=`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;table-layout:fixed!important;">
+  <tr><td style="padding:18px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:2px solid #EAEAEA;border-collapse:collapse;"><tr><td></td></tr></table></td></tr>
+</table>`;
+
+  const txt=html=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
+  <tr><td style="padding:0 18px 9px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;line-height:150%;color:#202020;">
+    ${html}
+  </td></tr>
+</table>`;
+
+  const btn=(lbl,href,bg,col)=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
+  <tr><td style="padding:0 18px 18px;" align="center">
+    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate!important;border-radius:6px;background-color:${bg};">
+      <tr><td align="center" style="font-family:Arial,sans-serif;font-size:16px;padding:15px 28px;">
+        <a href="${href}" target="_blank" style="font-weight:bold;text-decoration:none;color:${col};display:block;">${e(lbl)}</a>
+      </td></tr>
+    </table>
+  </td></tr>
+</table>`;
+
+  // Logo header
+  const logoBlock=`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
+  <tr><td style="padding:18px 18px 9px;" align="center">
+    <img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png"
+      alt="Angloville" width="180" style="display:inline-block;height:auto;border:0;max-width:180px;">
+  </td></tr>
+</table>`;
+
+  let b=logoBlock;
   if(imgs[0]) b+=imgBlock(imgs[0]);
-  b+=txt(`<p style="margin:10px 0;font-size:15px;">Hi <strong>&lt;&lt;First Name&gt;&gt;</strong>,</p>
+  b+=txt(`<p style="margin:10px 0;font-size:15px;">Hi <strong>*|FNAME|*</strong>,</p>
     <p style="margin:10px 0;font-size:21px;font-weight:bold;line-height:130%;">${e(c.headline)}</p>
     <p style="margin:10px 0;">${e(c.intro)}</p>`);
-  b+=btn(c.cta1||c.cta, ctaUrl,'#FFD249','#222222');
+  b+=btn(c.cta1||c.cta,ctaUrl,'#FFD249','#222222');
   b+=div;
   b+=txt(`<p style="margin:10px 0;">${e(c.body_p1)}</p>`);
   if(imgs[1]){b+=imgBlock(imgs[1]);b+=div;}
@@ -628,83 +1113,95 @@ function buildEmailHTML(c, ctaUrl, imgs) {
   b+=txt(`<p style="margin:10px 0;">${e(c.body_p3)}</p>`);
   if(c.ps) b+=txt(`<p style="margin:10px 0;color:#555;font-style:italic;">${e(c.ps)}</p>`);
   b+=div;
-  b+=btn(c.cta2||c.cta, ctaUrl,'#4CAAD8','#FFFFFF');
+  b+=btn(c.cta2||c.cta,ctaUrl,'#4CAAD8','#FFFFFF');
   if(imgs[3]){b+=div;b+=imgBlock(imgs[3]);}
   b+=txt(`<p style="margin:10px 0;">_______________<br>The Angloville Team</p>`);
 
   return `<div style="background:#f0f0f0;padding:10px;border-radius:8px;">
-  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
-    style="max-width:580px;margin:0 auto;background:#ffffff;border-collapse:collapse;">
-    <tr><td style="padding:9px;">${b}</td></tr>
-    <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#666;line-height:150%;border-top:1px solid #EAEAEA;">
-      <a href="#" style="color:#666;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp;
-      <a href="*|UNSUB|*" style="color:#666;text-decoration:underline;">Unsubscribe</a>
-    </td></tr></table></div>`;
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
+  style="max-width:580px;margin:0 auto;background:#ffffff;border-collapse:collapse;">
+  <tr><td style="padding:9px;">${b}</td></tr>
+  <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#555;line-height:150%;border-top:1px solid #EAEAEA;">
+    ${footerHtml}
+  </td></tr>
+</table></div>`;
 }
 
-// ══ MAILCHIMP ══════════════════
+// ═══════════════════════════════════════════════════════════
+//  PREVIEW
+// ═══════════════════════════════════════════════════════════
+function showPreview(){
+  const c=getCurrent();const url=buildUrl()||'https://angloville.com/apply/';
+  document.getElementById('prev-content').innerHTML=buildEmailHTML(c,url,selImgs);
+  document.getElementById('prev-modal').classList.add('open');
+}
+function closePreview(){document.getElementById('prev-modal').classList.remove('open');}
+
+// ═══════════════════════════════════════════════════════════
+//  MAILCHIMP
+// ═══════════════════════════════════════════════════════════
 async function sendMC(){
   const btn=document.getElementById('mc-btn');
-  btn.disabled=true; btn.textContent='Creating draft…';
+  btn.disabled=true;btn.textContent='Creating draft…';
   document.getElementById('mc-status').innerHTML='';
   const all=MKT[market].groups.flatMap(g=>g.progs);
   const name=[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
-  const c=getCurrent(); const url=buildUrl()||'https://angloville.com/apply/';
-  try {
-    const res=await fetch('/api/proxy',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'mailchimp_draft',campaign:c,cta_url:url,images:selImgs,program_name:name})
+  const c=getCurrent();const url=buildUrl()||'https://angloville.com/apply/';
+  try{
+    const res=await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'mailchimp_draft',campaign:c,cta_url:url,
+        images:selImgs.filter(i=>!i.url.startsWith('data:')),
+        program_name:name,footer_html:getFooterHtml()})
     });
     const data=await res.json();
     if(!data.ok) throw new Error(data.error||'Mailchimp error');
-    document.getElementById('mc-status').innerHTML=`
-      <div style="margin-top:10px;background:#F0FDF8;border:1px solid #C0E8D4;border-radius:8px;padding:11px 14px;font-size:12px;color:#2D7A5A;">
-        ✅ <strong>Draft created!</strong>
-        <a href="${data.draft_url}" target="_blank" style="color:#428BCA;font-weight:700;">→ Open in Mailchimp</a>
-      </div>`;
+    document.getElementById('mc-status').innerHTML=`<div class="ok-box">
+      ✅ <strong>Draft created!</strong>
+      <a href="${data.draft_url}" target="_blank" style="color:#428BCA;font-weight:700;margin-left:6px;">→ Open in Mailchimp</a>
+    </div>`;
     btn.textContent='✓ Done!';
-  } catch(e){
-    document.getElementById('mc-status').innerHTML=`<div style="margin-top:8px" class="err">Error: ${e.message}</div>`;
-    btn.disabled=false; btn.textContent='📧 Create draft';
+  }catch(e){
+    document.getElementById('mc-status').innerHTML=`<div class="err-box" style="display:block;margin-top:8px">Error: ${e.message}</div>`;
+    btn.disabled=false;btn.textContent='📧 Create Mailchimp draft';
   }
 }
 
-// ══ HELPERS ════════════════════
+// ═══════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════
 function getCurrent(){
   const g=id=>(document.getElementById(id)?.value||'').trim();
-  return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),headline:g('e-h1'),
-    intro:g('e-intro'),body_p1:g('e-p1'),body_p2:g('e-p2'),body_p3:g('e-p3'),
+  return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),
+    headline:g('e-h1'),intro:g('e-intro'),body_p1:g('e-p1'),body_p2:g('e-p2'),body_p3:g('e-p3'),
     cta:g('e-cta1'),cta2:g('e-cta2'),ps:g('e-ps'),ab1:g('e-ab1'),ab2:g('e-ab2')};
 }
 function cpAll(){
   const c=getCurrent();
   navigator.clipboard.writeText(['SUBJECT: '+c.subject,'WITH EMOJI: '+c.subject_emoji,
     'PREHEADER: '+c.preheader,'',c.headline,'',c.intro,'',c.body_p1,'',c.body_p2,'',c.body_p3,'',
-    '[ '+c.cta+' ]',buildUrl()?'URL: '+buildUrl():'',c.ps?'PS: '+c.ps:''
-  ].filter(Boolean).join('\n'));
+    '[ '+c.cta+' ]',buildUrl()?'URL: '+buildUrl():'',c.ps?'PS: '+c.ps:''].filter(Boolean).join('\n'));
 }
 function cp(id,btn){cp2((document.getElementById(id)?.value||''),btn);}
 function cp2(text,btn){
   navigator.clipboard.writeText(text);
-  const o=btn.textContent; btn.textContent='✓ ok'; btn.classList.add('ok');
-  setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1500);
+  const o=btn.textContent;btn.textContent='✓';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1400);
 }
-function showErr(m){const el=document.getElementById('error-box');el.textContent=m;el.style.display='block';}
+function showErr(m){const el=document.getElementById('err-box');el.textContent=m;el.style.display='block';}
 function resetAll(){
-  selected.clear(); selImgs=[];
+  selected.clear();selImgs=[];selFoot=null;libCat=null;
   document.getElementById('extra').value='';
   document.getElementById('results').style.display='none';
-  document.getElementById('error-box').style.display='none';
+  document.getElementById('results').innerHTML='';
+  document.getElementById('err-box').style.display='none';
   document.getElementById('prog-hint').style.display='';
-  renderProgs(); updateCount(); renderLib(); renderSelSummary();
+  renderAll();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // INIT
-renderProgs();
-renderLibTabs();
-renderLib();
+renderAll();
 </script>
 </body>
 </html>
