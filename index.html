@@ -4,147 +4,108 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Angloville — Email Campaign Generator</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--y:#FCD23A;--b:#4CAAD8;--dk:#1A1A2E;--bg:#F0F2F5;--w:#fff;--txt:#2D2D2D;--sub:#777;--brd:#E0E0E0;--card:#F8F9FA}
-body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
-
-/* ── HEADER ── */
-.hdr{background:var(--dk);padding:24px 24px 0}
-.hdr-inner{max-width:900px;margin:0 auto;display:flex;align-items:center;gap:14px}
-.hdr-icon{width:46px;height:46px;background:var(--y);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;box-shadow:0 4px 12px rgba(252,210,58,.3)}
-.hdr-lbl{font-size:9px;font-weight:700;letter-spacing:4px;color:var(--y);text-transform:uppercase;margin-bottom:3px}
-.hdr h1{font-size:clamp(17px,2.8vw,28px);font-weight:800;color:#fff;line-height:1.2}
-.hdr-desc{max-width:900px;margin:10px auto 0;padding:0 24px;color:rgba(255,255,255,.5);font-size:12px;line-height:1.6}
-
-/* ── MARKET TABS ── */
-.mkt-tabs{max-width:900px;margin:16px auto 0;padding:0 24px;display:flex;gap:5px}
-.mkt-tab{padding:9px 22px;background:transparent;border:1.5px solid rgba(255,255,255,.15);color:rgba(255,255,255,.45);font-family:inherit;font-size:12px;font-weight:700;border-radius:10px 10px 0 0;cursor:pointer;transition:all .15s;letter-spacing:.3px}
-.mkt-tab:hover:not(.active){border-color:rgba(255,255,255,.35);color:rgba(255,255,255,.8)}
+:root{--y:#FCD23A;--b:#428BCA;--dk:#232323;--bg:#F2F2F2;--w:#fff;--txt:#333;--sub:#666;--brd:#DDD}
+body{font-family:'Funnel Sans',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+.hdr{background:var(--dk);padding:22px 20px 0}
+.hdr-inner{max-width:860px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.hdr-icon{width:42px;height:42px;background:var(--y);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.hdr-lbl{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--y);text-transform:uppercase;margin-bottom:2px}
+.hdr h1{font-size:clamp(16px,2.8vw,26px);font-weight:800;color:#fff;line-height:1.2}
+.hdr-sub{max-width:860px;margin:8px auto 0;padding:0 20px;color:rgba(255,255,255,.55);font-size:12px;line-height:1.5}
+.mkt-tabs{max-width:860px;margin:14px auto 0;padding:0 20px;display:flex;gap:4px;flex-wrap:wrap}
+.mkt-tab{padding:8px 20px;background:transparent;border:1.5px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);font-family:inherit;font-size:12px;font-weight:700;border-radius:8px 8px 0 0;cursor:pointer;transition:all .15s}
+.mkt-tab:hover:not(.active){border-color:rgba(255,255,255,.4);color:rgba(255,255,255,.8)}
 .mkt-tab.active{background:var(--y);border-color:var(--y);color:var(--dk)}
-
-/* ── MAIN ── */
-.main{max-width:900px;margin:0 auto;padding:28px 24px 80px}
-
-/* ── STEP CARD ── */
-.step{background:var(--w);border-radius:14px;border:1px solid var(--brd);padding:20px 22px;margin-bottom:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-.step-title{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.step-num{width:24px;height:24px;background:var(--dk);color:var(--y);font-size:11px;font-weight:800;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.step-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dk)}
-.step-hint{font-size:11px;color:var(--sub);margin-left:auto}
-
-/* ── PROGRAMME GROUPS ── */
-.prog-group{margin-bottom:16px}
+.main{max-width:860px;margin:0 auto;padding:24px 20px 60px}
+.card{background:var(--w);border-radius:12px;border:1.5px solid var(--brd);padding:18px 20px;margin-bottom:14px}
+.card-title{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--b);margin-bottom:12px}
+.prog-group{margin-bottom:14px}
 .prog-group:last-child{margin-bottom:0}
-.pg-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);background:var(--card);border:1px solid var(--brd);padding:4px 10px;border-radius:6px;display:inline-flex;align-items:center;gap:5px;margin-bottom:8px}
-.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:7px}
-.pb{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border:1.5px solid var(--brd);background:var(--w);border-radius:10px;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:all .15s;position:relative}
-.pb:hover{border-color:var(--y);background:#fffdf0}
-.pb.on{border-color:var(--y);background:#FFFBEA}
-.pb.on::after{content:'✓';position:absolute;top:8px;right:9px;font-size:9px;font-weight:800;color:#1a1a1a;background:var(--y);width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:17px;text-align:center}
-.pe{font-size:17px;flex-shrink:0;margin-top:1px;line-height:1}
-.pt{font-size:11px;font-weight:700;color:var(--dk);margin-bottom:2px;line-height:1.3;padding-right:22px}
-.pd{font-size:10px;color:var(--sub);line-height:1.3}
-.sel-tag{font-size:11px;color:var(--b);font-weight:600;margin-top:10px;min-height:18px;padding:4px 0}
+.prog-group-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dk);padding:4px 9px;background:#EAEAEA;border-radius:5px;display:inline-block;margin-bottom:7px}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:6px}
+.prog-btn{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border:1.5px solid var(--brd);background:var(--w);border-radius:9px;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:all .15s;position:relative}
+.prog-btn:hover{border-color:var(--y)}
+.prog-btn.on{border-color:var(--y);background:#FFFBEA}
+.prog-btn.on::after{content:'✓';position:absolute;top:7px;right:8px;font-size:10px;font-weight:800;color:var(--dk);background:var(--y);width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;line-height:16px;text-align:center}
+.prog-e{font-size:16px;flex-shrink:0;margin-top:1px}
+.prog-t{font-size:11px;font-weight:700;color:var(--dk);margin-bottom:2px;line-height:1.3;padding-right:20px}
+.prog-d{font-size:10px;color:var(--sub);line-height:1.3}
+.sel-count{font-size:11px;color:var(--b);font-weight:600;margin-top:8px;min-height:16px}
 
-/* ── IMAGE SLOTS ── */
-.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;margin-bottom:12px}
-.img-slot{aspect-ratio:16/9;border-radius:12px;border:2px dashed var(--brd);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:all .15s;position:relative;overflow:hidden}
-.img-slot:hover{border-color:var(--y)}
-.img-slot.has-img{border:none;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.img-slot.has-img img{width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
-.slot-icon{font-size:26px;color:#CCC;margin-bottom:5px}
-.slot-txt{font-size:10px;color:var(--sub)}
-.slot-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);color:#fff;border:none;border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;display:none;z-index:3;font-family:inherit}
-.img-slot:hover .slot-del{display:block}
-.img-add-row{display:flex;gap:8px}
-.img-add-row input{flex:1;padding:9px 12px;border:1.5px solid var(--brd);border-radius:9px;font-family:inherit;font-size:13px;color:var(--txt);background:var(--w);transition:border-color .15s}
-.img-add-row input:focus{outline:none;border-color:var(--b)}
-.img-add-row button{padding:9px 18px;background:var(--dk);color:#fff;border:none;border-radius:9px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;transition:background .15s}
-.img-add-row button:hover{background:#2d2d4e}
-.img-tip{font-size:10px;color:var(--sub);margin-top:7px;line-height:1.6}
+/* IMAGE LIBRARY */
+.img-lib-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.lib-tab{padding:5px 13px;background:transparent;border:1.5px solid var(--brd);color:var(--sub);font-family:inherit;font-size:11px;font-weight:600;border-radius:6px;cursor:pointer;transition:all .15s}
+.lib-tab:hover{border-color:var(--b)}
+.lib-tab.active{background:var(--b);border-color:var(--b);color:#fff}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-bottom:12px}
+.lib-img{position:relative;aspect-ratio:16/9;border-radius:9px;overflow:hidden;cursor:pointer;border:2.5px solid transparent;transition:all .15s;background:#EEE}
+.lib-img img{width:100%;height:100%;object-fit:cover;display:block}
+.lib-img:hover{border-color:var(--y)}
+.lib-img.sel{border-color:var(--y);box-shadow:0 0 0 2px var(--y)}
+.lib-img .sel-badge{position:absolute;top:4px;right:4px;background:var(--y);color:var(--dk);font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;display:none;align-items:center;justify-content:center;line-height:18px;text-align:center}
+.lib-img.sel .sel-badge{display:flex}
+.lib-img .img-num{position:absolute;bottom:4px;left:4px;background:rgba(0,0,0,.55);color:#fff;font-size:9px;padding:2px 5px;border-radius:3px;font-weight:700}
+.lib-sep{display:flex;align-items:center;gap:8px;margin:10px 0;color:var(--sub);font-size:11px}
+.lib-sep::before,.lib-sep::after{content:'';flex:1;height:1px;background:var(--brd)}
+.custom-inp-row{display:flex;gap:7px}
+.custom-inp-row input{flex:1;padding:8px 11px;border:1.5px solid var(--brd);border-radius:7px;font-family:inherit;font-size:12px;color:var(--txt)}
+.custom-inp-row input:focus{outline:none;border-color:var(--b)}
+.custom-inp-row button{padding:8px 14px;background:var(--dk);color:#fff;border:none;border-radius:7px;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.custom-inp-row button:hover{background:#444}
+.sel-summary{margin-top:10px;background:#FFFBEA;border:1.5px solid var(--y);border-radius:8px;padding:10px 12px;font-size:11px;color:var(--dk);min-height:0;display:none}
+.sel-summary.show{display:block}
+.sel-imgs{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.sel-img-thumb{position:relative;width:60px;height:40px;border-radius:6px;overflow:hidden;border:2px solid var(--y);flex-shrink:0}
+.sel-img-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.sel-img-thumb .rm{position:absolute;top:1px;right:1px;background:rgba(0,0,0,.65);color:#fff;border:none;border-radius:3px;padding:0 4px;font-size:10px;cursor:pointer;line-height:16px}
 
-/* ── NOTES ── */
-textarea.notes{width:100%;padding:11px 13px;border:1.5px solid var(--brd);border-radius:10px;font-family:inherit;font-size:13px;color:var(--txt);resize:vertical;line-height:1.6;background:var(--w);transition:border-color .15s}
+textarea.notes{width:100%;padding:10px 12px;border:1.5px solid var(--brd);border-radius:8px;font-family:inherit;font-size:13px;color:var(--txt);resize:vertical;line-height:1.6}
 textarea.notes:focus{outline:none;border-color:var(--b)}
-
-/* ── GENERATE BUTTON ── */
-.gen-wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px}
-.btn-gen{display:inline-flex;align-items:center;gap:9px;padding:14px 32px;background:var(--y);color:var(--dk);font-family:inherit;font-size:15px;font-weight:800;border:none;border-radius:11px;cursor:pointer;transition:all .15s;letter-spacing:.2px}
-.btn-gen:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(252,210,58,.4)}
-.btn-gen:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
-.no-sel{font-size:12px;color:var(--sub)}
-
-/* ── LOADER ── */
-.loader-wrap{margin-top:28px;text-align:center;display:none}
-.dots{display:flex;justify-content:center;gap:7px;margin-bottom:8px}
-.dots span{width:9px;height:9px;border-radius:50%;background:var(--y);animation:bounce 1s infinite}
-.dots span:nth-child(2){animation-delay:.18s}
-.dots span:nth-child(3){animation-delay:.36s}
-@keyframes bounce{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-9px);opacity:1}}
-.loader-lbl{font-size:12px;color:var(--sub)}
-
-/* ── ERROR ── */
-.err-box{background:#FFF0F0;border:1.5px solid #FFCCCC;border-radius:10px;padding:13px 16px;color:#C00;font-size:12px;margin-top:12px;line-height:1.5;display:none}
-
-/* ── RESULTS HEADER ── */
-.res-hdr{background:linear-gradient(135deg,var(--dk) 0%,#2d2d4e 100%);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
-.res-lbl{font-size:9px;font-weight:700;letter-spacing:4px;color:var(--y);text-transform:uppercase;margin-bottom:3px}
-.res-meta{color:rgba(255,255,255,.65);font-size:12px;line-height:1.4}
-.res-actions{display:flex;gap:8px;flex-wrap:wrap}
-.btn-ghost{padding:8px 16px;background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.2);color:#fff;font-family:inherit;font-size:11px;font-weight:600;border-radius:8px;cursor:pointer;transition:all .15s}
-.btn-ghost:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.4)}
-
-/* ── RESULT BLOCKS ── */
-.rb{background:var(--w);border-left:3px solid var(--y);border-radius:0 10px 10px 0;padding:13px 15px;margin-bottom:9px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
-.rb.blue{border-left-color:var(--b)}
-.rb.green{border-left-color:#27AE60}
-.rb.purple{border-left-color:#9B59B6}
-.rb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
-.rb-lbl{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--b)}
-.ef-row{margin-bottom:9px}
-.ef-lbl{font-size:10px;font-weight:600;color:var(--sub);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
-textarea.ef,input.ef{width:100%;padding:8px 11px;border:1.5px solid var(--brd);border-radius:8px;font-family:inherit;font-size:13px;color:var(--txt);line-height:1.6;resize:vertical;background:var(--w);transition:border-color .15s}
-textarea.ef:focus,input.ef:focus{outline:none;border-color:var(--b)}
-.btn-cp{padding:3px 9px;background:transparent;border:1px solid var(--brd);color:var(--sub);font-size:10px;border-radius:5px;cursor:pointer;font-family:monospace;transition:all .15s}
+.btn-gen{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;background:var(--y);color:var(--dk);font-family:inherit;font-size:14px;font-weight:800;border:none;border-radius:9px;cursor:pointer;transition:all .15s}
+.btn-gen:hover{filter:brightness(1.06);transform:translateY(-1px)}
+.btn-gen:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-sec{padding:9px 18px;background:transparent;border:1.5px solid var(--brd);color:var(--txt);font-family:inherit;font-size:12px;font-weight:600;border-radius:8px;cursor:pointer;transition:all .15s}
+.btn-sec:hover{border-color:var(--dk)}
+.btn-cp{padding:3px 9px;background:transparent;border:1px solid var(--brd);color:var(--sub);font-size:10px;border-radius:4px;cursor:pointer;font-family:monospace}
 .btn-cp:hover,.btn-cp.ok{border-color:var(--b);color:var(--b)}
-
-/* ── UTM ── */
-.utm-box{background:#F6FBFF;border:1.5px solid #C8E6F8;border-radius:10px;padding:14px 16px}
+.loader{display:flex;gap:6px;justify-content:center;padding:6px 0}
+.loader span{width:8px;height:8px;border-radius:50%;background:var(--y);animation:dot 1s infinite}
+.loader span:nth-child(2){animation-delay:.18s}
+.loader span:nth-child(3){animation-delay:.36s}
+@keyframes dot{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(-8px);opacity:1}}
+.loader-txt{text-align:center;font-size:12px;color:var(--sub);margin-top:6px}
+.err{background:#FFF0F0;border:1px solid #FFCCCC;border-radius:8px;padding:12px 15px;color:#C00;font-size:12px;margin-top:10px}
+.res-hdr{background:var(--dk);border-radius:10px;padding:14px 18px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.res-hdr .lbl{font-size:9px;font-weight:700;letter-spacing:3px;color:var(--y);text-transform:uppercase;margin-bottom:2px}
+.res-hdr .meta{color:rgba(255,255,255,.6);font-size:11px}
+.res-btns{display:flex;gap:7px;flex-wrap:wrap}
+.rb{background:var(--w);border-left:3px solid var(--y);border-radius:0 9px 9px 0;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.rb.bl{border-left-color:var(--b)}
+.rb.gr{border-left-color:#27AE60}
+.rb.pu{border-left-color:#9B59B6}
+.rb-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.rb-lbl{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--b)}
+.ef-wrap{margin-bottom:9px}
+.ef-lbl{font-size:10px;font-weight:700;color:var(--sub);margin-bottom:3px;display:flex;justify-content:space-between;align-items:center}
+textarea.ef,input.ef{width:100%;padding:8px 11px;border:1.5px solid var(--brd);border-radius:7px;font-family:inherit;font-size:13px;color:var(--txt);line-height:1.6;resize:vertical}
+textarea.ef:focus,input.ef:focus{outline:none;border-color:var(--b)}
+.utm-box{background:#F8FBFF;border:1.5px solid #D0E8F8;border-radius:9px;padding:13px 15px;margin-top:8px}
 .utm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
-.utm-prev{background:var(--w);border:1px solid var(--brd);border-radius:7px;padding:9px 11px;font-family:monospace;font-size:10px;color:var(--sub);word-break:break-all;line-height:1.7}
-
-/* ── MAILCHIMP ── */
-.mc-box{border:2px solid var(--y);border-radius:14px;padding:18px 20px;background:linear-gradient(135deg,#FFFBEA 0%,#FFF8D6 100%);margin-top:20px}
-.mc-box h3{font-size:14px;font-weight:800;color:var(--dk);margin-bottom:5px}
-.mc-box p{font-size:12px;color:var(--sub);margin-bottom:13px;line-height:1.6}
-.mc-btns{display:flex;gap:9px;flex-wrap:wrap}
-.btn-mc{padding:10px 22px;background:var(--dk);color:#fff;font-family:inherit;font-size:13px;font-weight:700;border:none;border-radius:9px;cursor:pointer;transition:all .15s}
-.btn-mc:hover{background:#2d2d4e;transform:translateY(-1px)}
-.btn-mc:disabled{opacity:.5;cursor:not-allowed;transform:none}
-
-/* ── MODAL ── */
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;overflow-y:auto;padding:20px}
+.utm-preview{background:var(--w);border:1px solid var(--brd);border-radius:6px;padding:8px 10px;font-family:monospace;font-size:10px;color:var(--sub);word-break:break-all;line-height:1.6;margin-top:6px}
+.mc-box{border:2px solid var(--y);border-radius:12px;padding:15px 18px;background:#FFFBEA;margin-top:18px}
+.mc-box h3{font-size:13px;font-weight:800;color:var(--dk);margin-bottom:4px}
+.mc-box p{font-size:12px;color:var(--sub);margin-bottom:11px;line-height:1.6}
+.mc-btns{display:flex;gap:8px;flex-wrap:wrap}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;overflow-y:auto;padding:16px}
 .modal.open{display:flex;align-items:flex-start;justify-content:center}
-.modal-box{background:#EDEDED;border-radius:14px;width:100%;max-width:650px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.modal-hdr{background:var(--dk);padding:14px 18px;display:flex;justify-content:space-between;align-items:center}
-.modal-hdr span{color:var(--y);font-weight:700;font-size:11px;letter-spacing:3px;text-transform:uppercase}
-.modal-hdr button{background:none;border:none;color:#fff;font-size:18px;cursor:pointer;line-height:1;padding:2px 4px}
-.modal-hdr button:hover{color:var(--y)}
-.modal-body{padding:20px;max-height:80vh;overflow-y:auto}
-
-.reset-wrap{text-align:center;margin-top:22px}
-.btn-sec{padding:9px 20px;background:transparent;border:1.5px solid var(--brd);color:var(--txt);font-family:inherit;font-size:12px;font-weight:600;border-radius:9px;cursor:pointer;transition:all .15s}
-.btn-sec:hover{border-color:var(--dk);color:var(--dk)}
-
-@media(max-width:580px){
-  .mkt-tabs{gap:3px}
-  .mkt-tab{padding:8px 14px;font-size:11px}
-  .utm-grid,.prog-grid{grid-template-columns:1fr}
-  .res-hdr{flex-direction:column;align-items:flex-start}
-  .img-grid{grid-template-columns:repeat(2,1fr)}
-}
+.modal-box{background:#F0F0F0;border-radius:12px;width:100%;max-width:640px;overflow:hidden}
+.modal-hdr{background:var(--dk);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.modal-hdr span{color:var(--y);font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.modal-hdr button{background:none;border:none;color:#fff;font-size:17px;cursor:pointer;line-height:1}
+@media(max-width:580px){.utm-grid,.prog-grid{grid-template-columns:1fr}.res-hdr{flex-direction:column;align-items:flex-start}}
 </style>
 </head>
 <body>
@@ -157,681 +118,593 @@ textarea.ef:focus,input.ef:focus{outline:none;border-color:var(--b)}
       <h1>Email Campaign Generator</h1>
     </div>
   </div>
-  <p class="hdr-desc">Choose market → pick programme(s) → add images → generate → edit → send to Mailchimp</p>
+  <p class="hdr-sub">Choose market → pick programme(s) → add images → generate → Mailchimp</p>
   <div class="mkt-tabs">
-    <button class="mkt-tab active" onclick="setMkt('com',this)">🇬🇧 Native Speakers</button>
-    <button class="mkt-tab"        onclick="setMkt('pl',this)">🇵🇱 Polska</button>
-    <button class="mkt-tab"        onclick="setMkt('it',this)">🇮🇹 Italia</button>
+    <button class="mkt-tab active" onclick="setMarket('com',this)">🇬🇧 Native Speakers</button>
+    <button class="mkt-tab" onclick="setMarket('pl',this)">🇵🇱 Polska</button>
+    <button class="mkt-tab" onclick="setMarket('it',this)">🇮🇹 Italia</button>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- STEP 1: PROGRAMMES -->
-  <div class="step">
-    <div class="step-title">
-      <div class="step-num">1</div>
-      <div class="step-label">Choose Programme(s)</div>
-      <div class="step-hint">Multiple selection — combine e.g. Malta + UK</div>
-    </div>
+  <div class="card">
+    <div class="card-title">1 — Choose programme(s) — multiple selection allowed</div>
     <div id="prog-container"></div>
-    <div class="sel-tag" id="sel-tag"></div>
+    <div class="sel-count" id="sel-count"></div>
   </div>
 
-  <!-- STEP 2: IMAGES -->
-  <div class="step">
-    <div class="step-title">
-      <div class="step-num">2</div>
-      <div class="step-label">Add Images / Videos</div>
-      <div class="step-hint">Optional — appear with rounded corners in email</div>
+  <div class="card">
+    <div class="card-title">2 — Choose images for the email</div>
+    <div class="img-lib-tabs" id="lib-tabs"></div>
+    <div class="lib-grid" id="lib-grid"></div>
+    <div class="lib-sep">or paste your own URL</div>
+    <div class="custom-inp-row">
+      <input id="custom-url" placeholder="Paste image URL or YouTube link…" onkeydown="if(event.key==='Enter')addCustomImg()">
+      <button onclick="addCustomImg()">+ Add</button>
     </div>
-    <div class="img-grid" id="img-grid"></div>
-    <div class="img-add-row">
-      <input id="img-inp" placeholder="Paste image URL or YouTube link…" onkeydown="if(event.key==='Enter')addImg()">
-      <button onclick="addImg()">+ Add</button>
+    <div class="sel-summary" id="sel-summary">
+      <strong>Selected images:</strong>
+      <div class="sel-imgs" id="sel-imgs-row"></div>
     </div>
-    <div class="img-tip">💡 YouTube link → thumbnail auto-generated. Images appear between sections, formatted automatically with rounded corners.</div>
   </div>
 
-  <!-- STEP 3: NOTES -->
-  <div class="step">
-    <div class="step-title">
-      <div class="step-num">3</div>
-      <div class="step-label">Additional Instructions</div>
-      <div class="step-hint">Optional</div>
-    </div>
+  <div class="card">
+    <div class="card-title">3 — Additional instructions (optional)</div>
     <textarea class="notes" id="extra" rows="3"
-      placeholder="e.g. Early bird discount, limited spots, summer dates 21 June – 8 August, mention 3-programme package…"></textarea>
+      placeholder="e.g. Early bird discount ends Friday, limited spots, focus on summer dates 21 June – 8 August…"></textarea>
   </div>
 
-  <!-- GENERATE -->
-  <div class="gen-wrap">
+  <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
     <button class="btn-gen" id="gen-btn" onclick="generate()">✦ Generate Campaign</button>
-    <span class="no-sel" id="gen-hint">← Select at least one programme above</span>
+    <span id="prog-hint" style="font-size:12px;color:var(--sub)">← Select at least one programme</span>
   </div>
 
-  <div class="loader-wrap" id="loader">
-    <div class="dots"><span></span><span></span><span></span></div>
-    <div class="loader-lbl" id="loader-txt">Crafting your campaign…</div>
+  <div id="loader" style="display:none;margin-top:22px">
+    <div class="loader"><span></span><span></span><span></span></div>
+    <div class="loader-txt" id="loader-txt">Crafting your campaign…</div>
   </div>
-  <div class="err-box" id="err-box"></div>
-  <div id="results" style="display:none;margin-top:40px"></div>
+  <div id="error-box" class="err" style="display:none"></div>
+  <div id="results" style="display:none;margin-top:36px"></div>
 </div>
 
-<!-- PREVIEW MODAL -->
 <div class="modal" id="preview-modal">
   <div class="modal-box">
     <div class="modal-hdr">
       <span>Email Preview</span>
-      <button onclick="closePrev()">✕</button>
+      <button onclick="closePreview()">✕</button>
     </div>
-    <div class="modal-body" id="preview-body"></div>
+    <div style="padding:16px" id="preview-content"></div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════
-//  MARKET DATA
-// ═══════════════════════════════════════════════════
-const MKT = {
-
+// ══════════════════════════════════════════════════════════
+//  BUILT-IN IMAGE LIBRARY
+// ══════════════════════════════════════════════════════════
+const IMG_LIB = {
   com: {
-    lang: 'en-gb',
-    ph: 'e.g. Early bird discount, limited spots, summer dates 21 June – 8 August, mention 3-programme package, urgency…',
-    ltxt: 'Claude is crafting your British English campaign…',
-    brand: `BRAND: Angloville.com — international sponsored cultural exchange since 2011.
-AUDIENCE: Native English speakers, gap year travellers, adventurous 18–30 year olds.
-VOICE: Warm, adventurous, community-driven. British English ONLY (programme, colour, travelling, organised, centre).
-CRITICAL: NEVER use "volunteer" or "volunteering" — always say "sponsored place", "sponsored programme", or "cultural exchange role".
-KEY MESSAGES: Fully sponsored (free accommodation + meals included), no teaching experience needed, make lifelong international friends, gain real CV experience.`,
-    groups: [
-      { lbl: 'Junior Programmes', progs: [
-        { id:'pl-jr',  e:'🇵🇱', t:'Poland Junior Programmes',      d:'Warsaw, Wroclaw, Krakow & Poznan' },
-        { id:'it-jr',  e:'🇮🇹', t:'Italy Junior Programmes',       d:'Bologna, Florence, Rome & Milan' },
-        { id:'mt-jr',  e:'🇲🇹', t:'Malta Junior Programmes',       d:'Valletta, Gozo & Mdina' },
-        { id:'euro',   e:'🌍',  t:'Eurotrip & Poland Programmes',  d:'Paris, Brussels, Berlin & Amsterdam' },
-        { id:'roeh',   e:'🏛',  t:'Roehampton & Kent (UK)',         d:'London, Cambridge & Canterbury' },
-        { id:'ukt',    e:'🎡',  t:'UK Trip',                        d:'London, Oxford & Cambridge' },
-      ]},
-      { lbl: 'Adult Programmes', progs: [
-        { id:'pl-ad',  e:'🏡',  t:'Poland Adult Programmes',       d:'Warsaw, Wroclaw & Krakow – full immersion for adults' },
-      ]},
-      { lbl: 'Sponsored Roles', progs: [
-        { id:'esl',    e:'🎓',  t:'ESL Mentor – Sponsored Place',  d:'Help learners practise English, no experience needed' },
-        { id:'act',    e:'🏃',  t:'Activity Leader – Sponsored',   d:'Lead activities and cultural exchange on programmes' },
-        { id:'coord',  e:'📋',  t:'Programme Coordinator',         d:'Organise and run programmes across Europe' },
-      ]},
-      { lbl: 'TEFL in Asia', progs: [
-        { id:'th',     e:'🇹🇭', t:'TEFL – Thailand',               d:'Paid English teaching placement in Thailand' },
-        { id:'kr',     e:'🇰🇷', t:'TEFL – South Korea',           d:'Paid English teaching placement in South Korea' },
-        { id:'jp',     e:'🇯🇵', t:'TEFL – Japan',                  d:'Paid English teaching placement in Japan' },
-        { id:'vn',     e:'🇻🇳', t:'TEFL – Vietnam',               d:'Paid English teaching placement in Vietnam' },
-      ]},
-      { lbl: 'AV Travel', progs: [
-        { id:'east',   e:'🗽',  t:'AV Travel – USA East Coast',   d:'New York, Washington & Boston' },
-        { id:'west',   e:'🌴',  t:'AV Travel – USA West Coast',   d:'Los Angeles, San Francisco & Grand Canyon' },
-        { id:'jp-tr',  e:'⛩',   t:'AV Travel – Japan',            d:'Tokyo, Kyoto & Osaka' },
-      ]},
+    'Poland': [
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png', lbl:'Valbonella venue'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png', lbl:'Casal Cerqueto'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7-f9cb-f93a16385edd.png', lbl:'Torre Burchio'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png', lbl:'Madonna delle Nevi'},
+    ],
+    'Italy': [
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png', lbl:'Italy hero'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png', lbl:'Italy team'},
+    ],
+    'General': [
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png', lbl:'Angloville logo'},
+      {url:'https://angloville.com/wp-content/uploads/2024/04/av-hero.jpg', lbl:'Angloville hero'},
+      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-group.jpg', lbl:'Group activity'},
+      {url:'https://angloville.com/wp-content/uploads/2023/09/angloville-native-speakers.jpg', lbl:'Native speakers'},
     ],
   },
-
   pl: {
-    lang: 'pl',
-    ph: 'np. Promocja -15% do piątku, ostatnie 3 miejsca, nowy termin w sierpniu, wyprzedaż wczesnorejestracyjna…',
-    ltxt: 'Claude tworzy Twoją kampanię po polsku…',
-    brand: `MARKA: Angloville.pl — lider turystyki edukacyjnej w Polsce od 2011 roku.
-ODBIORCY: Polacy — rodzice dzieci (7–18 lat), dorośli z barierą językową, menedżerowie, osoby planujące wyjazd za granicę.
-GŁOS: Ciepły, energiczny, motywujący. Aktywny język. Konkretne korzyści i emocje. Proste zdania.
-WARTOŚCI: Pełna immersja — 0 książek — 0 klasy. 7000+ uczestników rocznie. 4.8★ z ponad 1900 opinii.
-JĘZYK: WYŁĄCZNIE po polsku. Żadnych angielskich wtrąceń.`,
-    groups: [
-      { lbl: 'Dorośli', progs: [
-        { id:'wios',   e:'🏡',  t:'Angielska Wioska – Dorośli',       d:'70h 1:1 z native speakerami w 6 dni w Polsce' },
-        { id:'pocz',   e:'🌱',  t:'Angielska Wioska – Początkujący',  d:'Kurs online + wyjazd z native speakerami' },
-        { id:'biz',    e:'💼',  t:'Business English dla firm',         d:'Blended learning dla firm i korporacji' },
-        { id:'kali-a', e:'🌴',  t:'Kalifornia 18–40',                 d:'Turystyczno-językowy wyjazd do Kalifornii' },
-        { id:'nyc',    e:'🗽',  t:'Nowy Jork + Toronto 40+',          d:'Wyjazd językowy dla dorosłych 40+' },
-        { id:'jap-a',  e:'🗾',  t:'Japonia – Dorośli 40+',            d:'Turystyczno-językowy wyjazd do Japonii' },
+    'Dorośli': [
+      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-doroslych-wioski.jpg', lbl:'Wioska Dorosłych'},
+      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-wioska.jpg', lbl:'Wioska językowa'},
+      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-native-speakers-pl.jpg', lbl:'Native speakers PL'},
+    ],
+    'Dzieci & Młodzież': [
+      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-junior-2024.jpg', lbl:'Obóz Junior'},
+      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-kids-2024.jpg', lbl:'Obóz Kids'},
+      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-malta-oboz.jpg', lbl:'Malta obóz'},
+      {url:'https://angloville.pl/wp-content/uploads/2023/09/angloville-uk-trip.jpg', lbl:'UK Trip'},
+    ],
+    'Wyjazdy': [
+      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-nowy-jork.jpg', lbl:'Nowy Jork'},
+      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-japonia.jpg', lbl:'Japonia'},
+      {url:'https://angloville.pl/wp-content/uploads/2024/01/angloville-kalifornia.jpg', lbl:'Kalifornia'},
+    ],
+  },
+  it: {
+    'In Italia': [
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png', lbl:'Valbonella'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png', lbl:'Casal Cerqueto'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7f9cb-f93a16385edd.png', lbl:'Torre Burchio'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png', lbl:'Madonna delle Nevi'},
+    ],
+    'Estero': [
+      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-malta.jpg', lbl:'Malta'},
+      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-londra.jpg', lbl:'Londra'},
+      {url:'https://angloville.com/wp-content/uploads/2024/04/angloville-newyork.jpg', lbl:'New York'},
+    ],
+    'Generale': [
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png', lbl:'Hero Italy'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png', lbl:'Gruppo ragazzi'},
+    ],
+  },
+};
+
+// ══════════════════════════════════════════════════════════
+//  MARKETS
+// ══════════════════════════════════════════════════════════
+const MKT = {
+  com:{
+    lang:'en-gb',
+    ph:'e.g. Early bird discount ends Friday, limited spots, focus on summer 21 June – 8 August…',
+    ltxt:'Claude is crafting your campaign…',
+    brand:`Angloville.com – international sponsored cultural exchange programmes since 2011.
+Target: native English speakers – gap year, travel, teaching experience.
+NEVER use volunteer/volunteering. Say "sponsored place", "sponsored programme", "cultural exchange".
+Voice: adventurous, warm, community-driven. British English (programme, colour, travelling, organised).
+Key messages: fully sponsored (free accommodation + meals), no teaching experience required, international friendships.`,
+    groups:[
+      {lbl:'Junior Programmes', progs:[
+        {id:'poland-jr',  e:'🇵🇱',t:'Poland Junior Programmes',     d:'Warsaw, Wroclaw, Krakow & Poznan'},
+        {id:'italy-jr',   e:'🇮🇹',t:'Italy Junior Programmes',      d:'Bologna, Florence, Rome & Milan'},
+        {id:'malta-jr',   e:'🇲🇹',t:'Malta Junior Programmes',      d:'Valletta, Gozo & Mdina'},
+        {id:'eurotrip',   e:'🌍', t:'Eurotrip & Poland Programmes', d:'Paris, Brussels, Berlin & Amsterdam'},
+        {id:'roehampton', e:'🏛', t:'Roehampton & Kent (UK)',        d:'London, Cambridge & Canterbury'},
+        {id:'uk-trip',    e:'🎡', t:'UK Trip',                       d:'London, Oxford & Cambridge'},
       ]},
-      { lbl: 'Obozy Polska', progs: [
-        { id:'kids',   e:'🧒',  t:'Angloville Kids 7–11 lat',         d:'Obóz językowy w Polsce przez zabawę' },
-        { id:'jun',    e:'🎒',  t:'Angloville Junior 11–18 lat',      d:'Obóz językowy dla młodzieży w Polsce' },
-        { id:'fam',    e:'👨‍👩‍👧', t:'Angloville Family',               d:'Obóz językowy dla całych rodzin' },
+      {lbl:'Adult Programmes', progs:[
+        {id:'poland-adult',e:'🏡',t:'Poland Adult Programmes',       d:'Warsaw, Wroclaw & Krakow'},
       ]},
-      { lbl: 'Obozy Zagranica', progs: [
-        { id:'malta',  e:'🇲🇹', t:'Junior International – Malta',    d:'Obóz językowy na Malcie 13–18 lat' },
-        { id:'ang',    e:'🇬🇧', t:'Junior International – Anglia',   d:'Obóz językowy w Anglii 13–18 lat' },
-        { id:'ukt',    e:'🎡',  t:'Junior Plus – UK Trip',            d:'Londyn, Oxford, Cambridge 12–18 lat' },
-        { id:'euro',   e:'🌍',  t:'Junior Plus – Eurotrip',           d:'Paryż, Berlin, Bruksela 12–18 lat' },
-        { id:'balt',   e:'🌊',  t:'Junior Plus – Baltic Trip',        d:'Kraje bałtyckie 12–18 lat' },
-        { id:'itl',    e:'🍕',  t:'Junior Plus – Italy Trip',         d:'Włochy z native speakerami 12–18 lat' },
-        { id:'ny-j',   e:'🗽',  t:'Junior – Nowy Jork 14–18',         d:'Nowy Jork z native speakerami' },
-        { id:'ka-j',   e:'🌴',  t:'Junior – Kalifornia 14–18',        d:'Kalifornia z native speakerami' },
-        { id:'mi-j',   e:'🏖',  t:'Junior – Miami 14–18',             d:'Miami z native speakerami' },
-        { id:'ja-j',   e:'⛩',   t:'Junior – Japonia 14–18',           d:'Japonia z native speakerami' },
+      {lbl:'Sponsored Roles', progs:[
+        {id:'esl-mentor', e:'🎓',t:'ESL Mentor – Sponsored Place',  d:'Help learners practise English, no experience needed'},
+        {id:'act-leader', e:'🏃',t:'Activity Leader – Sponsored',   d:'Lead activities and cultural exchange'},
+        {id:'prog-coord', e:'📋',t:'Programme Coordinator',         d:'Organise and run programmes across Europe'},
       ]},
-      { lbl: 'Wymiana Licealna', progs: [
-        { id:'usa',    e:'🏫',  t:'Rok w USA – Wymiana licealna',     d:'Cały rok szkolny w US High School 15–18.5' },
-        { id:'can',    e:'🍁',  t:'Rok w Kanadzie – Wymiana licealna',d:'Cały rok szkolny w kanadyjskim liceum' },
-        { id:'onl',    e:'💻',  t:'Amerykańskie Liceum Online',       d:'Nauka w US systemie bez wyjazdu' },
+      {lbl:'TEFL in Asia', progs:[
+        {id:'tefl-th',    e:'🇹🇭',t:'TEFL – Thailand',              d:'Paid teaching placement in Thailand'},
+        {id:'tefl-kr',    e:'🇰🇷',t:'TEFL – South Korea',          d:'Paid teaching placement in South Korea'},
+        {id:'tefl-jp',    e:'🇯🇵',t:'TEFL – Japan',                 d:'Paid teaching placement in Japan'},
+        {id:'tefl-vn',    e:'🇻🇳',t:'TEFL – Vietnam',              d:'Paid teaching placement in Vietnam'},
+      ]},
+      {lbl:'AV Travel', progs:[
+        {id:'travel-east',e:'🗽',t:'AV Travel – USA East Coast',   d:'New York, Washington & Boston'},
+        {id:'travel-west',e:'🌴',t:'AV Travel – USA West Coast',   d:'Los Angeles, San Francisco & Grand Canyon'},
+        {id:'travel-jp',  e:'⛩', t:'AV Travel – Japan',            d:'Tokyo, Kyoto & Osaka'},
       ]},
     ],
   },
-
-  it: {
-    lang: 'it',
-    ph: 'es. Sconto -15% fino al 30 giugno, ultimi posti disponibili, nuove date estive aggiunte, offerta limitata…',
-    ltxt: 'Claude sta creando la tua campagna in italiano…',
-    brand: `BRAND: Angloville.it — leader nei programmi di full immersion in inglese in Italia e in Europa dal 2011.
-PUBBLICO: Genitori italiani di ragazzi 7–19 anni, adulti che vogliono migliorare l'inglese.
-VOCE: Calda, coinvolgente, motivante. Italiano naturale e corretto. Parlare direttamente ai genitori oppure ai ragazzi secondo il programma.
-VALORI: Full immersion in inglese — 0 libri — 0 lezioni formali. 70-100h con madrelingua. Metodo naturale e divertente.
-LINGUA: SOLO italiano. Nessuna parola in inglese eccetto i nomi propri dei programmi.`,
-    groups: [
-      { lbl: 'Programmi in Italia', progs: [
-        { id:'kids-it', e:'🧒', t:'Villaggio Inglese – Bambini 7–11',  d:'60h con madrelingua in 7 giorni in Italia' },
-        { id:'jr-it',   e:'🎒', t:'Villaggio Inglese – Ragazzi 12–17', d:'70h full immersion con madrelingua in Italia' },
-        { id:'ad-it',   e:'🏡', t:'Corsi per Adulti – Full Immersion',  d:'Full immersion in inglese per adulti' },
+  pl:{
+    lang:'pl',
+    ph:'np. Promocja -15%, ostatnie miejsca, nowy termin wakacyjny, wczesnorejestracyjna…',
+    ltxt:'Claude tworzy Twoją kampanię…',
+    brand:`Angloville.pl – lider turystyki edukacyjnej w Polsce od 2011 roku.
+Odbiorcy: Polacy – rodzice dzieci, dorośli z barierą językową, menedżerowie.
+Głos: ciepły, energiczny, motywujący. Aktywny język polski. Konkretne korzyści.
+Wartości: pełna immersja – 0 książek – 0 klasy. 7000+ uczestników rocznie. 4.8★
+Język: WYŁĄCZNIE po polsku.`,
+    groups:[
+      {lbl:'Dorośli', progs:[
+        {id:'wioska-d',  e:'🏡',t:'Angielska Wioska – Dorośli',       d:'70h 1:1 z native speakerami w 6 dni'},
+        {id:'wioska-p',  e:'🌱',t:'Angielska Wioska – Początkujący',  d:'Kurs online + wyjazd z native speakerami'},
+        {id:'biz-en',    e:'💼',t:'Business English dla firm',         d:'Blended learning dla firm i korporacji'},
+        {id:'kali-ya',   e:'🌴',t:'Kalifornia 18–40',                 d:'Turystyczno-językowy wyjazd do Kalifornii'},
+        {id:'nyc-40',    e:'🗽',t:'Nowy Jork + Toronto 40+',          d:'Wyjazd językowy dla dorosłych 40+'},
+        {id:'jap-40',    e:'🗾',t:'Japonia – Dorośli 40+',            d:'Turystyczno-językowy wyjazd do Japonii'},
       ]},
-      { lbl: "Programmi all'Estero", progs: [
-        { id:'lon',     e:'🇬🇧', t:'Vacanza Studio – Londra 13–19',    d:'Programma intensivo in college a Londra' },
-        { id:'mt-it',   e:'🇲🇹', t:'Vacanza Studio – Malta 12–17',     d:'Residence a Malta con madrelingua' },
-        { id:'ba-it',   e:'🌊',  t:'Junior Plus – Baltic Trip 13–19',  d:'Paesi Baltici con native speaker' },
-        { id:'eu-it',   e:'🌍',  t:'Junior Plus – Eurotrip 13–19',     d:'Parigi, Berlino, Bruxelles, Amsterdam' },
+      {lbl:'Obozy Polska', progs:[
+        {id:'kids',      e:'🧒',t:'Angloville Kids 7–11 lat',         d:'Obóz językowy w Polsce przez zabawę'},
+        {id:'junior',    e:'🎒',t:'Angloville Junior 11–18 lat',      d:'Obóz językowy dla młodzieży w Polsce'},
+        {id:'family',    e:'👨‍👩‍👧',t:'Angloville Family',              d:'Obóz językowy dla całych rodzin'},
       ]},
-      { lbl: 'Junior Adventure', progs: [
-        { id:'ny-it',   e:'🗽',  t:'Junior Adventure – New York 13–19', d:'Times Square, Central Park, Statua della Libertà' },
-        { id:'mi-it',   e:'🏖',  t:'Junior Adventure – Miami 13–19',   d:'Florida e Miami con madrelingua' },
-        { id:'jp-it',   e:'⛩',   t:'Junior Adventure – Giappone 13–19',d:'Tokyo, Kyoto e Osaka con madrelingua' },
+      {lbl:'Obozy Zagranica', progs:[
+        {id:'malta',     e:'🇲🇹',t:'Junior International – Malta',    d:'13–18 lat'},
+        {id:'anglia',    e:'🇬🇧',t:'Junior International – Anglia',   d:'13–18 lat'},
+        {id:'uk-trip',   e:'🎡',t:'Junior Plus – UK Trip',            d:'Londyn, Oxford, Cambridge 12–18'},
+        {id:'eurotrip',  e:'🌍',t:'Junior Plus – Eurotrip',           d:'Paryż, Berlin, Bruksela 12–18'},
+        {id:'baltic',    e:'🌊',t:'Junior Plus – Baltic Trip',        d:'Kraje bałtyckie 12–18'},
+        {id:'italy-t',   e:'🍕',t:'Junior Plus – Italy Trip',         d:'Włochy z native speakerami 12–18'},
+        {id:'nyk',       e:'🗽',t:'Junior – Nowy Jork 14–18',         d:'Z native speakerami'},
+        {id:'kali',      e:'🌴',t:'Junior – Kalifornia 14–18',        d:'Z native speakerami'},
+        {id:'miami',     e:'🏖',t:'Junior – Miami 14–18',             d:'Z native speakerami'},
+        {id:'japonia',   e:'⛩', t:'Junior – Japonia 14–18',           d:'Z native speakerami'},
       ]},
-      { lbl: "Anno all'Estero", progs: [
-        { id:'au-it',   e:'🏫',  t:"Anno all'estero in USA",           d:'Anno scolastico completo in liceo americano 12–18' },
+      {lbl:'Wymiana Licealna', progs:[
+        {id:'usa',       e:'🏫',t:'Rok w USA – Wymiana licealna',     d:'US High School 15–18.5 lat'},
+        {id:'kanada',    e:'🍁',t:'Rok w Kanadzie',                   d:'Kanadyjskie liceum'},
+        {id:'online',    e:'💻',t:'Amerykańskie Liceum Online',       d:'US program bez wyjazdu'},
+      ]},
+    ],
+  },
+  it:{
+    lang:'it',
+    ph:"es. Sconto -15% fino al 30 giugno, ultimi posti disponibili, nuove date aggiunte…",
+    ltxt:'Claude sta creando la tua campagna…',
+    brand:`Angloville.it – leader full immersion inglese in Italia e in Europa dal 2011.
+Voce: calda, coinvolgente, motivante. Italiano naturale. Parlare ai genitori o direttamente ai ragazzi.
+Valori: Full immersion – 0 libri – 0 lezioni. 70-100h con madrelingua. Metodo naturale e divertente.
+Lingua: SOLO italiano.`,
+    groups:[
+      {lbl:'Programmi in Italia', progs:[
+        {id:'kids-it',   e:'🧒',t:'Villaggio Inglese – Bambini 7–11', d:'60h con madrelingua in 7 giorni in Italia'},
+        {id:'jr-it',     e:'🎒',t:'Villaggio Inglese – Ragazzi 12–17',d:'70h full immersion con madrelingua in Italia'},
+        {id:'adult-it',  e:'🏡',t:'Corsi per Adulti – Full Immersion',d:'Full immersion in inglese per adulti'},
+      ]},
+      {lbl:"Programmi all'Estero", progs:[
+        {id:'londra',    e:'🇬🇧',t:'Vacanza Studio – Londra 13–19',  d:'College a Londra'},
+        {id:'malta-it',  e:'🇲🇹',t:'Vacanza Studio – Malta 12–17',   d:'Residence a Malta'},
+        {id:'baltic-it', e:'🌊',t:'Junior Plus – Baltic Trip 13–19', d:'Paesi Baltici'},
+        {id:'euro-it',   e:'🌍',t:'Junior Plus – Eurotrip 13–19',    d:'Parigi, Berlino, Bruxelles'},
+      ]},
+      {lbl:'Junior Adventure', progs:[
+        {id:'ny-it',     e:'🗽',t:'Junior Adventure – New York 13–19',d:'Times Square, Central Park'},
+        {id:'miami-it',  e:'🏖',t:'Junior Adventure – Miami 13–19',  d:'Florida e Miami'},
+        {id:'jap-it',    e:'⛩', t:'Junior Adventure – Giappone 13–19',d:'Tokyo, Kyoto e Osaka'},
+      ]},
+      {lbl:"Anno all'Estero", progs:[
+        {id:'anno-usa',  e:'🏫',t:"Anno all'estero in USA",           d:'Liceo americano 12–18 anni'},
       ]},
     ],
   },
 };
 
-// ═══════════════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════════════
-let market   = 'com';
-let selected = new Set();
-let images   = [];
+// ══ STATE ══════════════════════
+let market    = 'com';
+let selected  = new Set();
+let selImgs   = [];     // {url, thumb, label}
+let libCat    = null;   // current lib category tab
 
-// ═══════════════════════════════════════════════════
-//  MARKET SWITCH
-// ═══════════════════════════════════════════════════
-function setMkt(mkt, btn) {
+// ══ MARKET ═════════════════════
+function setMarket(mkt, btn) {
   market = mkt;
   selected.clear();
-  document.querySelectorAll('.mkt-tab').forEach(t => t.classList.remove('active'));
+  selImgs = [];
+  libCat  = null;
+  document.querySelectorAll('.mkt-tab').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   const M = MKT[mkt];
-  document.getElementById('extra').placeholder = M.ph;
+  document.getElementById('extra').placeholder    = M.ph;
   document.getElementById('loader-txt').textContent = M.ltxt;
   document.getElementById('results').style.display   = 'none';
-  document.getElementById('err-box').style.display   = 'none';
-  document.getElementById('gen-hint').style.display  = '';
-  renderProgs();
-  updateTag();
+  document.getElementById('error-box').style.display = 'none';
+  renderProgs(); updateCount();
+  renderLibTabs(); renderLib();
+  renderSelSummary();
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER PROGRAMMES
-// ═══════════════════════════════════════════════════
+// ══ PROGRAMMES ═════════════════
 function renderProgs() {
   const M = MKT[market];
-  document.getElementById('prog-container').innerHTML = M.groups.map(g => `
+  document.getElementById('prog-container').innerHTML = M.groups.map(g=>`
     <div class="prog-group">
-      <div class="pg-label">${g.lbl}</div>
+      <div class="prog-group-lbl">${g.lbl}</div>
       <div class="prog-grid">
-        ${g.progs.map(p => `
-          <button type="button" class="pb${selected.has(p.id) ? ' on' : ''}" onclick="toggleP('${p.id}')">
-            <span class="pe">${p.e}</span>
-            <div><div class="pt">${p.t}</div><div class="pd">${p.d}</div></div>
+        ${g.progs.map(p=>`
+          <button type="button" class="prog-btn${selected.has(p.id)?' on':''}" onclick="toggleP('${p.id}')">
+            <span class="prog-e">${p.e}</span>
+            <div><div class="prog-t">${p.t}</div><div class="prog-d">${p.d}</div></div>
           </button>`).join('')}
       </div>
     </div>`).join('');
 }
-
 function toggleP(id) {
   selected.has(id) ? selected.delete(id) : selected.add(id);
-  renderProgs();
-  updateTag();
-  if (selected.size > 0) document.getElementById('gen-hint').style.display = 'none';
+  renderProgs(); updateCount();
+  if (selected.size>0) document.getElementById('prog-hint').style.display='none';
+}
+function updateCount() {
+  const el=document.getElementById('sel-count');
+  if (!selected.size){el.textContent='';return;}
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  el.textContent='✓ Selected: '+[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
 }
 
-function updateTag() {
-  const el = document.getElementById('sel-tag');
-  if (!selected.size) { el.textContent = ''; return; }
-  const all = MKT[market].groups.flatMap(g => g.progs);
-  const names = [...selected].map(id => all.find(p => p.id === id)?.t || id);
-  el.textContent = '✓ Selected: ' + names.join(' + ');
+// ══ IMAGE LIBRARY ══════════════
+function renderLibTabs() {
+  const cats = Object.keys(IMG_LIB[market]||{});
+  if (!libCat || !cats.includes(libCat)) libCat = cats[0] || null;
+  document.getElementById('lib-tabs').innerHTML = cats.map(c=>`
+    <button type="button" class="lib-tab${libCat===c?' active':''}" onclick="switchLibCat('${c}')">${c}</button>
+  `).join('');
 }
-
-// ═══════════════════════════════════════════════════
-//  IMAGE SLOTS
-// ═══════════════════════════════════════════════════
-function renderSlots() {
-  const extra = Math.max(0, 4 - images.length);
-  const slots = [...images, ...Array(extra).fill(null)];
-  document.getElementById('img-grid').innerHTML = slots.map((img, i) => {
-    if (img) return `
-      <div class="img-slot has-img">
-        <img src="${img.thumb}" alt="" onerror="this.style.display='none'">
-        <button class="slot-del" onclick="event.stopPropagation();delImg(${i})">✕ remove</button>
-      </div>`;
-    return `
-      <div class="img-slot" onclick="document.getElementById('img-inp').focus()">
-        <div class="slot-icon">🖼</div>
-        <div class="slot-txt">Add image</div>
-      </div>`;
+function switchLibCat(cat) {
+  libCat = cat;
+  renderLibTabs();
+  renderLib();
+}
+function renderLib() {
+  const imgs = (IMG_LIB[market]||{})[libCat] || [];
+  const already = new Set(selImgs.map(i=>i.url));
+  const orderMap = {};
+  selImgs.forEach((si,i)=>{ orderMap[si.url]=i+1; });
+  document.getElementById('lib-grid').innerHTML = imgs.map((img,i)=>{
+    const isSel = already.has(img.url);
+    const num   = orderMap[img.url]||'';
+    return `<div class="lib-img${isSel?' sel':''}" onclick="toggleLibImg('${img.url}','${img.url}','${esc(img.lbl)}')">
+      <img src="${img.url}" alt="${esc(img.lbl)}" loading="lazy"
+        onerror="this.parentElement.style.background='#EEE';this.style.display='none'">
+      <div class="sel-badge">${num}</div>
+      <div class="img-num">${esc(img.lbl)}</div>
+    </div>`;
   }).join('');
 }
-
-function addImg() {
-  const raw = document.getElementById('img-inp').value.trim();
-  if (!raw) return;
-  const yt = raw.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  const thumb = yt ? 'https://img.youtube.com/vi/' + yt[1] + '/hqdefault.jpg' : raw;
-  images.push({ url: raw, thumb, label: raw.split('/').pop().split('?')[0] || 'image' });
-  document.getElementById('img-inp').value = '';
-  renderSlots();
+function toggleLibImg(url, thumb, label) {
+  const idx = selImgs.findIndex(i=>i.url===url);
+  if (idx>=0) selImgs.splice(idx,1);
+  else selImgs.push({url, thumb, label});
+  renderLib(); renderSelSummary();
+}
+function addCustomImg() {
+  const url = document.getElementById('custom-url').value.trim();
+  if (!url) return;
+  const yt  = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  const thumb = yt ? 'https://img.youtube.com/vi/'+yt[1]+'/hqdefault.jpg' : url;
+  const label = url.split('/').pop().split('?')[0]||'image';
+  selImgs.push({url, thumb, label});
+  document.getElementById('custom-url').value='';
+  renderLib(); renderSelSummary();
+}
+function removeSelImg(idx) {
+  selImgs.splice(idx,1);
+  renderLib(); renderSelSummary();
+}
+function renderSelSummary() {
+  const box = document.getElementById('sel-summary');
+  const row = document.getElementById('sel-imgs-row');
+  if (!selImgs.length) { box.classList.remove('show'); return; }
+  box.classList.add('show');
+  row.innerHTML = selImgs.map((img,i)=>`
+    <div class="sel-img-thumb">
+      <img src="${img.thumb}" alt="${esc(img.label)}"
+        onerror="this.style.display='none'">
+      <button class="rm" onclick="removeSelImg(${i})">✕</button>
+    </div>`).join('');
 }
 
-function delImg(i) { images.splice(i, 1); renderSlots(); }
-
-// ═══════════════════════════════════════════════════
-//  GENERATE
-// ═══════════════════════════════════════════════════
+// ══ GENERATE ═══════════════════
 async function generate() {
-  if (!selected.size) { document.getElementById('gen-hint').style.display = ''; return; }
+  if (!selected.size) { document.getElementById('prog-hint').style.display=''; return; }
   const M   = MKT[market];
-  const all = M.groups.flatMap(g => g.progs);
-  const progs = [...selected].map(id => {
-    const p = all.find(x => x.id === id);
-    return p ? p.t + ' – ' + p.d : id;
-  });
+  const all = M.groups.flatMap(g=>g.progs);
+  const progs = [...selected].map(id=>{ const p=all.find(x=>x.id===id); return p?p.t+' – '+p.d:id; });
 
-  document.getElementById('loader').style.display   = 'block';
-  document.getElementById('err-box').style.display  = 'none';
-  document.getElementById('results').style.display  = 'none';
+  document.getElementById('loader').style.display    = 'block';
+  document.getElementById('error-box').style.display = 'none';
+  document.getElementById('results').style.display   = 'none';
   document.getElementById('gen-btn').disabled = true;
 
   try {
     const res = await fetch('/api/proxy', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        action:      'generate',
-        market,
-        lang:        M.lang,
-        brand:       M.brand,
-        programmes:  progs,
-        extra:       document.getElementById('extra').value.trim(),
-        imageCount:  images.length,
+        action:'generate', market, lang:M.lang, brand:M.brand,
+        programmes:progs, extra:document.getElementById('extra').value,
+        imageCount:selImgs.length,
       })
     });
     const raw = await res.text();
     let data;
-    try { data = JSON.parse(raw); }
-    catch { showErr('Server error: ' + raw.slice(0, 300)); return; }
-    if (!data.ok) throw new Error(data.error || 'Unknown error');
+    try { data=JSON.parse(raw); } catch { showErr('Server error: '+raw.slice(0,300)); return; }
+    if (!data.ok) throw new Error(data.error||'Unknown error');
     renderResults(data.campaign, progs);
-  } catch (e) { showErr('Error: ' + e.message); }
+  } catch(e) { showErr('Error: '+e.message); }
 
-  document.getElementById('loader').style.display = 'none';
-  document.getElementById('gen-btn').disabled = false;
+  document.getElementById('loader').style.display='none';
+  document.getElementById('gen-btn').disabled=false;
 }
 
-// ═══════════════════════════════════════════════════
-//  RENDER RESULTS
-// ═══════════════════════════════════════════════════
-function field(id, val, rows) {
-  if (rows === 1) return `<input type="text" class="ef" id="${id}" value="${xe(val)}">`;
-  return `<textarea class="ef" id="${id}" rows="${rows}">${xe(val)}</textarea>`;
+// ══ RENDER RESULTS ═════════════
+function fa(id,val,rows){
+  if(rows===1) return '<input type="text" class="ef" id="'+id+'" value="'+esc(val)+'">';
+  return '<textarea class="ef" id="'+id+'" rows="'+rows+'">'+esc(val)+'</textarea>';
 }
 
 function renderResults(c, progs) {
-  const names = [...selected].map(id => {
-    const all = MKT[market].groups.flatMap(g => g.progs);
-    return all.find(p => p.id === id)?.t || id;
-  });
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const names=[...selected].map(id=>all.find(p=>p.id===id)?.t||id);
 
-  let h = `
-    <div class="res-hdr">
-      <div>
-        <div class="res-lbl">✦ Campaign Ready</div>
-        <div class="res-meta">${xe(names.join(' + '))} · ${xe(market.toUpperCase())}</div>
-      </div>
-      <div class="res-actions">
-        <button class="btn-ghost" onclick="showPrev()">👁 Preview</button>
-        <button class="btn-ghost" onclick="cpAll()">⬇ Copy all text</button>
-      </div>
-    </div>`;
+  let h=`<div class="res-hdr">
+    <div><div class="lbl">✦ Campaign Ready</div><div class="meta">${esc(names.join(' + '))}</div></div>
+    <div class="res-btns">
+      <button class="btn-sec" style="color:#fff;border-color:rgba(255,255,255,.3)" onclick="showPreview()">👁 Preview</button>
+      <button class="btn-sec" style="color:#fff;border-color:rgba(255,255,255,.3)" onclick="cpAll()">⬇ Copy all</button>
+    </div></div>`;
 
-  // Subject
-  h += `<div class="rb">
-    <div class="rb-head"><span class="rb-lbl">Subject Line</span><button class="btn-cp" onclick="cp('r-sub',this)">copy</button></div>
-    <div class="ef-row">${field('r-sub', c.subject, 1)}</div>
-    <div class="ef-lbl"><span>With emoji variant</span><button class="btn-cp" onclick="cp('r-sub-e',this)">copy</button></div>
-    ${field('r-sub-e', c.subject_emoji, 1)}
-  </div>`;
+  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">Subject Line</span><button class="btn-cp" onclick="cp('e-sub',this)">copy</button></div>
+    <div class="ef-wrap">${fa('e-sub',c.subject,1)}</div>
+    <div class="ef-lbl"><span>With emoji</span><button class="btn-cp" onclick="cp('e-sub-em',this)">copy</button></div>
+    ${fa('e-sub-em',c.subject_emoji,1)}</div>`;
 
-  // Preheader
-  h += `<div class="rb">
-    <div class="rb-head"><span class="rb-lbl">Preheader</span><button class="btn-cp" onclick="cp('r-pre',this)">copy</button></div>
-    ${field('r-pre', c.preheader, 1)}
-  </div>`;
+  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">Preheader</span><button class="btn-cp" onclick="cp('e-pre',this)">copy</button></div>
+    ${fa('e-pre',c.preheader,1)}</div>`;
 
-  // Headline + intro
-  h += `<div class="rb blue">
-    <div class="rb-head"><span class="rb-lbl">Headline + Opening</span></div>
-    <div class="ef-lbl"><span>Headline (large bold)</span><button class="btn-cp" onclick="cp('r-h1',this)">copy</button></div>
-    <div class="ef-row">${field('r-h1', c.headline, 1)}</div>
-    <div class="ef-lbl"><span>Opening paragraph</span><button class="btn-cp" onclick="cp('r-intro',this)">copy</button></div>
-    ${field('r-intro', c.intro, 3)}
-  </div>`;
+  h+=`<div class="rb bl"><div class="rb-head"><span class="rb-lbl">Headline + Opening</span></div>
+    <div class="ef-lbl"><span>Headline</span><button class="btn-cp" onclick="cp('e-h1',this)">copy</button></div>
+    <div class="ef-wrap">${fa('e-h1',c.headline,1)}</div>
+    <div class="ef-lbl"><span>Opening paragraph</span><button class="btn-cp" onclick="cp('e-intro',this)">copy</button></div>
+    ${fa('e-intro',c.intro,3)}</div>`;
 
-  // Body
-  h += `<div class="rb">
-    <div class="rb-head"><span class="rb-lbl">Body Sections</span><span style="font-size:10px;color:var(--sub)">Images appear between sections</span></div>
-    <div class="ef-lbl"><span>Section 1</span><button class="btn-cp" onclick="cp('r-p1',this)">copy</button></div>
-    <div class="ef-row">${field('r-p1', c.body_p1, 3)}</div>
-    <div class="ef-lbl"><span>Section 2</span><button class="btn-cp" onclick="cp('r-p2',this)">copy</button></div>
-    <div class="ef-row">${field('r-p2', c.body_p2, 3)}</div>
-    <div class="ef-lbl"><span>Section 3</span><button class="btn-cp" onclick="cp('r-p3',this)">copy</button></div>
-    ${field('r-p3', c.body_p3, 3)}
-  </div>`;
+  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">Body</span></div>
+    <div class="ef-lbl"><span>Section 1</span><button class="btn-cp" onclick="cp('e-p1',this)">copy</button></div>
+    <div class="ef-wrap">${fa('e-p1',c.body_p1,3)}</div>
+    <div class="ef-lbl"><span>Section 2</span><button class="btn-cp" onclick="cp('e-p2',this)">copy</button></div>
+    <div class="ef-wrap">${fa('e-p2',c.body_p2,3)}</div>
+    <div class="ef-lbl"><span>Section 3</span><button class="btn-cp" onclick="cp('e-p3',this)">copy</button></div>
+    ${fa('e-p3',c.body_p3,3)}</div>`;
 
-  // CTAs
-  h += `<div class="rb green">
-    <div class="rb-head"><span class="rb-lbl">CTA Buttons</span></div>
-    <div class="ef-lbl"><span>Primary CTA — yellow button (#FFD249)</span><button class="btn-cp" onclick="cp('r-cta1',this)">copy</button></div>
-    <div class="ef-row">${field('r-cta1', c.cta, 1)}</div>
-    <div class="ef-lbl"><span>Secondary CTA — blue button (#4CAAD8)</span><button class="btn-cp" onclick="cp('r-cta2',this)">copy</button></div>
-    <div class="ef-row">${field('r-cta2', c.cta2 || c.cta, 1)}</div>
-    <div class="ef-lbl"><span>PS / closing line</span><button class="btn-cp" onclick="cp('r-ps',this)">copy</button></div>
-    ${field('r-ps', c.ps || '', 1)}
-  </div>`;
+  h+=`<div class="rb gr"><div class="rb-head"><span class="rb-lbl">CTA Buttons + PS</span></div>
+    <div class="ef-lbl"><span>Primary CTA (yellow)</span><button class="btn-cp" onclick="cp('e-cta1',this)">copy</button></div>
+    <div class="ef-wrap">${fa('e-cta1',c.cta,1)}</div>
+    <div class="ef-lbl"><span>Secondary CTA (blue)</span><button class="btn-cp" onclick="cp('e-cta2',this)">copy</button></div>
+    <div class="ef-wrap">${fa('e-cta2',c.cta2||c.cta,1)}</div>
+    <div class="ef-lbl"><span>PS line</span><button class="btn-cp" onclick="cp('e-ps',this)">copy</button></div>
+    ${fa('e-ps',c.ps||'',1)}</div>`;
 
-  // UTM
-  h += `<div class="rb">
-    <div class="rb-head"><span class="rb-lbl">URL + UTM Builder</span></div>
+  h+=`<div class="rb"><div class="rb-head"><span class="rb-lbl">URL + UTM Builder</span></div>
     <div class="utm-box">
       <div class="ef-lbl">Destination URL</div>
-      <div class="ef-row"><input type="text" class="ef" id="utm-base" placeholder="https://angloville.com/apply/" oninput="utmPrev()"></div>
+      <div class="ef-wrap"><input type="text" class="ef" id="utm-base" placeholder="https://angloville.com/apply/" oninput="utmPrev()"></div>
       <div class="utm-grid">
         <div><div class="ef-lbl">utm_source</div><input type="text" class="ef" id="utm-src" value="mailchimp" oninput="utmPrev()"></div>
         <div><div class="ef-lbl">utm_medium</div><input type="text" class="ef" id="utm-med" value="email" oninput="utmPrev()"></div>
-        <div><div class="ef-lbl">utm_campaign</div><input type="text" class="ef" id="utm-cmp" value="${xe(market + '-campaign')}" oninput="utmPrev()"></div>
+        <div><div class="ef-lbl">utm_campaign</div><input type="text" class="ef" id="utm-cmp" value="${esc(market+'-campaign')}" oninput="utmPrev()"></div>
         <div><div class="ef-lbl">utm_content</div><input type="text" class="ef" id="utm-cnt" placeholder="cta_button" oninput="utmPrev()"></div>
       </div>
-      <div class="ef-lbl"><span>Full URL with UTM</span><button class="btn-cp" onclick="cp2(buildUrl(),this)">copy URL</button></div>
-      <div class="utm-prev" id="utm-prev">← fill in destination URL above</div>
-    </div>
-  </div>`;
+      <div class="ef-lbl"><span>Full URL</span><button class="btn-cp" onclick="cp2(buildUrl(),this)">copy</button></div>
+      <div class="utm-preview" id="utm-prev">← fill in URL above</div>
+    </div></div>`;
 
-  // A/B
-  h += `<div class="rb purple">
-    <div class="rb-head"><span class="rb-lbl">A/B Subject Line Variants</span></div>
-    <div class="ef-row">${field('r-ab1', c.ab1, 1)}</div>
-    ${field('r-ab2', c.ab2, 1)}
-  </div>`;
+  h+=`<div class="rb pu"><div class="rb-head"><span class="rb-lbl">A/B Subject Variants</span></div>
+    <div class="ef-wrap">${fa('e-ab1',c.ab1,1)}</div>
+    ${fa('e-ab2',c.ab2,1)}</div>`;
 
-  if (c.send_time) h += `<div style="background:#F0FDF8;border:1px solid #C0E8D4;border-radius:10px;padding:11px 14px;font-size:12px;color:#2D7A5A;margin-bottom:9px">⏱ ${xe(c.send_time)}</div>`;
+  if(c.send_time) h+=`<div style="background:#F0FDF8;border:1px solid #C0E8D4;border-radius:8px;padding:10px 14px;font-size:12px;color:#2D7A5A;margin-bottom:8px">⏱ ${esc(c.send_time)}</div>`;
 
-  // Mailchimp
-  h += `<div class="mc-box">
-    <h3>📧 Ready for Mailchimp</h3>
-    <p>Click Preview to see the full formatted email with your images, then create a Mailchimp draft directly.</p>
+  h+=`<div class="mc-box"><h3>📧 Send to Mailchimp</h3>
+    <p>All edits, images with rounded corners and Angloville layout will be included automatically.</p>
     <div class="mc-btns">
-      <button class="btn-sec" onclick="showPrev()">👁 Preview email</button>
-      <button class="btn-mc" id="mc-btn" onclick="sendMC()">📧 Create Mailchimp draft</button>
-    </div>
-    <div id="mc-status"></div>
-  </div>`;
+      <button class="btn-sec" onclick="showPreview()">👁 Preview email</button>
+      <button class="btn-gen" id="mc-btn" onclick="sendMC()" style="padding:9px 20px;font-size:13px">📧 Create draft</button>
+    </div><div id="mc-status"></div></div>`;
 
-  h += `<div class="reset-wrap"><button class="btn-sec" onclick="resetAll()">← Start new campaign</button></div>`;
+  h+=`<div style="text-align:center;margin-top:20px"><button class="btn-sec" onclick="resetAll()">← New campaign</button></div>`;
 
-  const el = document.getElementById('results');
-  el.innerHTML = h;
-  el.style.display = 'block';
-  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const el=document.getElementById('results');
+  el.innerHTML=h; el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
-// ═══════════════════════════════════════════════════
-//  UTM
-// ═══════════════════════════════════════════════════
-function buildUrl() {
-  const base = (document.getElementById('utm-base')?.value || '').trim();
-  if (!base) return '';
-  const pairs = [
-    ['utm-src', 'utm_source'], ['utm-med', 'utm_medium'],
-    ['utm-cmp', 'utm_campaign'], ['utm-cnt', 'utm_content']
-  ].filter(([id]) => (document.getElementById(id)?.value || '').trim())
-   .map(([id, k]) => k + '=' + encodeURIComponent(document.getElementById(id).value.trim()));
-  return base + (pairs.length ? (base.includes('?') ? '&' : '?') + pairs.join('&') : '');
+// ══ UTM ════════════════════════
+function buildUrl(){
+  const base=(document.getElementById('utm-base')?.value||'').trim();
+  if(!base) return '';
+  const pts=[];
+  [['utm-src','utm_source'],['utm-med','utm_medium'],['utm-cmp','utm_campaign'],['utm-cnt','utm_content']].forEach(([id,k])=>{
+    const v=(document.getElementById(id)?.value||'').trim();
+    if(v) pts.push(k+'='+encodeURIComponent(v));
+  });
+  return base+(pts.length?(base.includes('?')?'&':'?')+pts.join('&'):'');
 }
-function utmPrev() {
-  const el = document.getElementById('utm-prev');
-  if (el) el.textContent = buildUrl() || '← fill in destination URL above';
-}
+function utmPrev(){const el=document.getElementById('utm-prev');if(el)el.textContent=buildUrl()||'← fill in URL above';}
 
-// ═══════════════════════════════════════════════════
-//  EMAIL HTML BUILDER — Angloville Mailchimp style
-// ═══════════════════════════════════════════════════
-function buildEmailHTML(c, ctaUrl, imgs) {
-  const e = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const nl2br = s => e(s).replace(/\n/g, '<br>');
-
-  const imgBlock = img => `
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-      <tbody><tr><td style="padding:9px 9px 0;">
-        <img src="${img.thumb || img.url}" alt="" width="100%"
-          style="display:block;width:100%;height:auto;border-radius:16px;max-height:320px;object-fit:cover;border:0;-ms-interpolation-mode:bicubic;">
-      </td></tr></tbody>
-    </table>`;
-
-  const divider = `
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;table-layout:fixed!important;">
-      <tbody><tr><td style="min-width:100%;padding:18px;">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-top:2px solid #EAEAEA;border-collapse:collapse;">
-          <tbody><tr><td></td></tr></tbody></table>
-      </td></tr></tbody>
-    </table>`;
-
-  const txtBlock = (html, size) => `
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-      <tbody><tr><td style="padding-top:0;padding-right:18px;padding-bottom:9px;padding-left:18px;
-        font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:${size||15}px;line-height:150%;color:#202020;">
-        ${html}
-      </td></tr></tbody>
-    </table>`;
-
-  const ctaBtn = (label, href, bg, col) => `
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-      <tbody><tr><td style="padding-top:0;padding-right:18px;padding-bottom:18px;padding-left:18px;" align="center">
-        <table border="0" cellpadding="0" cellspacing="0"
-          style="border-collapse:separate!important;border-radius:4px;background-color:${bg};">
-          <tbody><tr><td align="center" valign="middle"
-            style="font-family:Arial,sans-serif;font-size:16px;padding:18px;">
-            <a href="${href}" target="_blank"
-              style="font-weight:bold;letter-spacing:normal;line-height:100%;text-align:center;text-decoration:none;color:${col};display:block;">
-              ${e(label)}
-            </a>
-          </td></tr></tbody>
-        </table>
-      </td></tr></tbody>
-    </table>`;
-
-  let body = '';
-
-  // Top image (hero)
-  if (imgs[0]) body += imgBlock(imgs[0]);
-
-  // Hi + headline
-  body += txtBlock(`
-    <p style="margin:10px 0;padding:0;font-size:15px;">
-      Hi <strong>&lt;&lt;First Name&gt;&gt;</strong>,
-    </p>
-    <p style="margin:10px 0;padding:0;font-size:22px;font-weight:bold;line-height:130%;">
-      ${e(c.headline)}
-    </p>
-    <p style="margin:10px 0;padding:0;">${nl2br(c.intro)}</p>
-  `);
-
-  // Primary CTA — yellow
-  body += ctaBtn(c.cta1 || c.cta, ctaUrl, '#FFD249', '#222222');
-  body += divider;
-
-  // Section 1
-  body += txtBlock(`<p style="margin:10px 0;padding:0;">${nl2br(c.body_p1)}</p>`);
-
-  // Image 2
-  if (imgs[1]) { body += imgBlock(imgs[1]); body += divider; }
-
-  // Section 2
-  body += txtBlock(`<p style="margin:10px 0;padding:0;">${nl2br(c.body_p2)}</p>`);
-
-  // Image 3
-  if (imgs[2]) { body += imgBlock(imgs[2]); body += divider; }
-
-  // Section 3
-  body += txtBlock(`<p style="margin:10px 0;padding:0;">${nl2br(c.body_p3)}</p>`);
-
-  if (c.ps) body += txtBlock(`<p style="margin:10px 0;padding:0;color:#555;font-style:italic;">${nl2br(c.ps)}</p>`);
-
-  body += divider;
-
-  // Secondary CTA — blue
-  body += ctaBtn(c.cta2 || c.cta, ctaUrl, '#4CAAD8', '#FFFFFF');
-
-  // Image 4
-  if (imgs[3]) { body += divider; body += imgBlock(imgs[3]); }
-
-  // Sign-off
-  body += txtBlock(`<p style="margin:10px 0;padding:0;">_______________<br>The Angloville Team</p>`);
-
-  return `
-  <div style="background:#f0f0f0;padding:10px;border-radius:8px;">
-    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
-      style="max-width:600px;margin:0 auto;background:#ffffff;border-collapse:collapse;">
-      <tr><td valign="top" style="padding:9px;">${body}</td></tr>
-      <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#555;line-height:150%;border-top:1px solid #EAEAEA;">
-        Want to change how you receive these emails?
-        You can <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">update your preferences</a> or
-        <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">unsubscribe from this list</a>.<br><br>
-        Your personal data controller is Angloville International Ltd.
-        <a href="https://angloville.com/privacy-policy/" target="_blank" style="color:#555;text-decoration:underline;">Privacy Policy.</a>
-      </td></tr>
-    </table>
-  </div>`;
-}
-
-// ═══════════════════════════════════════════════════
-//  PREVIEW
-// ═══════════════════════════════════════════════════
-function showPrev() {
-  const c   = getCurrent();
-  const url = buildUrl() || 'https://angloville.com/apply/';
-  document.getElementById('preview-body').innerHTML = buildEmailHTML(c, url, images);
+// ══ PREVIEW ════════════════════
+function showPreview(){
+  const c=getCurrent(); const url=buildUrl()||'https://angloville.com/apply/';
+  document.getElementById('preview-content').innerHTML=buildEmailHTML(c,url,selImgs);
   document.getElementById('preview-modal').classList.add('open');
 }
-function closePrev() { document.getElementById('preview-modal').classList.remove('open'); }
+function closePreview(){document.getElementById('preview-modal').classList.remove('open');}
 
-// ═══════════════════════════════════════════════════
-//  MAILCHIMP DRAFT
-// ═══════════════════════════════════════════════════
-async function sendMC() {
-  const btn = document.getElementById('mc-btn');
-  btn.disabled = true; btn.textContent = 'Creating draft…';
-  document.getElementById('mc-status').innerHTML = '';
-  const all  = MKT[market].groups.flatMap(g => g.progs);
-  const name = [...selected].map(id => all.find(p => p.id === id)?.t || id).join(' + ');
-  const c    = getCurrent();
-  const url  = buildUrl() || 'https://angloville.com/apply/';
+function buildEmailHTML(c, ctaUrl, imgs) {
+  const e=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const imgBlock=img=>`
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
+  <tr><td style="padding:0 9px 9px;">
+    <img src="${img.thumb||img.url}" alt="" width="100%"
+      style="display:block;width:100%;height:auto;border-radius:14px;max-height:300px;object-fit:cover;border:0;">
+  </td></tr></table>`;
+  const div=`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;table-layout:fixed!important;"><tr><td style="padding:18px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:2px solid #EAEAEA;border-collapse:collapse;"><tr><td></td></tr></table></td></tr></table>`;
+  const txt=html=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;"><tr><td style="padding:0 18px 9px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;line-height:150%;color:#202020;">${html}</td></tr></table>`;
+  const btn=(lbl,href,bg,col)=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;"><tr><td style="padding:0 18px 18px;" align="center"><table border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate!important;border-radius:6px;background-color:${bg};"><tr><td align="center" style="font-family:Arial,sans-serif;font-size:16px;padding:15px 28px;"><a href="${href}" target="_blank" style="font-weight:bold;text-decoration:none;color:${col};display:block;">${e(lbl)}</a></td></tr></table></td></tr></table>`;
+
+  let b='';
+  if(imgs[0]) b+=imgBlock(imgs[0]);
+  b+=txt(`<p style="margin:10px 0;font-size:15px;">Hi <strong>&lt;&lt;First Name&gt;&gt;</strong>,</p>
+    <p style="margin:10px 0;font-size:21px;font-weight:bold;line-height:130%;">${e(c.headline)}</p>
+    <p style="margin:10px 0;">${e(c.intro)}</p>`);
+  b+=btn(c.cta1||c.cta, ctaUrl,'#FFD249','#222222');
+  b+=div;
+  b+=txt(`<p style="margin:10px 0;">${e(c.body_p1)}</p>`);
+  if(imgs[1]){b+=imgBlock(imgs[1]);b+=div;}
+  b+=txt(`<p style="margin:10px 0;">${e(c.body_p2)}</p>`);
+  if(imgs[2]){b+=imgBlock(imgs[2]);b+=div;}
+  b+=txt(`<p style="margin:10px 0;">${e(c.body_p3)}</p>`);
+  if(c.ps) b+=txt(`<p style="margin:10px 0;color:#555;font-style:italic;">${e(c.ps)}</p>`);
+  b+=div;
+  b+=btn(c.cta2||c.cta, ctaUrl,'#4CAAD8','#FFFFFF');
+  if(imgs[3]){b+=div;b+=imgBlock(imgs[3]);}
+  b+=txt(`<p style="margin:10px 0;">_______________<br>The Angloville Team</p>`);
+
+  return `<div style="background:#f0f0f0;padding:10px;border-radius:8px;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
+    style="max-width:580px;margin:0 auto;background:#ffffff;border-collapse:collapse;">
+    <tr><td style="padding:9px;">${b}</td></tr>
+    <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#666;line-height:150%;border-top:1px solid #EAEAEA;">
+      <a href="#" style="color:#666;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp;
+      <a href="*|UNSUB|*" style="color:#666;text-decoration:underline;">Unsubscribe</a>
+    </td></tr></table></div>`;
+}
+
+// ══ MAILCHIMP ══════════════════
+async function sendMC(){
+  const btn=document.getElementById('mc-btn');
+  btn.disabled=true; btn.textContent='Creating draft…';
+  document.getElementById('mc-status').innerHTML='';
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const name=[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
+  const c=getCurrent(); const url=buildUrl()||'https://angloville.com/apply/';
   try {
-    const res = await fetch('/api/proxy', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action: 'mailchimp_draft', campaign: c, cta_url: url, images, program_name: name })
+    const res=await fetch('/api/proxy',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'mailchimp_draft',campaign:c,cta_url:url,images:selImgs,program_name:name})
     });
-    const data = await res.json();
-    if (!data.ok) throw new Error(data.error || 'Mailchimp error');
-    document.getElementById('mc-status').innerHTML = `
-      <div style="margin-top:10px;background:#F0FDF8;border:1px solid #C0E8D4;border-radius:9px;padding:12px 15px;font-size:12px;color:#2D7A5A;">
+    const data=await res.json();
+    if(!data.ok) throw new Error(data.error||'Mailchimp error');
+    document.getElementById('mc-status').innerHTML=`
+      <div style="margin-top:10px;background:#F0FDF8;border:1px solid #C0E8D4;border-radius:8px;padding:11px 14px;font-size:12px;color:#2D7A5A;">
         ✅ <strong>Draft created!</strong>
-        <a href="${data.draft_url}" target="_blank" style="color:var(--b);font-weight:700;margin-left:8px;">→ Open in Mailchimp</a>
+        <a href="${data.draft_url}" target="_blank" style="color:#428BCA;font-weight:700;">→ Open in Mailchimp</a>
       </div>`;
-    btn.textContent = '✓ Draft created!';
-  } catch (e) {
-    document.getElementById('mc-status').innerHTML = `<div class="err-box" style="display:block;margin-top:8px">Error: ${e.message}</div>`;
-    btn.disabled = false; btn.textContent = '📧 Create Mailchimp draft';
+    btn.textContent='✓ Done!';
+  } catch(e){
+    document.getElementById('mc-status').innerHTML=`<div style="margin-top:8px" class="err">Error: ${e.message}</div>`;
+    btn.disabled=false; btn.textContent='📧 Create draft';
   }
 }
 
-// ═══════════════════════════════════════════════════
-//  HELPERS
-// ═══════════════════════════════════════════════════
-function getCurrent() {
-  const g = id => (document.getElementById(id)?.value || '').trim();
-  return {
-    subject:      g('r-sub'),
-    subject_emoji:g('r-sub-e'),
-    preheader:    g('r-pre'),
-    headline:     g('r-h1'),
-    intro:        g('r-intro'),
-    body_p1:      g('r-p1'),
-    body_p2:      g('r-p2'),
-    body_p3:      g('r-p3'),
-    cta:          g('r-cta1'),
-    cta2:         g('r-cta2'),
-    ps:           g('r-ps'),
-    ab1:          g('r-ab1'),
-    ab2:          g('r-ab2'),
-  };
+// ══ HELPERS ════════════════════
+function getCurrent(){
+  const g=id=>(document.getElementById(id)?.value||'').trim();
+  return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),headline:g('e-h1'),
+    intro:g('e-intro'),body_p1:g('e-p1'),body_p2:g('e-p2'),body_p3:g('e-p3'),
+    cta:g('e-cta1'),cta2:g('e-cta2'),ps:g('e-ps'),ab1:g('e-ab1'),ab2:g('e-ab2')};
 }
-function cpAll() {
-  const c = getCurrent();
-  const lines = [
-    'SUBJECT: ' + c.subject,
-    'SUBJECT WITH EMOJI: ' + c.subject_emoji,
-    'PREHEADER: ' + c.preheader, '',
-    c.headline, '', c.intro, '',
-    c.body_p1, '', c.body_p2, '', c.body_p3,
-    '', '[ ' + c.cta + ' ]',
-    buildUrl() ? 'URL: ' + buildUrl() : '',
-    c.ps ? 'PS: ' + c.ps : '',
-  ].filter(l => l !== undefined).join('\n');
-  navigator.clipboard.writeText(lines);
+function cpAll(){
+  const c=getCurrent();
+  navigator.clipboard.writeText(['SUBJECT: '+c.subject,'WITH EMOJI: '+c.subject_emoji,
+    'PREHEADER: '+c.preheader,'',c.headline,'',c.intro,'',c.body_p1,'',c.body_p2,'',c.body_p3,'',
+    '[ '+c.cta+' ]',buildUrl()?'URL: '+buildUrl():'',c.ps?'PS: '+c.ps:''
+  ].filter(Boolean).join('\n'));
 }
-function cp(id, btn)       { cp2((document.getElementById(id)?.value || ''), btn); }
-function cp2(text, btn)    {
+function cp(id,btn){cp2((document.getElementById(id)?.value||''),btn);}
+function cp2(text,btn){
   navigator.clipboard.writeText(text);
-  const o = btn.textContent; btn.textContent = '✓ ok'; btn.classList.add('ok');
-  setTimeout(() => { btn.textContent = o; btn.classList.remove('ok'); }, 1500);
+  const o=btn.textContent; btn.textContent='✓ ok'; btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1500);
 }
-function showErr(m) {
-  const el = document.getElementById('err-box');
-  el.textContent = m; el.style.display = 'block';
+function showErr(m){const el=document.getElementById('error-box');el.textContent=m;el.style.display='block';}
+function resetAll(){
+  selected.clear(); selImgs=[];
+  document.getElementById('extra').value='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('error-box').style.display='none';
+  document.getElementById('prog-hint').style.display='';
+  renderProgs(); updateCount(); renderLib(); renderSelSummary();
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-function resetAll() {
-  selected.clear();
-  images = [];
-  document.getElementById('extra').value = '';
-  document.getElementById('results').style.display  = 'none';
-  document.getElementById('err-box').style.display  = 'none';
-  document.getElementById('gen-hint').style.display = '';
-  renderProgs(); updateTag(); renderSlots();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function xe(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // INIT
 renderProgs();
-renderSlots();
+renderLibTabs();
+renderLib();
 </script>
 </body>
 </html>
