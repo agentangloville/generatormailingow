@@ -104,62 +104,192 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation.
     const dc = (mcKey.split('-')[1] || 'us1');
     const imgs = images || [];
 
+    const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+    const e = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const footerContent = footer_html || `<a href="*|UPDATE_PROFILE|*" style="color:#AAA;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp; <a href="*|UNSUB|*" style="color:#AAA;text-decoration:underline;">Unsubscribe</a>`;
+
+    const bullets = txt => txt.split(/\n/).map(l=>l.trim()).filter(Boolean)
+      .map(l=>`<p style="margin:0 0 10px;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;"><strong>${e(l)}</strong></p>`).join('');
+
+    const logoBar = `<tr><td style="background:#F4F4F4;padding:18px 32px;" align="center">
+  <img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png" alt="Angloville" height="36" style="display:inline-block;height:36px;width:auto;border:0;max-width:200px;">
+</td></tr>`;
+
+    const headline = `<tr><td style="padding:36px 32px 4px;">
+  <h1 style="margin:0;font-family:${FONT};font-size:36px;font-weight:900;line-height:115%;color:#111111;letter-spacing:-0.5px;">${e(campaign.headline)}</h1>
+</td></tr>`;
+
+    const heroImg = imgs[0] ? `<tr><td style="padding:28px 32px 0;"><img src="${imgs[0].thumb||imgs[0].url}" alt="" width="100%" style="display:block;width:100%;height:auto;border-radius:12px;max-height:320px;object-fit:cover;border:0;"></td></tr>` : '';
+
+    const intro = `<tr><td style="padding:24px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">
+  <p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p>
+  <p style="margin:0;">${e(campaign.intro)}</p>
+</td></tr>`;
+
+    const cta1 = `<tr><td style="padding:28px 32px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#FCD23A" style="border-radius:50px;padding:18px 32px;font-family:${FONT};font-size:17px;font-weight:bold;">
+      <a href="${cta_url}" target="_blank" style="color:#111111;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+    const p1 = `<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  <p style="margin:0;">${e(campaign.body_p1)}</p>
+</td></tr>`;
+
+    const img2 = imgs[1] ? `<tr><td style="padding:24px 32px 0;"><img src="${imgs[1].thumb||imgs[1].url}" alt="" width="100%" style="display:block;width:100%;height:auto;border-radius:12px;max-height:260px;object-fit:cover;border:0;"></td></tr>` : '';
+
+    const p2 = `<tr><td style="padding:20px 32px 0;font-family:${FONT};">${bullets(campaign.body_p2)}</td></tr>`;
+
+    const img3 = imgs[2] ? `<tr><td style="padding:24px 32px 0;"><img src="${imgs[2].thumb||imgs[2].url}" alt="" width="100%" style="display:block;width:100%;height:auto;border-radius:12px;max-height:260px;object-fit:cover;border:0;"></td></tr>` : '';
+
+    const p3 = `<tr><td style="padding:18px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  <p style="margin:0;">${e(campaign.body_p3)}</p>
+</td></tr>`;
+
+    const ps = campaign.ps ? `<tr><td style="padding:12px 32px 0;font-family:${FONT};font-size:14px;color:#888;font-style:italic;"><p style="margin:0;">${e(campaign.ps)}</p></td></tr>` : '';
+
+    const cta2 = `<tr><td style="padding:14px 32px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 32px;font-family:${FONT};font-size:16px;font-weight:bold;">
+      <a href="${cta_url}" target="_blank" style="color:#FFFFFF;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta2||campaign.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+    const img4 = imgs[3] ? `<tr><td style="padding:24px 32px 0;"><img src="${imgs[3].thumb||imgs[3].url}" alt="" width="100%" style="display:block;width:100%;height:auto;border-radius:12px;max-height:260px;object-fit:cover;border:0;"></td></tr>` : '';
+
+    const signoff = `<tr><td style="padding:24px 32px 36px;font-family:${FONT};font-size:15px;color:#888;"><p style="margin:0;">_______________<br>The Angloville Team</p></td></tr>`;
+
+    const rows = [logoBar,headline,heroImg,intro,cta1,p1,img2,p2,img3,p3,ps,cta2,img4,signoff].filter(Boolean).join('\n');
+
+    const fullHtml = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="background:#EBEBEB;margin:0;padding:0;">
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="620"
+  style="max-width:620px;background:#FFFFFF;border-collapse:collapse;margin:0 auto;">
+  ${rows}
+  <tr><td style="padding:16px 32px 24px;font-family:${FONT};font-size:12px;color:#AAAAAA;line-height:160%;border-top:1px solid #EEEEEE;">${footerContent}</td></tr>
+</table>
+</body></html>`;
+
+    try {
+      const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-opus-4-5',
+          max_tokens: 1200,
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      });
+
+      const aiData = await aiRes.json();
+      if (!aiRes.ok) throw new Error(aiData.error?.message || 'Anthropic API error');
+
+      let raw = (aiData.content?.[0]?.text || '').replace(/```json|```/g, '').trim();
+      const campaign = JSON.parse(raw);
+      return res.status(200).json({ ok: true, campaign });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
+  // ── MAILCHIMP DRAFT ───────────────────────────────────
+  if (body.action === 'mailchimp_draft') {
+    const mcKey  = process.env.MAILCHIMP_API_KEY;
+    const mcList = process.env.MAILCHIMP_LIST_ID;
+
+    if (!mcKey || !mcList) {
+      return res.status(200).json({
+        ok: true,
+        draft_url: 'https://mailchimp.com',
+        message: 'Mailchimp not configured',
+      });
+    }
+
+    const { campaign, cta_url, images, program_name, footer_html } = body;
+    const dc = (mcKey.split('-')[1] || 'us1');
+    const imgs = images || [];
+
+    const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
     const e = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const footerContent = footer_html || `<a href="*|UPDATE_PROFILE|*" style="color:#999;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp; <a href="*|UNSUB|*" style="color:#999;text-decoration:underline;">Unsubscribe</a>`;
 
-    const imgBlock = img => `
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-  <tr><td style="padding:0 9px 9px;">
+    const imgBlock = img => `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+  <tr><td style="padding:0 24px 24px;">
     <img src="${img.thumb||img.url}" alt="" width="100%"
-      style="display:block;width:100%;height:auto;border-radius:14px;max-height:300px;object-fit:cover;border:0;">
+      style="display:block;width:100%;height:auto;border-radius:16px;max-height:320px;object-fit:cover;border:0;">
   </td></tr>
 </table>`;
 
-    const divider = `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;table-layout:fixed!important;"><tr><td style="padding:18px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:2px solid #EAEAEA;border-collapse:collapse;"><tr><td></td></tr></table></td></tr></table>`;
-
-    const txtBlock = html => `
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-  <tr><td style="padding:0 18px 9px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;line-height:150%;color:#202020;">
-    ${html}
-  </td></tr>
+    const div = `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+  <tr><td style="padding:0 24px 24px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" style="border-top:1px solid #E8E8E8;border-collapse:collapse;"><tr><td></td></tr></table></td></tr>
 </table>`;
 
-    const btnBlock = (label, href, bg, col) => `
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-  <tr><td style="padding:0 18px 18px;" align="center">
-    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate!important;border-radius:6px;background-color:${bg};">
-      <tr><td align="center" style="font-family:Arial,sans-serif;font-size:16px;padding:15px 28px;">
-        <a href="${href}" target="_blank" style="font-weight:bold;text-decoration:none;color:${col};display:block;">${e(label)}</a>
+    const txt = (html, pad) => `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+  <tr><td style="padding:${pad||'0 24px 20px'};font-family:${FONT};font-size:16px;line-height:170%;color:#202020;">${html}</td></tr>
+</table>`;
+
+    const btn = (lbl, href, bg, col) => `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+  <tr><td style="padding:0 24px 28px;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:separate!important;">
+      <tr><td align="center" bgcolor="${bg}" style="border-radius:50px;font-family:${FONT};font-size:16px;font-weight:bold;padding:16px 32px;">
+        <a href="${href}" target="_blank" style="font-weight:bold;text-decoration:none;color:${col};display:block;font-family:${FONT};">${e(lbl)}</a>
       </td></tr>
     </table>
   </td></tr>
 </table>`;
 
-    const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;"><tr><td style="padding:18px 18px 9px;" align="center"><img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png" alt="Angloville" width="180" style="display:inline-block;height:auto;border:0;max-width:180px;"></td></tr></table>`;
-    const footerContent = footer_html || `<a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp; <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">Unsubscribe</a>`;
-    let emailBody = logoBlock;
-    if (imgs[0]) emailBody += imgBlock(imgs[0]);
-    emailBody += txtBlock(`
-      <p style="margin:10px 0;font-size:15px;">Hi *|FNAME|*,</p>
-      <p style="margin:10px 0;font-size:21px;font-weight:bold;line-height:130%;">${e(campaign.headline)}</p>
-      <p style="margin:10px 0;">${e(campaign.intro)}</p>`);
-    emailBody += btnBlock(campaign.cta, cta_url, '#FFD249', '#222222');
-    emailBody += divider;
-    emailBody += txtBlock(`<p style="margin:10px 0;">${e(campaign.body_p1)}</p>`);
-    if (imgs[1]) { emailBody += imgBlock(imgs[1]); emailBody += divider; }
-    emailBody += txtBlock(`<p style="margin:10px 0;">${e(campaign.body_p2)}</p>`);
-    if (imgs[2]) { emailBody += imgBlock(imgs[2]); emailBody += divider; }
-    emailBody += txtBlock(`<p style="margin:10px 0;">${e(campaign.body_p3)}</p>`);
-    if (campaign.ps) emailBody += txtBlock(`<p style="margin:10px 0;color:#555;font-style:italic;">${e(campaign.ps)}</p>`);
-    emailBody += divider;
-    emailBody += btnBlock(campaign.cta2 || campaign.cta, cta_url, '#4CAAD8', '#FFFFFF');
-    if (imgs[3]) { emailBody += divider; emailBody += imgBlock(imgs[3]); }
-    emailBody += txtBlock(`<p style="margin:10px 0;">_______________<br>The Angloville Team</p>`);
+    const highlight = html => `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+  <tr><td style="padding:0 24px 20px;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background:#F8F9FA;border-left:4px solid #FCD23A;border-collapse:collapse;border-radius:0 8px 8px 0;">
+      <tr><td style="padding:16px 20px;font-family:${FONT};font-size:15px;line-height:170%;color:#202020;">${html}</td></tr>
+    </table>
+  </td></tr>
+</table>`;
 
-    const fullHtml = `<!DOCTYPE html><html><head><meta charset="UTF-8"></head>
-<body style="background:#f0f0f0;margin:0;padding:0;">
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="max-width:600px;background:#ffffff;margin:0 auto;">
-  <tr><td style="padding:9px;">${emailBody}</td></tr>
-  <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#555;line-height:150%;border-top:1px solid #EAEAEA;">${footerContent}</td></tr>
+    const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;background:#FFFFFF;">
+  <tr><td style="padding:28px 24px 20px;" align="center">
+    <img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png"
+      alt="Angloville" width="160" style="display:inline-block;height:auto;border:0;max-width:160px;">
+  </td></tr>
+</table>`;
+
+    const headlineBlock = `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+  <tr><td style="padding:0 24px 20px;">
+    <h1 style="margin:0;font-family:${FONT};font-size:32px;font-weight:900;line-height:120%;color:#111111;letter-spacing:-0.5px;">${e(campaign.headline)}</h1>
+  </td></tr>
+</table>`;
+
+    let emailBody = logoBlock + headlineBlock;
+    if (imgs[0]) emailBody += imgBlock(imgs[0]);
+    emailBody += txt(`<p style="margin:0 0 14px;font-size:16px;color:#555;">Hi <strong>*|FNAME|*</strong>,</p><p style="margin:0;">${e(campaign.intro)}</p>`);
+    emailBody += btn(campaign.cta, cta_url, '#FCD23A', '#111111');
+    emailBody += div;
+    emailBody += txt(`<p style="margin:0;">${e(campaign.body_p1)}</p>`);
+    if (imgs[1]) emailBody += imgBlock(imgs[1]);
+    emailBody += highlight(campaign.body_p2.split(/\n|(?<=\.)\s+(?=[A-Z🎉✈️🎓💛✅🚀👉])/).filter(l=>l.trim()).map(l=>`<div style="margin-bottom:6px;">${e(l.trim())}</div>`).join(''));
+    if (imgs[2]) emailBody += imgBlock(imgs[2]);
+    emailBody += txt(`<p style="margin:0;">${e(campaign.body_p3)}</p>`);
+    if (campaign.ps) emailBody += txt(`<p style="margin:0;font-size:14px;color:#777;font-style:italic;">${e(campaign.ps)}</p>`, '0 24px 16px');
+    emailBody += div;
+    emailBody += btn(campaign.cta2 || campaign.cta, cta_url, '#3A9AD9', '#FFFFFF');
+    if (imgs[3]) emailBody += imgBlock(imgs[3]);
+    emailBody += txt(`<p style="margin:0;font-size:15px;color:#555;">_______________<br>The Angloville Team</p>`, '0 24px 28px');
+
+    const fullHtml = `<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="background:#F0F1F4;margin:0;padding:16px;">
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="600"
+  style="max-width:600px;background:#FFFFFF;border-collapse:collapse;margin:0 auto;border-radius:12px;overflow:hidden;">
+  <tr><td>${emailBody}</td></tr>
+  <tr><td style="padding:16px 24px 24px;font-family:${FONT};font-size:12px;color:#999;line-height:160%;border-top:1px solid #EEEEEE;">${footerContent}</td></tr>
 </table>
 </body></html>`;
 
