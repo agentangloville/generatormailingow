@@ -384,6 +384,35 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
   border-radius:8px;padding:11px 14px;font-size:12px;color:#2D7A5A;
 }
 
+/* ── RICH TEXT EDITOR ── */
+.rte-wrap{border:1.5px solid var(--brd);border-radius:8px;overflow:hidden;background:var(--w)}
+.rte-wrap:focus-within{border-color:var(--b)}
+.rte-toolbar{
+  display:flex;align-items:center;gap:2px;
+  padding:5px 7px;background:#FAFBFD;
+  border-bottom:1px solid var(--brd);flex-wrap:wrap;
+}
+.rte-btn{
+  width:26px;height:26px;border:none;background:transparent;
+  border-radius:5px;cursor:pointer;font-size:13px;
+  color:var(--txt);display:flex;align-items:center;justify-content:center;
+  transition:background .12s;flex-shrink:0;padding:0;
+}
+.rte-btn:hover{background:var(--brd)}
+.rte-btn.active-fmt{background:#E8F0FF;color:var(--b)}
+.rte-sep{width:1px;height:16px;background:var(--brd);margin:0 3px;flex-shrink:0}
+.rte-color-btn{
+  width:20px;height:20px;border-radius:4px;border:2px solid rgba(0,0,0,.12);
+  cursor:pointer;flex-shrink:0;
+}
+.rte-content{
+  padding:9px 12px;min-height:72px;
+  font-family:'DM Sans',sans-serif;font-size:13px;
+  color:var(--txt);line-height:1.6;outline:none;
+}
+.rte-content p{margin:0 0 6px}
+.rte-content p:last-child{margin-bottom:0}
+
 @media(max-width:580px){
   .topbar{padding:0 16px}
   .logo-badge{display:none}
@@ -955,6 +984,45 @@ async function generate(){
 }
 
 // ═══════════════════════════════════════════════════════════
+//  RICH TEXT EDITOR
+// ═══════════════════════════════════════════════════════════
+const RTE_COLORS = [
+  {c:'#111111',t:'Black'},{c:'#333333',t:'Dark'},{c:'#888888',t:'Gray'},
+  {c:'#E03E3E',t:'Red'},{c:'#FCD23A',t:'Yellow'},{c:'#3A9AD9',t:'Blue'},
+  {c:'#2ECC71',t:'Green'},{c:'#FFFFFF',t:'White'},
+];
+
+function rteField(id, html){
+  const colorBtns = RTE_COLORS.map(({c,t})=>
+    `<button type="button" class="rte-color-btn" title="${t}" style="background:${c};"
+      onmousedown="event.preventDefault();rteCmd('foreColor','${c}')"></button>`
+  ).join('');
+  return `<div class="rte-wrap">
+    <div class="rte-toolbar" id="tb-${id}">
+      <button type="button" class="rte-btn" title="Bold" onmousedown="event.preventDefault();rteCmd('bold')"><b>B</b></button>
+      <button type="button" class="rte-btn" title="Italic" onmousedown="event.preventDefault();rteCmd('italic')"><i style="font-style:italic">I</i></button>
+      <button type="button" class="rte-btn" title="Underline" onmousedown="event.preventDefault();rteCmd('underline')"><u>U</u></button>
+      <div class="rte-sep"></div>
+      ${colorBtns}
+      <div class="rte-sep"></div>
+      <button type="button" class="rte-btn" title="Clear formatting" onmousedown="event.preventDefault();rteCmd('removeFormat')" style="font-size:10px;width:32px">✕ fmt</button>
+      <div class="rte-sep"></div>
+      <button class="btn-cp" style="font-size:10px" onmousedown="event.preventDefault();cp2(document.getElementById('${id}').innerText,this)">copy</button>
+    </div>
+    <div class="rte-content" id="${id}" contenteditable="true">${html}</div>
+  </div>`;
+}
+function rteCmd(cmd, val){
+  document.execCommand(cmd, false, val||null);
+}
+function textToHtml(txt){
+  // Convert newline-separated plain text to HTML paragraphs
+  if(/<[a-z][\s\S]*>/i.test(txt)) return txt; // already HTML
+  return txt.split(/\n/).map(l=>l.trim()).filter(Boolean)
+    .map(l=>`<p style="margin:0 0 6px;">${esc(l)}</p>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
 //  RESULTS
 // ═══════════════════════════════════════════════════════════
 function fa(id,val,rows){
@@ -998,11 +1066,22 @@ function renderResults(c,progs){
     ['e-intro','Opening paragraph',c.intro,3],
   ]);
 
-  h+=rcard('Body','tag-b',[
-    ['e-p1','Section 1',c.body_p1,3],
-    ['e-p2','Section 2',c.body_p2,3],
-    ['e-p3','Section 3',c.body_p3,3],
-  ]);
+  // Body — RTE fields
+  h+=`<div class="rcard">
+    <div class="rcard-head"><span class="rcard-tag tag-b">Body</span></div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Section 1</span></div>
+      ${rteField('e-p1', textToHtml(c.body_p1))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Section 2 — emoji lines</span></div>
+      ${rteField('e-p2', textToHtml(c.body_p2))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Section 3</span></div>
+      ${rteField('e-p3', textToHtml(c.body_p3))}
+    </div>
+  </div>`;
 
   h+=rcard('CTA Buttons + PS','tag-g',[
     ['e-cta1','Primary CTA (yellow button)',c.cta,1],
@@ -1086,13 +1165,13 @@ function buildEmailHTML(c, ctaUrl, imgs) {
 
   const spacer = h => `<tr><td style="height:${h}px;line-height:${h}px;font-size:1px;">&nbsp;</td></tr>`;
 
-  // Parse body_p2 into bold emoji bullet lines
+  // Parse body_p2 into emoji lines (no bold by default)
   const bullets = txt => {
+    // If it's already HTML (from RTE editor), use directly
+    if(/<[a-z][\s\S]*>/i.test(txt)) return txt;
     const lines = txt.split(/\n/).map(l=>l.trim()).filter(Boolean);
     return lines.map(l =>
-      `<p style="margin:0 0 10px;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">
-        <strong>${e(l)}</strong>
-      </p>`
+      `<p style="margin:0 0 10px;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">${e(l)}</p>`
     ).join('');
   };
 
@@ -1127,10 +1206,10 @@ function buildEmailHTML(c, ctaUrl, imgs) {
   <p style="margin:0;font-size:16px;color:#333;line-height:170%;">${e(c.intro)}</p>
 </td></tr>`;
 
-  // body_p1 — regular paragraph
+  // body_p1 — HTML direct output
   const p1 = `
 <tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
-  <p style="margin:0;">${e(c.body_p1)}</p>
+  ${c.body_p1}
 </td></tr>`;
 
   // Image 2 (optional, between sections)
@@ -1140,16 +1219,16 @@ function buildEmailHTML(c, ctaUrl, imgs) {
     style="display:block;width:100%;height:auto;border-radius:12px;max-height:260px;object-fit:cover;border:0;">
 </td></tr>` : '';
 
-  // body_p2 — bold emoji lines (key selling points)
+  // body_p2 — emoji lines, HTML direct output
   const p2 = `
-<tr><td style="padding:20px 32px 0;font-family:${FONT};">
+<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">
   ${bullets(c.body_p2)}
 </td></tr>`;
 
-  // body_p3 — urgency paragraph
+  // body_p3 — urgency paragraph, HTML direct output
   const p3 = `
 <tr><td style="padding:18px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
-  <p style="margin:0;">${e(c.body_p3)}</p>
+  ${c.body_p3}
 </td></tr>`;
 
   // PS
@@ -1273,8 +1352,10 @@ async function sendMC(){
 // ═══════════════════════════════════════════════════════════
 function getCurrent(){
   const g=id=>(document.getElementById(id)?.value||'').trim();
+  const gh=id=>(document.getElementById(id)?.innerHTML||'').trim();
   return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),
-    headline:g('e-h1'),intro:g('e-intro'),body_p1:g('e-p1'),body_p2:g('e-p2'),body_p3:g('e-p3'),
+    headline:g('e-h1'),intro:g('e-intro'),
+    body_p1:gh('e-p1'),body_p2:gh('e-p2'),body_p3:gh('e-p3'),
     cta:g('e-cta1'),cta2:g('e-cta2'),ps:g('e-ps'),ab1:g('e-ab1'),ab2:g('e-ab2')};
 }
 function cpAll(){
