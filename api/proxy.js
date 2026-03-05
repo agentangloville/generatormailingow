@@ -63,12 +63,15 @@ Return ONLY valid JSON, no markdown, no backticks.
       const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-opus-4-5', max_tokens: 1200, messages: [{ role: 'user', content: prompt }] }),
+        body: JSON.stringify({ model: 'claude-opus-4-5', max_tokens: 2000, messages: [{ role: 'user', content: prompt }] }),
       });
       const aiData = await aiRes.json();
       if (!aiRes.ok) throw new Error(aiData.error?.message || 'Anthropic API error');
       let raw = (aiData.content?.[0]?.text || '').replace(/```json|```/g, '').trim();
-      const campaign = JSON.parse(raw);
+      // Find JSON object in response in case there's extra text
+      const jsonMatch = raw.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('AI nie zwróciło poprawnego JSON. Spróbuj ponownie.');
+      const campaign = JSON.parse(jsonMatch[0]);
       return res.status(200).json({ ok: true, campaign });
     } catch (e) {
       return res.status(500).json({ ok: false, error: e.message });
@@ -168,23 +171,20 @@ Return ONLY valid JSON, no markdown, no backticks.
 
     const crypto    = require('crypto');
     const timestamp = Math.floor(Date.now() / 1000);
-    const folder_param = folder;
-    const public_id = filename ? `${folder_param}/${filename.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_')}_${timestamp}` : undefined;
 
-    // Build signature
-    const sigParams = public_id
-      ? `folder=${folder_param}&public_id=${public_id}&timestamp=${timestamp}`
-      : `folder=${folder_param}&timestamp=${timestamp}`;
-    const signature = crypto.createHash('sha1').update(sigParams + apiSecret).digest('hex');
+    // Signature params must be sorted alphabetically, no api_key/file/resource_type
+    const sigObj = { folder, timestamp };
+    const sigStr = Object.keys(sigObj).sort()
+      .map(k => `${k}=${sigObj[k]}`).join('&');
+    const signature = crypto.createHash('sha1').update(sigStr + apiSecret).digest('hex');
 
     try {
       const formData = new URLSearchParams();
       formData.append('file', `data:image/jpeg;base64,${fileData}`);
       formData.append('api_key', apiKey);
-      formData.append('timestamp', timestamp);
-      formData.append('folder', folder_param);
+      formData.append('timestamp', String(timestamp));
+      formData.append('folder', folder);
       formData.append('signature', signature);
-      if (public_id) formData.append('public_id', public_id);
 
       const r    = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
         method: 'POST',
@@ -271,8 +271,20 @@ Return ONLY valid JSON, no markdown, no backticks.
     const e = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const footerContent = footer_html || `<a href="*|UPDATE_PROFILE|*" style="color:#AAA;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp; <a href="*|UNSUB|*" style="color:#AAA;text-decoration:underline;">Unsubscribe</a>`;
 
-    const bullets = txt => txt.split(/\n/).map(l=>l.trim()).filter(Boolean)
-      .map(l=>`<p style="margin:0 0 10px;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;"><strong>${e(l)}</strong></p>`).join('');
+    const bullets = txt => {
+      // If already HTML from RTE editor, use directly
+      if (/<[a-z][\s\S]*>/i.test(txt)) return txt;
+      // Plain text — convert newlines to paragraphs, no bold
+      return txt.split(/\n/).map(l=>l.trim()).filter(Boolean)
+        .map(l=>`<p style="margin:0 0 10px;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">${l}</p>`).join('');
+    };
+
+    const safeHtml = txt => {
+      // If already HTML from RTE editor, use directly
+      if (/<[a-z][\s\S]*>/i.test(txt)) return txt;
+      // Plain text — escape and wrap
+      return e(txt);
+    };
 
     const img = (src,pad,h) => `<tr><td style="padding:${pad||'24px 32px 0'};"><img src="${src}" alt="" width="100%" style="display:block;width:100%;height:auto;border-radius:12px;max-height:${h||260}px;object-fit:cover;border:0;"></td></tr>`;
 
@@ -281,11 +293,11 @@ Return ONLY valid JSON, no markdown, no backticks.
     const heroImg     = imgs[0] ? img(imgs[0].thumb||imgs[0].url,'28px 32px 0',320) : '';
     const introRow    = `<tr><td style="padding:24px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;"><p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p><p style="margin:0;">${e(campaign.intro)}</p></td></tr>`;
     const cta1Row     = `<tr><td style="padding:28px 32px 0;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td align="center" bgcolor="#FCD23A" style="border-radius:50px;padding:18px 32px;font-family:${FONT};font-size:17px;font-weight:bold;"><a href="${cta_url}" target="_blank" style="color:#111111;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta)}</a></td></tr></table></td></tr>`;
-    const p1Row       = `<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;"><p style="margin:0;">${e(campaign.body_p1)}</p></td></tr>`;
+    const p1Row       = `<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">${safeHtml(campaign.body_p1)}</td></tr>`;
     const img2Row     = imgs[1] ? img(imgs[1].thumb||imgs[1].url) : '';
-    const p2Row       = `<tr><td style="padding:20px 32px 0;font-family:${FONT};">${bullets(campaign.body_p2)}</td></tr>`;
+    const p2Row       = `<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">${bullets(campaign.body_p2)}</td></tr>`;
     const img3Row     = imgs[2] ? img(imgs[2].thumb||imgs[2].url) : '';
-    const p3Row       = `<tr><td style="padding:18px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;"><p style="margin:0;">${e(campaign.body_p3)}</p></td></tr>`;
+    const p3Row       = `<tr><td style="padding:18px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">${safeHtml(campaign.body_p3)}</td></tr>`;
     const psRow       = campaign.ps ? `<tr><td style="padding:12px 32px 0;font-family:${FONT};font-size:14px;color:#888;font-style:italic;"><p style="margin:0;">${e(campaign.ps)}</p></td></tr>` : '';
     const cta2Row     = `<tr><td style="padding:14px 32px 0;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 32px;font-family:${FONT};font-size:16px;font-weight:bold;"><a href="${cta_url}" target="_blank" style="color:#FFFFFF;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta2||campaign.cta)}</a></td></tr></table></td></tr>`;
     const img4Row     = imgs[3] ? img(imgs[3].thumb||imgs[3].url) : '';
