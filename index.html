@@ -841,7 +841,6 @@ function renderLibTabs(){
   ).join('');
 }
 function escAttr(s){ return s.replace(/'/g,"\\'"); }
-function switchCat(c){libCat=c; renderLibTabs(); renderGallery();}
 function switchCat(c){
   libCat=c;
   renderLibTabs();
@@ -1019,6 +1018,7 @@ function showUploadErr(msg){
   zone.addEventListener('dragleave', ()=> zone.classList.remove('drag'));
   zone.addEventListener('drop',      e=>{ e.preventDefault(); zone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
 })();
+function addUrl(){
   const urlInp=document.getElementById('img-url-inp');
   const url=(urlInp?.value||'').trim();
   if(!url) return;
