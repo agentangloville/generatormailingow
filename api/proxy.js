@@ -75,6 +75,132 @@ Return ONLY valid JSON, no markdown, no backticks.
     }
   }
 
+  // ── WORDPRESS MEDIA LIBRARY ───────────────────────────
+  if (body.action === 'wordpress_images') {
+    const { site, page = 1, per_page = 50, search = '' } = body;
+    const allowed = ['angloville.pl', 'angloville.com', 'angloville.it'];
+    if (!allowed.includes(site)) return res.status(400).json({ ok: false, error: 'Invalid site' });
+
+    try {
+      let url = `https://${site}/wp-json/wp/v2/media?media_type=image&per_page=${per_page}&page=${page}&orderby=date&order=desc`;
+      if (search) url += `&search=${encodeURIComponent(search)}`;
+
+      const r = await fetch(url, { headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' } });
+      
+      const contentType = r.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        const text = await r.text();
+        throw new Error(`REST API niedostępne na ${site} (status ${r.status}). Może być wyłączone przez plugin lub wymaga autoryzacji.`);
+      }
+      
+      const items = await r.json();
+      if (!r.ok) throw new Error(items?.message || `Błąd ${r.status}`);
+      
+      const total      = parseInt(r.headers.get('X-WP-Total') || '0');
+      const totalPages = parseInt(r.headers.get('X-WP-TotalPages') || '1');
+
+      const files = items.map(item => ({
+        id:     item.id,
+        url:    item.source_url,
+        thumb:  item.media_details?.sizes?.medium?.source_url
+             || item.media_details?.sizes?.thumbnail?.source_url
+             || item.source_url,
+        label:  item.title?.rendered || item.slug || '',
+        date:   item.date,
+      }));
+
+      return res.status(200).json({ ok: true, files, total, totalPages, page });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
+  // ── CLOUDINARY LIST IMAGES ────────────────────────────
+  if (body.action === 'cloudinary_images') {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey    = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    if (!cloudName || !apiKey || !apiSecret)
+      return res.status(500).json({ ok: false, error: 'Cloudinary nie skonfigurowane — dodaj CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET do Vercel' });
+
+    const { folder = '', next_cursor = '', max_results = 50 } = body;
+    const auth = 'Basic ' + Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
+
+    try {
+      let url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?max_results=${max_results}&tags=true`;
+      if (folder)      url += `&prefix=${encodeURIComponent(folder)}&type=upload`;
+      if (next_cursor) url += `&next_cursor=${encodeURIComponent(next_cursor)}`;
+
+      const r    = await fetch(url, { headers: { Authorization: auth } });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error?.message || `Cloudinary error ${r.status}`);
+
+      // Also fetch folders
+      const fr    = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/folders`, { headers: { Authorization: auth } });
+      const fdata = await fr.json();
+      const folders = (fdata.folders || []).map(f => ({ name: f.name, path: f.path }));
+
+      const files = (data.resources || []).map(r => ({
+        id:    r.public_id,
+        url:   r.secure_url,
+        thumb: r.secure_url.replace('/upload/', `/upload/w_300,h_200,c_fill/`),
+        label: r.public_id.split('/').pop(),
+        folder: r.asset_folder || r.public_id.includes('/') ? r.public_id.split('/').slice(0,-1).join('/') : '',
+        bytes: r.bytes,
+      }));
+
+      return res.status(200).json({ ok: true, files, folders, next_cursor: data.next_cursor || null });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
+  // ── CLOUDINARY UPLOAD ─────────────────────────────────
+  if (body.action === 'cloudinary_upload') {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey    = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    if (!cloudName || !apiKey || !apiSecret)
+      return res.status(500).json({ ok: false, error: 'Cloudinary nie skonfigurowane' });
+
+    const { data: fileData, filename, folder = 'angloville-emails' } = body;
+    if (!fileData) return res.status(400).json({ ok: false, error: 'Brak danych pliku' });
+
+    const crypto    = require('crypto');
+    const timestamp = Math.floor(Date.now() / 1000);
+    const folder_param = folder;
+    const public_id = filename ? `${folder_param}/${filename.replace(/\.[^.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_')}_${timestamp}` : undefined;
+
+    // Build signature
+    const sigParams = public_id
+      ? `folder=${folder_param}&public_id=${public_id}&timestamp=${timestamp}`
+      : `folder=${folder_param}&timestamp=${timestamp}`;
+    const signature = crypto.createHash('sha1').update(sigParams + apiSecret).digest('hex');
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append('file', `data:image/jpeg;base64,${fileData}`);
+      formData.append('api_key', apiKey);
+      formData.append('timestamp', timestamp);
+      formData.append('folder', folder_param);
+      formData.append('signature', signature);
+      if (public_id) formData.append('public_id', public_id);
+
+      const r    = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error?.message || 'Upload failed');
+
+      const url   = data.secure_url;
+      const thumb = url.replace('/upload/', '/upload/w_300,h_200,c_fill/');
+      return res.status(200).json({ ok: true, url, thumb });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
   // ── MAILCHIMP LIST IMAGES ─────────────────────────────
   if (body.action === 'mailchimp_images') {
     const mcKey = process.env.MAILCHIMP_API_KEY;
