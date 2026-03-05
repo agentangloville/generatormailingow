@@ -75,6 +75,63 @@ Return ONLY valid JSON, no markdown, no backticks.
     }
   }
 
+  // ── MAILCHIMP LIST IMAGES ─────────────────────────────
+  if (body.action === 'mailchimp_images') {
+    const mcKey = process.env.MAILCHIMP_API_KEY;
+    if (!mcKey) return res.status(500).json({ ok: false, error: 'MAILCHIMP_API_KEY not set' });
+    const dc = mcKey.split('-')[1] || 'us1';
+    const auth = 'Basic ' + Buffer.from('anystring:' + mcKey).toString('base64');
+    const { offset = 0, count = 200, folder_id } = body;
+    let url = `https://${dc}.api.mailchimp.com/3.0/file-manager/files?count=${count}&offset=${offset}&sort_field=created_at&sort_dir=DESC&type=image`;
+    if (folder_id) url += `&folder_id=${folder_id}`;
+    try {
+      const r = await fetch(url, { headers: { 'Authorization': auth } });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.detail || JSON.stringify(d));
+      const files = (d.files || []).map(f => ({
+        id:   f.id,
+        url:  f.full_size_url || f.url,
+        thumb: f.thumbnail_url || f.full_size_url || f.url,
+        label: f.name,
+        folder_id: f.folder_id,
+        size: f.size,
+      }));
+      // Also get folders
+      const fr = await fetch(`https://${dc}.api.mailchimp.com/3.0/file-manager/folders?count=50`, { headers: { 'Authorization': auth } });
+      const fd = await fr.json();
+      const folders = (fd.folders || []).map(f => ({ id: f.id, name: f.name }));
+      return res.status(200).json({ ok: true, files, folders, total: d.total_items });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
+  // ── MAILCHIMP UPLOAD ──────────────────────────────────
+  if (body.action === 'mailchimp_upload') {
+    const mcKey = process.env.MAILCHIMP_API_KEY;
+    if (!mcKey) return res.status(500).json({ ok: false, error: 'MAILCHIMP_API_KEY not set' });
+
+    const { filename, data } = body; // data = pure base64 string
+    if (!filename || !data) return res.status(400).json({ ok: false, error: 'Missing filename or data' });
+
+    const dc = mcKey.split('-')[1] || 'us1';
+    const auth = 'Basic ' + Buffer.from('anystring:' + mcKey).toString('base64');
+
+    try {
+      const uploadRes = await fetch(`https://${dc}.api.mailchimp.com/3.0/file-manager/files`, {
+        method: 'POST',
+        headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: filename, file_data: data }),
+      });
+      const uploadData = await uploadRes.json();
+      if (!uploadRes.ok) throw new Error(uploadData.detail || JSON.stringify(uploadData));
+      const url = uploadData.full_size_url || uploadData.url;
+      return res.status(200).json({ ok: true, url });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
   // ── MAILCHIMP DRAFT ───────────────────────────────────
   if (body.action === 'mailchimp_draft') {
     const mcKey  = process.env.MAILCHIMP_API_KEY;
