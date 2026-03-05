@@ -1,0 +1,113 @@
+=====================================================
+ ANGLOVILLE MAILING GENERATOR — VERCEL DEPLOY
+ Instrukcja krok po kroku (bez GitHuba, bez terminala)
+=====================================================
+
+CO JEST W PACZCE:
+  public/
+    index.html      ← aplikacja frontendowa
+  api/
+    proxy.js        ← backend (serverless function)
+  vercel.json       ← konfiguracja Vercel
+  package.json      ← wymagany przez Vercel
+  middleware.js     ← ochrona hasłem
+
+=====================================================
+ KROK 1 — ZAŁÓŻ KONTO NA VERCEL (jeśli nie masz)
+=====================================================
+
+1. Wejdź na https://vercel.com
+2. Kliknij "Sign Up"
+3. Wybierz "Continue with Email"
+4. Potwierdź email
+
+Konto jest DARMOWE — nie podajesz karty.
+
+=====================================================
+ KROK 2 — WGRAJ PROJEKT (drag & drop)
+=====================================================
+
+1. Zaloguj się na https://vercel.com/dashboard
+2. Kliknij "Add New..." → "Project"
+3. Przewiń na dół strony
+4. Zobaczysz sekcję "Import Third-Party Git Repository"
+   — zamiast tego kliknij "Deploy without Git"
+   (lub szukaj opcji "Upload")
+5. Przeciągnij CAŁY folder "angloville-vercel"
+   na stronę Vercel LUB kliknij i wskaż folder
+6. Kliknij "Deploy"
+
+Vercel sam wykryje strukturę projektu.
+
+=====================================================
+ KROK 3 — DODAJ KLUCZE API (Environment Variables)
+=====================================================
+
+Po deployu (lub przed):
+1. Wejdź w swój projekt na Vercel
+2. Kliknij zakładkę "Settings"
+3. W menu po lewej kliknij "Environment Variables"
+4. Dodaj po kolei (kliknij "Add" przy każdym):
+
+   Nazwa zmiennej          Wartość
+   ─────────────────────────────────────────────
+   ANTHROPIC_API_KEY       sk-ant-TWÓJ_KLUCZ
+   MAILCHIMP_API_KEY       TWÓJ_KLUCZ_MAILCHIMP
+   MAILCHIMP_SERVER        us4  (lub us21 itp.)
+   MAILCHIMP_LIST_ID       TWOJE_AUDIENCE_ID
+   BASIC_AUTH_USER         angloville
+   BASIC_AUTH_PASS         mailing2025
+
+5. Po dodaniu wszystkich zmiennych kliknij
+   "Deployments" → "Redeploy" (wymagane aby
+   zmienne zadziałały)
+
+=====================================================
+ KROK 4 — WŁASNA DOMENA (opcjonalnie)
+=====================================================
+
+1. Wejdź w projekt → Settings → Domains
+2. Wpisz np. "mailingi.angloville.pl"
+3. Vercel pokaże rekord DNS do dodania
+4. Dodaj rekord CNAME w panelu domeny:
+   - Nazwa: mailingi
+   - Wartość: cname.vercel-dns.com
+
+=====================================================
+ DANE DO LOGOWANIA (hasło)
+=====================================================
+
+Login:    angloville
+Hasło:    mailing2025
+
+Możesz je zmienić w Environment Variables
+(BASIC_AUTH_USER i BASIC_AUTH_PASS)
+
+=====================================================
+ GDZIE ZNALEŹĆ KLUCZE
+=====================================================
+
+Anthropic API Key:
+  → https://console.anthropic.com → API Keys
+
+Mailchimp API Key:
+  → Mailchimp → Account → Extras → API keys
+  → Format klucza: abc123xyz456-us4
+  → MAILCHIMP_SERVER to część po myślniku: us4
+
+Mailchimp List ID (Audience ID):
+  → Mailchimp → Audience → Manage Audience
+    → Settings → Audience name and defaults
+  → Szukaj "Audience ID"
+
+=====================================================
+ PO WDROŻENIU
+=====================================================
+
+✅ Wejdź na swoją domenę Vercel (np. angloville-mailing.vercel.app)
+✅ Przeglądarka zapyta o login i hasło
+✅ Wybierz program → kliknij "Generuj kampanię AI"
+✅ Kliknij "Utwórz draft w Mailchimp"
+✅ Sprawdź Mailchimp → Campaigns → Drafts
+
+=====================================================

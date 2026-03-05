@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Generator Mailingów – Angloville</title>
+<link href="https://fonts.googleapis.com/css2?family=Funnel+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --yellow:  #FCD23A;
+    --blue:    #428BCA;
+    --dark:    #232323;
+    --bg:      #F5F5F5;
+    --white:   #ffffff;
+    --body:    #444;
+    --card:    #555;
+    --desc:    #666;
+  }
+
+  body { font-family: 'Funnel Sans', sans-serif; background: var(--bg); color: var(--body); min-height: 100vh; }
+
+  /* HEADER */
+  .header { background: var(--dark); padding: 32px 24px 28px; }
+  .header-inner { max-width: 820px; margin: 0 auto; display: flex; align-items: center; gap: 16px; }
+  .header-icon { width: 48px; height: 48px; background: var(--yellow); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .header-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--yellow); text-transform: uppercase; margin-bottom: 4px; }
+  .header h1 { font-size: clamp(20px, 3.5vw, 34px); font-weight: 800; color: #fff; line-height: 1.15; }
+  .header-sub { color: rgba(255,255,255,0.72); font-size: 15px; margin-top: 10px; line-height: 1.6; }
+
+  /* MAIN */
+  .main { max-width: 820px; margin: 0 auto; padding: 36px 24px 60px; }
+
+  /* SECTION LABEL */
+  .sec-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+
+  /* PROGRAM GRID */
+  .prog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .prog-card { display: flex; align-items: flex-start; gap: 12px; padding: 13px 15px; border: 1.5px solid #e0e0e0; background: var(--white); border-radius: 10px; cursor: pointer; text-align: left; width: 100%; transition: all .15s; font-family: inherit; }
+  .prog-card:hover { border-color: var(--yellow); }
+  .prog-card.active { border-color: var(--yellow); background: #fffbea; }
+  .prog-emoji { font-size: 20px; line-height: 1; margin-top: 1px; flex-shrink: 0; }
+  .prog-title { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 2px; }
+  .prog-desc  { font-size: 12px; color: var(--desc); line-height: 1.4; }
+
+  /* CHIPS */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { padding: 8px 16px; border: 1.5px solid #ddd; background: var(--white); color: var(--body); font-family: inherit; font-size: 13px; border-radius: 8px; cursor: pointer; transition: all .15s; }
+  .chip:hover { border-color: var(--yellow); }
+  .chip.active { border-color: var(--yellow); background: var(--yellow); color: var(--dark); font-weight: 700; }
+
+  /* FIELD */
+  textarea.field { width: 100%; background: var(--white); border: 1.5px solid #ddd; color: var(--body); font-family: inherit; font-size: 14px; padding: 12px 14px; border-radius: 8px; resize: none; transition: border-color .2s; }
+  textarea.field:focus { outline: none; border-color: var(--blue); }
+
+  /* BUTTONS */
+  .btn-cta { padding: 14px 32px; background: var(--yellow); color: var(--dark); font-weight: 700; font-size: 15px; border-radius: 8px; border: none; cursor: pointer; font-family: inherit; transition: all .15s; display: inline-block; }
+  .btn-cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
+  .btn-cta:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+  .btn-outline { padding: 10px 22px; background: transparent; color: var(--body); font-weight: 600; font-size: 13px; border-radius: 8px; border: 1.5px solid #ddd; cursor: pointer; font-family: inherit; transition: all .15s; }
+  .btn-outline:hover { border-color: var(--dark); }
+
+  /* TWO COLS */
+  .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+
+  /* SECTION SPACER */
+  .section { margin-bottom: 32px; }
+
+  /* ERROR */
+  .error-box { background: #fff0f0; border: 1px solid #ffcccc; border-radius: 8px; padding: 14px 18px; color: #c00; font-size: 13px; margin-top: 16px; }
+
+  /* LOADER */
+  .loader { display: flex; gap: 7px; justify-content: center; align-items: center; padding: 6px 0; }
+  .loader span { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--yellow); animation: dot 1s infinite; }
+  .loader span:nth-child(2) { animation-delay: .18s; }
+  .loader span:nth-child(3) { animation-delay: .36s; }
+  @keyframes dot { 0%,100%{ transform: translateY(0); opacity: .6; } 50%{ transform: translateY(-9px); opacity: 1; } }
+  .loader-text { color: var(--desc); font-size: 13px; text-align: center; margin-top: 8px; }
+
+  /* RESULTS */
+  .results-header { background: var(--dark); border-radius: 12px; padding: 20px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+  .results-title-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; color: var(--yellow); text-transform: uppercase; margin-bottom: 4px; }
+  .results-meta { color: rgba(255,255,255,0.72); font-size: 13px; }
+
+  .result-block { border-left: 3px solid var(--yellow); padding: 14px 18px; background: var(--white); border-radius: 0 8px 8px 0; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .result-block.blue  { border-left-color: var(--blue); }
+  .result-block.gray  { border-left-color: #ddd; }
+  .result-block.purple{ border-left-color: #9b59b6; }
+  .result-block-head  { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+
+  .copy-btn { background: transparent; border: 1px solid #ddd; color: var(--desc); padding: 3px 10px; font-size: 11px; border-radius: 4px; cursor: pointer; font-family: monospace; transition: all .15s; }
+  .copy-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .copy-btn.done { border-color: var(--blue); color: var(--blue); }
+
+  .result-subject { font-size: 17px; font-weight: 800; color: var(--dark); }
+  .result-pre     { font-size: 14px; color: var(--desc); font-style: italic; }
+  .result-h1      { font-size: clamp(16px,2.5vw,21px); font-weight: 800; color: var(--dark); line-height: 1.3; }
+  .result-body    { font-size: 15px; color: var(--body); line-height: 1.75; }
+  .result-preheader-divider { margin-top: 10px; padding-top: 10px; border-top: 1px solid #f0f0f0; display: flex; align-items: center; gap: 10px; }
+  .result-emoji-label { font-size: 11px; letter-spacing: 2px; color: var(--desc); font-family: monospace; }
+
+  .cta-preview { display: inline-block; padding: 13px 26px; background: var(--yellow); color: var(--dark); font-weight: 700; font-size: 15px; border-radius: 8px; }
+
+  .ab-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+  .ab-row:first-child { border-bottom: 1px solid #f0f0f0; }
+
+  .send-box { background: #f0fdf8; border: 1px solid #c0e8d4; border-radius: 8px; padding: 12px 18px; font-size: 13px; color: #2d7a5a; margin-bottom: 10px; }
+
+  .mailchimp-box { border: 2px solid var(--yellow); border-radius: 12px; padding: 20px 24px; background: #fffbea; margin-top: 24px; }
+  .mailchimp-box h3 { font-size: 16px; font-weight: 800; color: var(--dark); margin-bottom: 6px; }
+  .mailchimp-box p  { font-size: 14px; color: var(--card); margin-bottom: 16px; line-height: 1.6; }
+  .mailchimp-success { background: #f0fdf8; border: 1px solid #c0e8d4; border-radius: 8px; padding: 16px 20px; margin-top: 12px; }
+  .mailchimp-success a { color: var(--blue); font-weight: 700; }
+
+  .reset-row { text-align: center; margin-top: 32px; }
+
+  @media(max-width:600px){
+    .two-cols { grid-template-columns: 1fr; gap: 20px; }
+    .prog-grid { grid-template-columns: 1fr; }
+    .results-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-icon">🏡</div>
+    <div>
+      <div class="header-label">Angloville</div>
+      <h1>Generator Kampanii Mailingowych</h1>
+    </div>
+  </div>
+  <div style="max-width:820px;margin:0 auto;padding-top:12px;">
+    <p class="header-sub">Wybierz program → AI napisze gotową kampanię → jeden klik tworzy draft w Mailchimp.</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- 1. PROGRAM -->
+  <div class="section">
+    <div class="sec-label">1 — Wybierz program Angloville</div>
+    <div class="prog-grid" id="prog-grid"></div>
+  </div>
+
+  <!-- 2. AUDIENCE -->
+  <div class="section">
+    <div class="sec-label">2 — Grupa docelowa</div>
+    <div class="chips" id="audience-chips"></div>
+  </div>
+
+  <!-- 3+4 -->
+  <div class="section two-cols">
+    <div>
+      <div class="sec-label">3 — Ton komunikacji</div>
+      <div class="chips" id="tone-chips"></div>
+    </div>
+    <div>
+      <div class="sec-label">4 — Sezon</div>
+      <div class="chips" id="season-chips"></div>
+    </div>
+  </div>
+
+  <!-- 5. EXTRA -->
+  <div class="section">
+    <div class="sec-label">5 — Dodatkowe informacje (opcjonalnie)</div>
+    <textarea class="field" id="extra" rows="2" placeholder="np. Promocja -15% do końca miesiąca, zostały 3 miejsca, nowy termin w Zakopanem..."></textarea>
+  </div>
+
+  <!-- GENERATE -->
+  <button class="btn-cta" id="gen-btn" onclick="generate()">→ Generuj kampanię AI</button>
+  <span id="prog-hint" style="margin-left:14px;font-size:13px;color:var(--desc);">← Wybierz najpierw program</span>
+
+  <!-- LOADER -->
+  <div id="loader" style="display:none;margin-top:32px;">
+    <div class="loader"><span></span><span></span><span></span></div>
+    <div class="loader-text">Claude tworzy kampanię…</div>
+  </div>
+
+  <!-- ERROR -->
+  <div id="error-box" class="error-box" style="display:none;"></div>
+
+  <!-- RESULTS -->
+  <div id="results" style="display:none;margin-top:48px;"></div>
+
+</div><!-- /main -->
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const PROGRAMS = [
+  { id:"wioska-doroslych",    emoji:"🏡", label:"Angielska Wioska – Dorośli",       desc:"6-dniowy intensywny kurs 1:1 z native speakerami" },
+  { id:"wioska-poczatkujacy", emoji:"🌱", label:"Angielska Wioska – Początkujący",  desc:"Kurs immersyjny dla osób startujących od zera" },
+  { id:"business-english",    emoji:"💼", label:"Business English / Firmy",          desc:"Blended learning dla firm i zespołów" },
+  { id:"kids-7-10",           emoji:"🧒", label:"Angloville Kids (7–10 lat)",        desc:"Obóz językowy dla dzieci przez zabawę" },
+  { id:"junior-11-18",        emoji:"🎒", label:"Angloville Junior (11–18 lat)",     desc:"Obóz językowy dla młodzieży w Polsce" },
+  { id:"junior-ski",          emoji:"⛷️", label:"Junior SKI (12–18 lat)",            desc:"Obóz językowy + narty" },
+  { id:"junior-malta",        emoji:"🇲🇹", label:"Junior International – Malta",     desc:"Zagraniczny obóz językowy na Malcie (13–18 lat)" },
+  { id:"junior-anglia",       emoji:"🇬🇧", label:"Junior International – Anglia",    desc:"Obóz językowy w Anglii (13–18 lat)" },
+  { id:"junior-londyn",       emoji:"🎡", label:"Junior Plus – Londyn",              desc:"Obóz turystyczno-językowy w Londynie (13–18 lat)" },
+  { id:"junior-usa",          emoji:"🗽", label:"Junior Plus – USA Trip",            desc:"Obóz turystyczno-językowy w USA (13–18 lat)" },
+  { id:"rok-w-usa",           emoji:"🏫", label:"Rok w USA – Wymiana licealna",      desc:"Cały rok szkolny w amerykańskim High School" },
+  { id:"liceum-online",       emoji:"💻", label:"Amerykańskie Liceum Online",        desc:"Nauka w US systemie bez wyjazdu" },
+  { id:"family",              emoji:"👨‍👩‍👧", label:"Angloville Family",               desc:"Obóz językowy dla całych rodzin" },
+];
+const AUDIENCES = ["Rodzice dzieci 7–10 lat","Rodzice nastolatków 11–18 lat","Dorośli – bariera językowa","Menedżerowie / HR / firmy","Osoby planujące wyjazd za granicę","Absolwenci poprzednich kursów"];
+const TONES     = ["Inspirujący","Pilny / last-minute","Edukacyjny","Emocjonalny / storytelling"];
+const SEASONS   = ["Wiosna / Wielkanoc","Lato / Wakacje","Jesień","Zima / Ferie"];
+
+let state = { program: null, audience: AUDIENCES[1], tone: TONES[0], season: SEASONS[1] };
+let lastCampaign = null;
+
+// ── RENDER CONTROLS ───────────────────────────────────
+function renderProgs() {
+  document.getElementById('prog-grid').innerHTML = PROGRAMS.map(p => `
+    <button class="prog-card${state.program===p.id?' active':''}" onclick="selectProg('${p.id}')">
+      <span class="prog-emoji">${p.emoji}</span>
+      <div><div class="prog-title">${p.label}</div><div class="prog-desc">${p.desc}</div></div>
+    </button>`).join('');
+}
+function renderChips(containerId, items, stateKey) {
+  document.getElementById(containerId).innerHTML = items.map(item => `
+    <button class="chip${state[stateKey]===item?' active':''}" onclick="selectChip('${stateKey}','${item.replace(/'/g,"\\'")}',this)">${item}</button>`).join('');
+}
+function renderAll() {
+  renderProgs();
+  renderChips('audience-chips', AUDIENCES, 'audience');
+  renderChips('tone-chips',     TONES,     'tone');
+  renderChips('season-chips',   SEASONS,   'season');
+}
+
+function selectProg(id) {
+  state.program = id;
+  document.getElementById('prog-hint').style.display = 'none';
+  renderProgs();
+}
+function selectChip(key, val, btn) {
+  state[key] = val;
+  btn.closest('.chips').querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── COPY ──────────────────────────────────────────────
+function copyText(text, btnEl) {
+  navigator.clipboard.writeText(text);
+  const orig = btnEl.textContent;
+  btnEl.textContent = '✓ skopiowano';
+  btnEl.classList.add('done');
+  setTimeout(() => { btnEl.textContent = orig; btnEl.classList.remove('done'); }, 1800);
+}
+
+// ── GENERATE ──────────────────────────────────────────
+async function generate() {
+  if (!state.program) { document.getElementById('prog-hint').style.display=''; return; }
+
+  const prog = PROGRAMS.find(p => p.id === state.program);
+  document.getElementById('loader').style.display = 'block';
+  document.getElementById('error-box').style.display = 'none';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('gen-btn').disabled = true;
+
+  try {
+    const res = await fetch('/api/proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action:   'generate',
+        program:  prog.label + ' – ' + prog.desc,
+        audience: state.audience,
+        tone:     state.tone,
+        season:   state.season,
+        extra:    document.getElementById('extra').value,
+      })
+    });
+    const rawText = await res.text();
+    let data;
+    try { data = JSON.parse(rawText); }
+    catch(parseErr) {
+      showError('Odpowiedź serwera (debug): ' + rawText.substring(0, 800));
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('gen-btn').disabled = false;
+      return;
+    }
+    if (!data.ok) throw new Error(data.error || 'Nieznany błąd');
+    lastCampaign = data.campaign;
+    renderResults(data.campaign, prog);
+  } catch(e) {
+    showError('Błąd: ' + e.message);
+  }
+
+  document.getElementById('loader').style.display = 'none';
+  document.getElementById('gen-btn').disabled = false;
+}
+
+// ── MAILCHIMP ─────────────────────────────────────────
+async function sendToMailchimp() {
+  const btn = document.getElementById('mc-btn');
+  const prog = PROGRAMS.find(p => p.id === state.program);
+  btn.disabled = true;
+  btn.textContent = 'Tworzę draft…';
+  document.getElementById('mc-status').innerHTML = '';
+
+  try {
+    const res = await fetch('/api/proxy', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action:       'mailchimp_draft',
+        campaign:     lastCampaign,
+        program_name: prog?.label || 'Kampania',
+      })
+    });
+    const data = await res.json();
+    if (!data.ok) throw new Error(data.error || 'Błąd Mailchimp');
+
+    document.getElementById('mc-status').innerHTML = `
+      <div class="mailchimp-success">
+        ✅ <strong>Draft utworzony w Mailchimp!</strong><br>
+        <a href="${data.draft_url}" target="_blank">→ Otwórz kampanię w Mailchimp</a>
+      </div>`;
+    btn.textContent = '✓ Draft gotowy!';
+  } catch(e) {
+    document.getElementById('mc-status').innerHTML = `<div class="error-box" style="margin-top:10px">Błąd: ${e.message}</div>`;
+    btn.disabled = false;
+    btn.textContent = '📧 Utwórz draft w Mailchimp';
+  }
+}
+
+// ── RENDER RESULTS ────────────────────────────────────
+function renderResults(c, prog) {
+  const fullText = [
+    'TEMAT: ' + c.subject,
+    'PREHEADER: ' + c.preheader, '',
+    c.headline, '',
+    c.intro, '',
+    c.body_p1, '',
+    c.body_p2, '',
+    c.body_p3, '',
+    '[ ' + c.cta + ' ]',
+    c.ps ? '\nPS: ' + c.ps : '',
+  ].join('\n');
+
+  const block = (label, content, cls='', copyVal='') => `
+    <div class="result-block ${cls}">
+      <div class="result-block-head">
+        <div class="sec-label" style="margin-bottom:0;">${label}</div>
+        ${copyVal ? `<button class="copy-btn" onclick="copyText(${JSON.stringify(copyVal)},this)">kopiuj</button>` : ''}
+      </div>
+      ${content}
+    </div>`;
+
+  let html = `
+    <div class="results-header">
+      <div>
+        <div class="results-title-label">✦ Gotowa kampania</div>
+        <div class="results-meta">${prog.label} · ${state.audience} · ${state.tone}</div>
+      </div>
+      <button class="btn-cta" style="padding:10px 20px;font-size:13px;white-space:nowrap;" onclick="copyText(${JSON.stringify(fullText)},this)">↓ Kopiuj wszystko</button>
+    </div>`;
+
+  // Temat
+  html += block('Temat maila', `
+    <div class="result-subject">${esc(c.subject)}</div>
+    <div class="result-preheader-divider">
+      <span class="result-emoji-label">Z EMOJI</span>
+      <span style="flex:1;font-size:14px;color:var(--body)">${esc(c.subject_emoji)}</span>
+      <button class="copy-btn" onclick="copyText(${JSON.stringify(c.subject_emoji)},this)">kopiuj</button>
+    </div>`, '', c.subject);
+
+  // Preheader
+  html += block('Preheader', `<div class="result-pre">${esc(c.preheader)}</div>`, '', c.preheader);
+
+  // Headline
+  html += block('Nagłówek H1', `<div class="result-h1">${esc(c.headline)}</div>`, 'blue', c.headline);
+
+  // Intro
+  html += block('Hook / Intro', `<div class="result-body">${esc(c.intro)}</div>`, 'blue', c.intro);
+
+  // Body
+  [['Akapit 1 – główna korzyść', c.body_p1],
+   ['Akapit 2 – storytelling / obiekcja', c.body_p2],
+   ['Akapit 3 – CTA rozgrzewające', c.body_p3]].forEach(([lbl, val]) => {
+    html += block(lbl, `<div class="result-body">${esc(val)}</div>`, '', val);
+  });
+
+  // CTA + PS
+  html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;">
+    <div class="result-block">
+      <div class="sec-label">Przycisk CTA</div>
+      <div class="cta-preview">${esc(c.cta)}</div>
+    </div>
+    ${c.ps ? `<div class="result-block gray">
+      <div class="result-block-head"><div class="sec-label" style="margin-bottom:0;">PS</div>
+        <button class="copy-btn" onclick="copyText(${JSON.stringify(c.ps)},this)">kopiuj</button></div>
+      <div style="font-size:13px;color:var(--desc);font-style:italic;line-height:1.7;">${esc(c.ps)}</div>
+    </div>` : '<div></div>'}
+  </div>`;
+
+  // A/B
+  html += `<div class="result-block purple">
+    <div class="sec-label">Warianty A/B – alternatywne tematy</div>
+    <div class="ab-row"><span style="font-size:14px;color:var(--body)">— ${esc(c.ab1)}</span><button class="copy-btn" onclick="copyText(${JSON.stringify(c.ab1)},this)">kopiuj</button></div>
+    <div class="ab-row"><span style="font-size:14px;color:var(--body)">— ${esc(c.ab2)}</span><button class="copy-btn" onclick="copyText(${JSON.stringify(c.ab2)},this)">kopiuj</button></div>
+  </div>`;
+
+  // Send time
+  if (c.send_time) html += `<div class="send-box">⏱ ${esc(c.send_time)}</div>`;
+
+  // Mailchimp box
+  html += `
+    <div class="mailchimp-box">
+      <h3>📧 Wyślij do Mailchimp</h3>
+      <p>Kliknij poniżej — Claude automatycznie stworzy gotowy draft kampanii w Twoim Mailchimp. Zostaje Ci tylko kliknąć "Wyślij".</p>
+      <button class="btn-cta" id="mc-btn" onclick="sendToMailchimp()">📧 Utwórz draft w Mailchimp</button>
+      <div id="mc-status"></div>
+    </div>`;
+
+  // Reset
+  html += `<div class="reset-row"><button class="btn-outline" onclick="resetAll()">← Nowa kampania</button></div>`;
+
+  const el = document.getElementById('results');
+  el.innerHTML = html;
+  el.style.display = 'block';
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-box');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+function resetAll() {
+  state.program = null;
+  lastCampaign  = null;
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('error-box').style.display = 'none';
+  document.getElementById('extra').value = '';
+  document.getElementById('prog-hint').style.display = '';
+  renderAll();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── INIT ──────────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
