@@ -151,8 +151,8 @@ Return ONLY valid JSON, no markdown, no backticks.
 
       const files = (data.resources || []).map(item => ({
         id:    item.public_id,
-        url:   item.secure_url,
-        thumb: item.secure_url.replace('/upload/', '/upload/w_300,h_200,c_fill/'),
+        url:   item.secure_url.replace('/upload/', '/upload/w_620,c_fill,g_auto,q_auto,f_auto/'),
+        thumb: item.secure_url.replace('/upload/', '/upload/w_400,h_260,c_fill,g_auto,q_auto,f_auto/'),
         label: item.public_id.split('/').pop(),
         folder: item.public_id.includes('/') ? item.public_id.split('/').slice(0,-1).join('/') : '',
         bytes: item.bytes,
