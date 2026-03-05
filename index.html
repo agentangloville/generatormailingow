@@ -467,24 +467,6 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
       <div class="img-tabs" id="img-tabs"></div>
       <div class="img-gallery" id="img-gallery"></div>
 
-      <div class="img-divider">or add your own</div>
-
-      <!-- UPLOAD -->
-      <div class="upload-zone" id="upload-zone">
-        <input type="file" accept="image/*" multiple onchange="handleFileUpload(event)">
-        <span class="uz-icon">📁</span>
-        <div class="uz-txt"><strong>Click to upload</strong> or drag & drop<br>JPG, PNG, GIF, WebP — auto-saved to Mailchimp</div>
-      </div>
-      <div id="upload-err" style="display:none;margin-top:6px;background:#FFF2F2;border:1px solid #FFCCCC;border-radius:7px;padding:8px 12px;font-size:11px;color:#CC0000;"></div>
-      <div class="url-row" style="margin-top:8px">
-        <input id="img-url-inp" placeholder="or paste image URL / YouTube link…" onkeydown="if(event.key==='Enter')addUrl()">
-        <button onclick="addUrl()">Add</button>
-      </div>
-      <p style="font-size:10px;color:var(--sub);margin-top:6px;line-height:1.6">
-        ✅ Uploadowane pliki trafiają automatycznie do <strong>Mailchimp File Manager</strong> i są od razu publiczne.<br>
-        YouTube links → thumbnail auto-extracted.
-      </p>
-
       <div class="sel-imgs-wrap" id="sel-imgs-wrap">
         <div class="sel-imgs-lbl">Selected for email</div>
         <div class="sel-imgs-row" id="sel-imgs-row"></div>
@@ -1202,6 +1184,14 @@ function renderResults(c,progs){
     ['e-h1','Headline (H2 in email)',c.headline,1],
     ['e-intro','Opening paragraph',c.intro,3],
   ]);
+  // Hi First Name toggle
+  h+=`<div class="rcard" style="margin-top:-6px;padding:10px 16px;background:#FAFBFD;">
+    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--txt);">
+      <input type="checkbox" id="show-greeting" checked onchange="renderGreetingPreview()"
+        style="width:16px;height:16px;accent-color:var(--dk);cursor:pointer;">
+      <span>Pokaż <strong>Hi *|FNAME|*,</strong> na początku emaila</span>
+    </label>
+  </div>`;
 
   // Body — RTE fields
   h+=`<div class="rcard">
@@ -1336,10 +1326,10 @@ function buildEmailHTML(c, ctaUrl, imgs) {
     style="display:block;width:100%;height:auto;border-radius:12px;max-height:320px;object-fit:cover;border:0;">
 </td></tr>` : '';
 
-  // Greeting + intro
+  // Greeting + intro — conditional on showGreeting
   const intro = `
 <tr><td style="padding:24px 32px 0;font-family:${FONT};font-size:17px;line-height:165%;color:#111111;">
-  <p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p>
+  ${c.showGreeting !== false ? `<p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p>` : ''}
   <p style="margin:0;font-size:16px;color:#333;line-height:170%;">${e(c.intro)}</p>
 </td></tr>`;
 
@@ -1413,11 +1403,6 @@ function buildEmailHTML(c, ctaUrl, imgs) {
 </td></tr>` : '';
 
   // Sign-off
-  const signoff = `
-<tr><td style="padding:24px 32px 36px;font-family:${FONT};font-size:15px;color:#888;">
-  <p style="margin:0;">_______________<br>The Angloville Team</p>
-</td></tr>`;
-
   // ── ASSEMBLE ─────────────────────────────────────────────
   const rows = [
     logoBar,
@@ -1433,7 +1418,6 @@ function buildEmailHTML(c, ctaUrl, imgs) {
     ps,
     cta2,
     img4,
-    signoff,
   ].filter(Boolean).join('\n');
 
   return `<div style="background:#EBEBEB;padding:0;">
@@ -1487,11 +1471,13 @@ async function sendMC(){
 // ═══════════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════════
+function renderGreetingPreview(){ /* preview updates via getCurrent */ }
 function getCurrent(){
   const g=id=>(document.getElementById(id)?.value||'').trim();
   const gh=id=>(document.getElementById(id)?.innerHTML||'').trim();
+  const showGreeting = document.getElementById('show-greeting')?.checked !== false;
   return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),
-    headline:g('e-h1'),intro:g('e-intro'),
+    headline:g('e-h1'),intro:g('e-intro'),showGreeting,
     body_p1:gh('e-p1'),body_p2:gh('e-p2'),body_p3:gh('e-p3'),
     cta:g('e-cta1'),cta2:g('e-cta2'),ps:g('e-ps'),ab1:g('e-ab1'),ab2:g('e-ab2')};
 }
