@@ -151,8 +151,8 @@ Return ONLY valid JSON, no markdown, no backticks.
 
       const files = (data.resources || []).map(item => ({
         id:    item.public_id,
-        url:   item.secure_url.replace('/upload/', '/upload/w_620,c_fill,g_auto,q_auto,f_auto/'),
-        thumb: item.secure_url.replace('/upload/', '/upload/w_400,h_260,c_fill,g_auto,q_auto,f_auto/'),
+        url:   item.secure_url.replace('/upload/', '/upload/w_1240,c_fill,g_auto:faces,q_100,f_auto/'),
+        thumb: item.secure_url.replace('/upload/', '/upload/w_600,h_400,c_fill,g_auto:faces,q_90,f_auto/'),
         label: item.public_id.split('/').pop(),
         folder: item.public_id.includes('/') ? item.public_id.split('/').slice(0,-1).join('/') : '',
         bytes: item.bytes,
@@ -292,33 +292,114 @@ Return ONLY valid JSON, no markdown, no backticks.
       return e(txt);
     };
 
-    const img = (src,pad,h) => `<tr><td style="padding:${pad||'24px 32px 0'};"><img src="${src}" alt="" width="100%" style="display:block;width:100%;height:auto;border-radius:12px;max-height:${h||260}px;object-fit:cover;border:0;"></td></tr>`;
+    const img = (src, pad, maxH) => `
+<tr><td style="padding:${pad||'20px 20px 0'};line-height:0;">
+  <img src="${src}" alt="" width="100%" style="display:block;width:100%;height:auto;border-radius:10px;max-height:${maxH||280}px;object-fit:cover;border:0;">
+</td></tr>`;
 
-    const logoBar     = `<tr><td style="background:#F4F4F4;padding:18px 32px;" align="center"><img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png" alt="Angloville" height="36" style="display:inline-block;height:36px;width:auto;border:0;max-width:200px;"></td></tr>`;
-    const headlineRow = `<tr><td style="padding:36px 32px 4px;"><h1 style="margin:0;font-family:${FONT};font-size:36px;font-weight:900;line-height:115%;color:#111111;letter-spacing:-0.5px;">${e(campaign.headline)}</h1></td></tr>`;
-    const heroImg     = imgs[0] ? img(imgs[0].thumb||imgs[0].url,'28px 32px 0',320) : '';
+    const logoBar = `
+<tr><td style="background:#F4F4F4;padding:16px 20px;" align="center">
+  <img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png"
+    alt="Angloville" height="32" style="display:inline-block;height:32px;width:auto;border:0;max-width:180px;">
+</td></tr>`;
+
+    const headlineRow = `
+<tr><td style="padding:28px 20px 6px;">
+  <h1 style="margin:0;font-family:${FONT};font-size:28px;font-weight:900;line-height:115%;color:#111111;letter-spacing:-0.3px;">${e(campaign.headline)}</h1>
+</td></tr>`;
+
+    const heroImg = imgs[0] ? `
+<tr><td style="padding:20px 20px 0;line-height:0;">
+  <img src="${imgs[0].thumb||imgs[0].url}" alt="" width="100%"
+    style="display:block;width:100%;height:auto;border-radius:10px;object-fit:cover;border:0;">
+</td></tr>` : '';
+
     const greetingLine = campaign.showGreeting !== false
-      ? `<p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p>` : '';
-    const introRow    = `<tr><td style="padding:24px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">${greetingLine}<p style="margin:0;">${e(campaign.intro)}</p></td></tr>`;
-    const cta1Row     = `<tr><td style="padding:28px 32px 0;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td align="center" bgcolor="#FCD23A" style="border-radius:50px;padding:18px 32px;font-family:${FONT};font-size:17px;font-weight:bold;"><a href="${cta_url}" target="_blank" style="color:#111111;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta)}</a></td></tr></table></td></tr>`;
-    const p1Row       = `<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">${safeHtml(campaign.body_p1)}</td></tr>`;
-    const img2Row     = imgs[1] ? img(imgs[1].thumb||imgs[1].url) : '';
-    const p2Row       = `<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">${bullets(campaign.body_p2)}</td></tr>`;
-    const img3Row     = imgs[2] ? img(imgs[2].thumb||imgs[2].url) : '';
-    const p3Row       = `<tr><td style="padding:18px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">${safeHtml(campaign.body_p3)}</td></tr>`;
-    const psRow       = campaign.ps ? `<tr><td style="padding:12px 32px 0;font-family:${FONT};font-size:14px;color:#888;font-style:italic;"><p style="margin:0;">${e(campaign.ps)}</p></td></tr>` : '';
-    const cta2Row     = `<tr><td style="padding:14px 32px 0;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 32px;font-family:${FONT};font-size:16px;font-weight:bold;"><a href="${cta_url}" target="_blank" style="color:#FFFFFF;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta2||campaign.cta)}</a></td></tr></table></td></tr>`;
-    const img4Row     = imgs[3] ? img(imgs[3].thumb||imgs[3].url) : '';
+      ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">Hi <strong>*|FNAME|*</strong>,</p>` : '';
+    const introRow = `
+<tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">
+  ${greetingLine}<p style="margin:0;">${e(campaign.intro)}</p>
+</td></tr>`;
+
+    const cta1Row = `
+<tr><td style="padding:24px 20px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#FCD23A" style="border-radius:50px;padding:18px 24px;">
+      <a href="${cta_url}" target="_blank"
+        style="color:#111111;text-decoration:none;font-weight:800;font-family:${FONT};font-size:17px;display:block;white-space:nowrap;">${e(campaign.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+    const p1Row = `
+<tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  ${safeHtml(campaign.body_p1)}
+</td></tr>`;
+
+    const img2Row = imgs[1] ? img(imgs[1].thumb||imgs[1].url) : '';
+
+    const p2Row = `
+<tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">
+  ${bullets(campaign.body_p2)}
+</td></tr>`;
+
+    const img3Row = imgs[2] ? img(imgs[2].thumb||imgs[2].url) : '';
+
+    const p3Row = `
+<tr><td style="padding:16px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  ${safeHtml(campaign.body_p3)}
+</td></tr>`;
+
+    const psRow = campaign.ps ? `
+<tr><td style="padding:12px 20px 0;font-family:${FONT};font-size:14px;color:#888;font-style:italic;">
+  <p style="margin:0;">${e(campaign.ps)}</p>
+</td></tr>` : '';
+
+    const cta2Row = `
+<tr><td style="padding:14px 20px 24px;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 24px;">
+      <a href="${cta_url}" target="_blank"
+        style="color:#FFFFFF;text-decoration:none;font-weight:800;font-family:${FONT};font-size:16px;display:block;white-space:nowrap;">${e(campaign.cta2||campaign.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+    const img4Row = imgs[3] ? img(imgs[3].thumb||imgs[3].url) : '';
 
     const rows = [logoBar,headlineRow,heroImg,introRow,cta1Row,p1Row,img2Row,p2Row,img3Row,p3Row,psRow,cta2Row,img4Row].filter(Boolean).join('\n');
 
     const fullHtml = `<!DOCTYPE html>
-<html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="background:#EBEBEB;margin:0;padding:0;">
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="620" style="max-width:620px;background:#FFFFFF;border-collapse:collapse;margin:0 auto;">
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="x-apple-disable-message-reformatting">
+<title></title>
+<style>
+  body { margin:0; padding:0; background:#EBEBEB; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+  table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+  img { border:0; outline:none; text-decoration:none; -ms-interpolation-mode:bicubic; }
+  a { text-decoration:none; }
+  @media only screen and (max-width:620px) {
+    .email-wrapper { width:100% !important; }
+    .email-body td { padding-left:16px !important; padding-right:16px !important; }
+    h1 { font-size:24px !important; }
+    .cta-td { padding:16px 16px 0 !important; }
+    .cta-btn { font-size:15px !important; padding:16px 20px !important; }
+    .footer-td { padding-left:16px !important; padding-right:16px !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background:#EBEBEB;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EBEBEB;">
+<tr><td align="center" style="padding:0;">
+<table role="presentation" class="email-wrapper" cellpadding="0" cellspacing="0" border="0"
+  width="620" style="max-width:620px;width:100%;background:#FFFFFF;">
   ${rows}
-  <tr><td style="padding:16px 32px 24px;font-family:${FONT};font-size:12px;color:#AAAAAA;line-height:160%;border-top:1px solid #EEEEEE;">${footerContent}</td></tr>
+  <tr><td class="footer-td" style="padding:16px 20px 24px;font-family:${FONT};font-size:12px;color:#AAAAAA;line-height:160%;border-top:1px solid #EEEEEE;">${footerContent}</td></tr>
 </table>
+</td></tr></table>
 </body></html>`;
 
     try {
