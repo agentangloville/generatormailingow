@@ -473,14 +473,15 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
       <div class="upload-zone" id="upload-zone">
         <input type="file" accept="image/*" multiple onchange="handleFileUpload(event)">
         <span class="uz-icon">📁</span>
-        <div class="uz-txt"><strong>Click to upload</strong> or drag & drop<br>JPG, PNG, GIF, WebP</div>
+        <div class="uz-txt"><strong>Click to upload</strong> or drag & drop<br>JPG, PNG, GIF, WebP — auto-saved to Mailchimp</div>
       </div>
+      <div id="upload-err" style="display:none;margin-top:6px;background:#FFF2F2;border:1px solid #FFCCCC;border-radius:7px;padding:8px 12px;font-size:11px;color:#CC0000;"></div>
       <div class="url-row" style="margin-top:8px">
         <input id="img-url-inp" placeholder="or paste image URL / YouTube link…" onkeydown="if(event.key==='Enter')addUrl()">
         <button onclick="addUrl()">Add</button>
       </div>
       <p style="font-size:10px;color:var(--sub);margin-top:6px;line-height:1.6">
-        ⚠️ Uploaded files show in preview — for Mailchimp use a public image URL.
+        ✅ Uploadowane pliki trafiają automatycznie do <strong>Mailchimp File Manager</strong> i są od razu publiczne.<br>
         YouTube links → thumbnail auto-extracted.
       </p>
 
@@ -769,6 +770,13 @@ let selImgs  = [];
 let selFoot  = null;
 let libCat   = null;
 
+// Mailchimp library state
+let mcImages   = [];      // all fetched images
+let mcFolders  = [];      // folders from MC
+let mcFolder   = null;    // active folder filter (null = all)
+let mcLoaded   = false;
+let mcLoading  = false;
+
 // ═══════════════════════════════════════════════════════════
 //  INIT / MARKET SWITCH
 // ═══════════════════════════════════════════════════════════
@@ -823,38 +831,128 @@ function updateSelBar(){
 //  IMAGE LIBRARY
 // ═══════════════════════════════════════════════════════════
 function initLibCat(){
-  const cats=['⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
+  const cats=['📂 Mailchimp Library', '⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
   if(!libCat||!cats.includes(libCat)) libCat=cats[0];
 }
 function renderLibTabs(){
-  const cats=['⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
+  const cats=['📂 Mailchimp Library', '⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
   document.getElementById('img-tabs').innerHTML=cats.map(cat=>
     `<button type="button" class="img-tab${libCat===cat?' on':''}" onclick="switchCat('${escAttr(cat)}')">${cat}</button>`
   ).join('');
 }
 function escAttr(s){ return s.replace(/'/g,"\\'"); }
 function switchCat(c){libCat=c; renderLibTabs(); renderGallery();}
+function switchCat(c){
+  libCat=c;
+  renderLibTabs();
+  if(c==='📂 Mailchimp Library' && !mcLoaded) loadMCLibrary();
+  else renderGallery();
+}
+
+async function loadMCLibrary(){
+  if(mcLoading) return;
+  mcLoading=true;
+  document.getElementById('img-gallery').innerHTML=`
+    <div style="grid-column:1/-1;padding:20px 0;text-align:center;">
+      <div style="font-size:12px;color:var(--sub);">⏳ Wczytywanie z Mailchimp…</div>
+    </div>`;
+  try{
+    const res = await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'mailchimp_images',count:200})});
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error);
+    mcImages  = data.files  || [];
+    mcFolders = data.folders|| [];
+    mcLoaded  = true;
+    renderMCFolderBar();
+    renderGallery();
+  }catch(e){
+    document.getElementById('img-gallery').innerHTML=`
+      <div style="grid-column:1/-1;padding:16px;background:#FFF2F2;border-radius:8px;font-size:12px;color:#CC0000;">
+        ❌ Nie udało się wczytać: ${e.message}<br>
+        <button class="btn-out" style="margin-top:8px;font-size:11px" onclick="mcLoaded=false;loadMCLibrary()">Spróbuj ponownie</button>
+      </div>`;
+  }
+  mcLoading=false;
+}
+
+function renderMCFolderBar(){
+  let bar = document.getElementById('mc-folder-bar');
+  if(!bar){
+    bar = document.createElement('div');
+    bar.id = 'mc-folder-bar';
+    bar.style.cssText='display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;';
+    const gallery = document.getElementById('img-gallery');
+    gallery.parentNode.insertBefore(bar, gallery);
+  }
+  const folders = [{id:null,name:'Wszystkie'},...mcFolders];
+  bar.innerHTML = folders.map(f=>`
+    <button type="button" class="img-tab${mcFolder===f.id?' on':''}"
+      onclick="mcFolder=${f.id===null?'null':"'"+f.id+"'"};renderMCFolderBar();renderGallery()">
+      ${esc(f.name)}
+    </button>`).join('');
+}
+
 function renderGallery(){
-  const isMyLib = libCat==='⭐ My Images';
-  const imgs = isMyLib ? loadCustom() : (IMG_LIB[market]||{})[libCat]||[];
+  // Remove MC folder bar if not on MC tab
+  if(libCat!=='📂 Mailchimp Library'){
+    const bar=document.getElementById('mc-folder-bar');
+    if(bar) bar.remove();
+  }
+
+  const isMC     = libCat==='📂 Mailchimp Library';
+  const isMyLib  = libCat==='⭐ My Images';
+
+  let imgs;
+  if(isMC){
+    imgs = mcFolder ? mcImages.filter(i=>i.folder_id==mcFolder) : mcImages;
+  } else if(isMyLib){
+    imgs = loadCustom();
+  } else {
+    imgs = (IMG_LIB[market]||{})[libCat]||[];
+  }
+
   const selUrls=new Set(selImgs.map(i=>i.url));
   const orderMap={};selImgs.forEach((s,i)=>orderMap[s.url]=i+1);
-  if(isMyLib && imgs.length===0){
-    document.getElementById('img-gallery').innerHTML=`<div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">No saved images yet — add URLs or upload files below ↓</div>`;
+
+  if(isMC && !mcLoaded){
+    document.getElementById('img-gallery').innerHTML=`
+      <div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">
+        Kliknij żeby wczytać bibliotekę Mailchimp
+      </div>`;
     return;
   }
+
+  if(imgs.length===0){
+    document.getElementById('img-gallery').innerHTML=`
+      <div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">
+        ${isMC ? '📂 Brak zdjęć w Mailchimp File Manager.' : 'Brak zapisanych zdjęć — dodaj URL lub uploaduj ↓'}
+      </div>`;
+    return;
+  }
+
   document.getElementById('img-gallery').innerHTML=imgs.map(img=>{
     const lbl=img.lbl||img.label||'';
     const on=selUrls.has(img.url);
-    const delBtn=isMyLib?`<div class="gdel" onclick="event.stopPropagation();removeFromCustomLib('${img.url.replace(/'/g,"\\\'")}');renderGallery();">✕</div>`:'';
-    return `<div class="gal-item${on?' on':''}" onclick="toggleGalImg('${img.url.replace(/'/g,"\\\'")}','${img.url.replace(/'/g,"\\\'")}','${esc(lbl)}')">
-      <img src="${img.url}" alt="${esc(lbl)}" loading="lazy"
+    const delBtn=(isMyLib)?`<div class="gdel" onclick="event.stopPropagation();removeFromCustomLib('${img.url.replace(/'/g,"\\'") }');renderGallery();">✕</div>`:'';
+    const reloadBtn=isMC?`<div class="gdel" style="left:auto;right:4px;" onclick="event.stopPropagation();mcLoaded=false;loadMCLibrary()">↻</div>`:'';
+    return `<div class="gal-item${on?' on':''}" onclick="toggleGalImg('${img.url.replace(/'/g,"\\'")}','${(img.thumb||img.url).replace(/'/g,"\\'")}','${esc(lbl)}')">
+      <img src="${img.thumb||img.url}" alt="${esc(lbl)}" loading="lazy"
         onerror="this.parentElement.style.background='#DDD';this.style.display='none'">
       <div class="gnum">${on?orderMap[img.url]:''}</div>
       <div class="glbl">${esc(lbl)}</div>
       ${delBtn}
     </div>`;
   }).join('');
+
+  // Reload button for MC tab
+  if(isMC){
+    const gallery=document.getElementById('img-gallery');
+    const reloadDiv=document.createElement('div');
+    reloadDiv.style.cssText='grid-column:1/-1;text-align:right;margin-top:4px;';
+    reloadDiv.innerHTML=`<button class="btn-cp" onclick="mcLoaded=false;loadMCLibrary()" style="font-size:10px">↻ Odśwież bibliotekę</button>`;
+    gallery.appendChild(reloadDiv);
+  }
 }
 function toggleGalImg(url,thumb,label){
   const i=selImgs.findIndex(s=>s.url===url);
@@ -863,27 +961,64 @@ function toggleGalImg(url,thumb,label){
 }
 
 // ═══════════════════════════════════════════════════════════
-//  FILE UPLOAD
+//  FILE UPLOAD → Mailchimp File Manager
 // ═══════════════════════════════════════════════════════════
-const zone=document.getElementById('upload-zone');
-zone.addEventListener('dragover',e=>{e.preventDefault();zone.classList.add('drag');});
-zone.addEventListener('dragleave',()=>zone.classList.remove('drag'));
-zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('drag');handleFiles(e.dataTransfer.files);});
-
-function handleFileUpload(e){handleFiles(e.target.files);}
+function handleFileUpload(e){ handleFiles(e.target.files); }
 function handleFiles(files){
-  [...files].forEach(file=>{
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      const img={url:ev.target.result,thumb:ev.target.result,label:file.name.replace(/\.[^.]+$/,''),lbl:file.name.replace(/\.[^.]+$/,'')};
-      selImgs.push(img);
-      // Note: uploaded files (base64) are NOT saved to library — use a public URL for permanent storage
-      renderGallery(); renderSelImgs();
+  [...files].forEach(file => {
+    // Show placeholder while uploading
+    const tempId = 'upload_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const placeholder = { url: '', thumb: '', label: file.name.replace(/\.[^.]+$/,''), lbl: file.name.replace(/\.[^.]+$/,''), _uploading: true, _id: tempId };
+    selImgs.push(placeholder);
+    renderSelImgs();
+
+    const reader = new FileReader();
+    reader.onload = async ev => {
+      const dataUrl = ev.target.result;           // data:image/jpeg;base64,....
+      const base64  = dataUrl.split(',')[1];      // pure base64
+      const ext     = file.name.split('.').pop() || 'jpg';
+      const filename = 'av-' + Date.now() + '-' + file.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+
+      try {
+        const res  = await fetch('/api/proxy', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action: 'mailchimp_upload', filename, data: base64 }),
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Upload failed');
+
+        // Replace placeholder with real URL
+        const idx = selImgs.findIndex(s => s._id === tempId);
+        if (idx >= 0) {
+          selImgs[idx] = { url: json.url, thumb: json.url, label: placeholder.label, lbl: placeholder.label };
+          addToCustomLib(selImgs[idx]);
+          // Also inject into MC cache so it appears immediately
+          mcImages.unshift({ url: json.url, thumb: json.url, label: placeholder.label, lbl: placeholder.label });
+        }
+      } catch(err) {
+        // Remove placeholder on error, show message
+        selImgs = selImgs.filter(s => s._id !== tempId);
+        showUploadErr('Upload failed: ' + err.message);
+      }
+      renderGallery();
+      renderSelImgs();
     };
     reader.readAsDataURL(file);
   });
 }
-function addUrl(){
+function showUploadErr(msg){
+  const el = document.getElementById('upload-err');
+  if(el){ el.textContent = msg; el.style.display = 'block'; setTimeout(()=>el.style.display='none', 5000); }
+}
+// drag & drop
+(function(){
+  const zone = document.getElementById('upload-zone');
+  if(!zone) return;
+  zone.addEventListener('dragover',  e=>{ e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', ()=> zone.classList.remove('drag'));
+  zone.addEventListener('drop',      e=>{ e.preventDefault(); zone.classList.remove('drag'); handleFiles(e.dataTransfer.files); });
+})();
   const urlInp=document.getElementById('img-url-inp');
   const url=(urlInp?.value||'').trim();
   if(!url) return;
@@ -904,12 +1039,21 @@ function renderSelImgs(){
   const row=document.getElementById('sel-imgs-row');
   if(!selImgs.length){wrap.classList.remove('show');return;}
   wrap.classList.add('show');
-  row.innerHTML=selImgs.map((img,i)=>`
-    <div class="sel-thumb">
+  row.innerHTML=selImgs.map((img,i)=>{
+    if(img._uploading){
+      return `<div class="sel-thumb" style="display:flex;align-items:center;justify-content:center;background:#f0f0f0;border-color:#ccc;">
+        <div style="text-align:center">
+          <div style="font-size:9px;color:#888;margin-bottom:2px">⏳</div>
+          <div style="font-size:8px;color:#aaa">uploading…</div>
+        </div>
+      </div>`;
+    }
+    return `<div class="sel-thumb">
       <img src="${img.thumb}" alt="${esc(img.label)}" onerror="this.style.display='none'">
       <button class="rm" onclick="removeSelImg(${i})">✕</button>
       <div class="sn">${i+1}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ═══════════════════════════════════════════════════════════
