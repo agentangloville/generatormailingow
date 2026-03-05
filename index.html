@@ -233,17 +233,28 @@ textarea.notes{
 textarea.notes:focus{outline:none;border-color:var(--b)}
 
 /* GENERATE BTN */
-.gen-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-top:4px}
+.gen-row{margin-top:4px}
 .btn-gen{
-  display:inline-flex;align-items:center;gap:9px;
-  padding:14px 32px;background:var(--y);color:var(--dk);
-  font-family:'Syne',sans-serif;font-size:14px;font-weight:800;
-  border:none;border-radius:10px;cursor:pointer;
-  transition:all .18s;letter-spacing:.3px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  width:100%;padding:18px 32px;
+  background:var(--dk);color:#fff;
+  font-family:'Syne',sans-serif;font-size:15px;font-weight:800;
+  border:none;border-radius:12px;cursor:pointer;
+  transition:all .2s;letter-spacing:.4px;
+  position:relative;overflow:hidden;
 }
-.btn-gen:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(252,210,58,.35)}
-.btn-gen:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
-.prog-req{font-size:12px;color:var(--sub)}
+.btn-gen::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,#FCD23A 0%,#F5B800 100%);
+  opacity:0;transition:opacity .2s;
+}
+.btn-gen:hover::before{opacity:1}
+.btn-gen:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.btn-gen:hover{color:var(--dk)}
+.btn-gen span,.btn-gen .btn-label{position:relative;z-index:1}
+.btn-gen:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-gen:disabled::before{opacity:0}
+.prog-req{font-size:12px;color:var(--sub);text-align:center;margin-top:8px;min-height:16px}
 
 /* LOADER */
 .loader-wrap{display:none;padding:32px 0;text-align:center}
@@ -492,9 +503,10 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
   <!-- GENERATE -->
   <div class="gen-row">
     <button class="btn-gen" id="gen-btn" onclick="generate()">
-      <span>✦</span> Generate Campaign
+      <span style="font-size:18px;position:relative;z-index:1">✦</span>
+      <span class="btn-label">Generate Campaign</span>
     </button>
-    <span class="prog-req" id="prog-hint">← Select at least one programme</span>
+    <div class="prog-req" id="prog-hint">Select at least one programme above ↑</div>
   </div>
 
   <div class="loader-wrap" id="loader-wrap">
@@ -1057,76 +1069,166 @@ function buildUrl(){
 function utmPrev(){const el=document.getElementById('utm-out');if(el)el.textContent=buildUrl()||'← fill in URL above';}
 
 // ═══════════════════════════════════════════════════════════
-//  EMAIL HTML BUILDER
+//  EMAIL HTML BUILDER — clean editorial style (like EF/screenshot)
 // ═══════════════════════════════════════════════════════════
-function buildEmailHTML(c,ctaUrl,imgs){
-  const e=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  const footerHtml=getFooterHtml();
+function buildEmailHTML(c, ctaUrl, imgs) {
+  const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const e = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const footerHtml = getFooterHtml();
 
-  const imgBlock=img=>`
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-  <tr><td style="padding:0 9px 9px;">
-    <img src="${img.thumb||img.url}" alt="" width="100%"
-      style="display:block;width:100%;height:auto;border-radius:14px;max-height:300px;object-fit:cover;border:0;">
-  </td></tr>
-</table>`;
+  // ── primitives ──────────────────────────────────────────
 
-  const div=`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;table-layout:fixed!important;">
-  <tr><td style="padding:18px;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-top:2px solid #EAEAEA;border-collapse:collapse;"><tr><td></td></tr></table></td></tr>
-</table>`;
+  const imgFull = img => `
+<tr><td style="padding:0 0 28px;">
+  <img src="${img.thumb||img.url}" alt="" width="100%"
+    style="display:block;width:100%;height:auto;border-radius:0;max-height:340px;object-fit:cover;border:0;">
+</td></tr>`;
 
-  const txt=html=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-  <tr><td style="padding:0 18px 9px;font-family:Arial,'Helvetica Neue',Helvetica,sans-serif;font-size:15px;line-height:150%;color:#202020;">
-    ${html}
-  </td></tr>
-</table>`;
+  const spacer = h => `<tr><td style="height:${h}px;line-height:${h}px;font-size:1px;">&nbsp;</td></tr>`;
 
-  const btn=(lbl,href,bg,col)=>`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-  <tr><td style="padding:0 18px 18px;" align="center">
-    <table border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate!important;border-radius:6px;background-color:${bg};">
-      <tr><td align="center" style="font-family:Arial,sans-serif;font-size:16px;padding:15px 28px;">
-        <a href="${href}" target="_blank" style="font-weight:bold;text-decoration:none;color:${col};display:block;">${e(lbl)}</a>
-      </td></tr>
-    </table>
-  </td></tr>
-</table>`;
+  // Parse body_p2 into bold emoji bullet lines
+  const bullets = txt => {
+    const lines = txt.split(/\n/).map(l=>l.trim()).filter(Boolean);
+    return lines.map(l =>
+      `<p style="margin:0 0 10px;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">
+        <strong>${e(l)}</strong>
+      </p>`
+    ).join('');
+  };
 
-  // Logo header
-  const logoBlock=`<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;">
-  <tr><td style="padding:18px 18px 9px;" align="center">
-    <img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png"
-      alt="Angloville" width="180" style="display:inline-block;height:auto;border:0;max-width:180px;">
-  </td></tr>
-</table>`;
+  // ── LOGO BAR ────────────────────────────────────────────
+  const logoBar = `
+<tr><td style="background:#F4F4F4;padding:18px 32px;" align="center">
+  <img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png"
+    alt="Angloville" height="36"
+    style="display:inline-block;height:36px;width:auto;border:0;max-width:200px;">
+</td></tr>`;
 
-  let b=logoBlock;
-  if(imgs[0]) b+=imgBlock(imgs[0]);
-  b+=txt(`<p style="margin:10px 0;font-size:15px;">Hi <strong>*|FNAME|*</strong>,</p>
-    <p style="margin:10px 0;font-size:21px;font-weight:bold;line-height:130%;">${e(c.headline)}</p>
-    <p style="margin:10px 0;">${e(c.intro)}</p>`);
-  b+=btn(c.cta1||c.cta,ctaUrl,'#FFD249','#222222');
-  b+=div;
-  b+=txt(`<p style="margin:10px 0;">${e(c.body_p1)}</p>`);
-  if(imgs[1]){b+=imgBlock(imgs[1]);b+=div;}
-  b+=txt(`<p style="margin:10px 0;">${e(c.body_p2)}</p>`);
-  if(imgs[2]){b+=imgBlock(imgs[2]);b+=div;}
-  b+=txt(`<p style="margin:10px 0;">${e(c.body_p3)}</p>`);
-  if(c.ps) b+=txt(`<p style="margin:10px 0;color:#555;font-style:italic;">${e(c.ps)}</p>`);
-  b+=div;
-  b+=btn(c.cta2||c.cta,ctaUrl,'#4CAAD8','#FFFFFF');
-  if(imgs[3]){b+=div;b+=imgBlock(imgs[3]);}
-  b+=txt(`<p style="margin:10px 0;">_______________<br>The Angloville Team</p>`);
+  // ── CONTENT ROWS ─────────────────────────────────────────
+  // Big headline
+  const headline = `
+<tr><td style="padding:36px 32px 4px;">
+  <h1 style="margin:0;font-family:${FONT};font-size:36px;font-weight:900;line-height:115%;color:#111111;letter-spacing:-0.5px;">
+    ${e(c.headline)}
+  </h1>
+</td></tr>`;
 
-  return `<div style="background:#f0f0f0;padding:10px;border-radius:8px;">
+  // Hero image (optional, after headline)
+  const heroImg = imgs[0] ? `
+<tr><td style="padding:28px 32px 0;">
+  <img src="${imgs[0].thumb||imgs[0].url}" alt="" width="100%"
+    style="display:block;width:100%;height:auto;border-radius:12px;max-height:320px;object-fit:cover;border:0;">
+</td></tr>` : '';
+
+  // Greeting + intro
+  const intro = `
+<tr><td style="padding:24px 32px 0;font-family:${FONT};font-size:17px;line-height:165%;color:#111111;">
+  <p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p>
+  <p style="margin:0;font-size:16px;color:#333;line-height:170%;">${e(c.intro)}</p>
+</td></tr>`;
+
+  // body_p1 — regular paragraph
+  const p1 = `
+<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  <p style="margin:0;">${e(c.body_p1)}</p>
+</td></tr>`;
+
+  // Image 2 (optional, between sections)
+  const img2 = imgs[1] ? `
+<tr><td style="padding:24px 32px 0;">
+  <img src="${imgs[1].thumb||imgs[1].url}" alt="" width="100%"
+    style="display:block;width:100%;height:auto;border-radius:12px;max-height:260px;object-fit:cover;border:0;">
+</td></tr>` : '';
+
+  // body_p2 — bold emoji lines (key selling points)
+  const p2 = `
+<tr><td style="padding:20px 32px 0;font-family:${FONT};">
+  ${bullets(c.body_p2)}
+</td></tr>`;
+
+  // body_p3 — urgency paragraph
+  const p3 = `
+<tr><td style="padding:18px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  <p style="margin:0;">${e(c.body_p3)}</p>
+</td></tr>`;
+
+  // PS
+  const ps = c.ps ? `
+<tr><td style="padding:12px 32px 0;font-family:${FONT};font-size:14px;line-height:160%;color:#888888;font-style:italic;">
+  <p style="margin:0;">${e(c.ps)}</p>
+</td></tr>` : '';
+
+  // Primary CTA button — pill, full-width yellow
+  const cta1 = `
+<tr><td style="padding:28px 32px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#FCD23A"
+      style="border-radius:50px;padding:18px 32px;font-family:${FONT};font-size:17px;font-weight:bold;">
+      <a href="${ctaUrl}" target="_blank"
+        style="color:#111111;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(c.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+  // Secondary CTA — pill, full-width blue
+  const cta2 = `
+<tr><td style="padding:14px 32px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#3A9AD9"
+      style="border-radius:50px;padding:16px 32px;font-family:${FONT};font-size:16px;font-weight:bold;">
+      <a href="${ctaUrl}" target="_blank"
+        style="color:#FFFFFF;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(c.cta2||c.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+  // Image 3
+  const img3 = imgs[2] ? `
+<tr><td style="padding:24px 32px 0;">
+  <img src="${imgs[2].thumb||imgs[2].url}" alt="" width="100%"
+    style="display:block;width:100%;height:auto;border-radius:12px;max-height:260px;object-fit:cover;border:0;">
+</td></tr>` : '';
+
+  // Image 4
+  const img4 = imgs[3] ? `
+<tr><td style="padding:24px 32px 0;">
+  <img src="${imgs[3].thumb||imgs[3].url}" alt="" width="100%"
+    style="display:block;width:100%;height:auto;border-radius:12px;max-height:260px;object-fit:cover;border:0;">
+</td></tr>` : '';
+
+  // Sign-off
+  const signoff = `
+<tr><td style="padding:24px 32px 36px;font-family:${FONT};font-size:15px;color:#888;">
+  <p style="margin:0;">_______________<br>The Angloville Team</p>
+</td></tr>`;
+
+  // ── ASSEMBLE ─────────────────────────────────────────────
+  const rows = [
+    logoBar,
+    headline,
+    heroImg,
+    intro,
+    cta1,
+    p1,
+    img2,
+    p2,
+    img3,
+    p3,
+    ps,
+    cta2,
+    img4,
+    signoff,
+  ].filter(Boolean).join('\n');
+
+  return `<div style="background:#EBEBEB;padding:0;">
 <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%"
-  style="max-width:580px;margin:0 auto;background:#ffffff;border-collapse:collapse;">
-  <tr><td style="padding:9px;">${b}</td></tr>
-  <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#555;line-height:150%;border-top:1px solid #EAEAEA;">
+  style="max-width:620px;margin:0 auto;background:#FFFFFF;border-collapse:collapse;">
+  ${rows}
+  <tr><td style="padding:16px 32px 24px;font-family:${FONT};font-size:12px;color:#AAAAAA;line-height:160%;border-top:1px solid #EEEEEE;">
     ${footerHtml}
   </td></tr>
 </table></div>`;
 }
-
 // ═══════════════════════════════════════════════════════════
 //  PREVIEW
 // ═══════════════════════════════════════════════════════════
