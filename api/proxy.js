@@ -129,27 +129,33 @@ Return ONLY valid JSON, no markdown, no backticks.
     const { folder = '', next_cursor = '', max_results = 50 } = body;
     const auth = 'Basic ' + Buffer.from(`${apiKey}:${apiSecret}`).toString('base64');
 
+    const safeJson = async (response) => {
+      const text = await response.text();
+      try { return JSON.parse(text); }
+      catch { throw new Error(`Cloudinary zwróciło błąd (${response.status}): ${text.slice(0, 200)}`); }
+    };
+
     try {
       let url = `https://api.cloudinary.com/v1_1/${cloudName}/resources/image?max_results=${max_results}&tags=true`;
       if (folder)      url += `&prefix=${encodeURIComponent(folder)}&type=upload`;
       if (next_cursor) url += `&next_cursor=${encodeURIComponent(next_cursor)}`;
 
       const r    = await fetch(url, { headers: { Authorization: auth } });
-      const data = await r.json();
+      const data = await safeJson(r);
       if (!r.ok) throw new Error(data.error?.message || `Cloudinary error ${r.status}`);
 
       // Also fetch folders
       const fr    = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/folders`, { headers: { Authorization: auth } });
-      const fdata = await fr.json();
+      const fdata = await safeJson(fr);
       const folders = (fdata.folders || []).map(f => ({ name: f.name, path: f.path }));
 
-      const files = (data.resources || []).map(r => ({
-        id:    r.public_id,
-        url:   r.secure_url,
-        thumb: r.secure_url.replace('/upload/', `/upload/w_300,h_200,c_fill/`),
-        label: r.public_id.split('/').pop(),
-        folder: r.asset_folder || r.public_id.includes('/') ? r.public_id.split('/').slice(0,-1).join('/') : '',
-        bytes: r.bytes,
+      const files = (data.resources || []).map(item => ({
+        id:    item.public_id,
+        url:   item.secure_url,
+        thumb: item.secure_url.replace('/upload/', '/upload/w_300,h_200,c_fill/'),
+        label: item.public_id.split('/').pop(),
+        folder: item.public_id.includes('/') ? item.public_id.split('/').slice(0,-1).join('/') : '',
+        bytes: item.bytes,
       }));
 
       return res.status(200).json({ ok: true, files, folders, next_cursor: data.next_cursor || null });
@@ -291,7 +297,9 @@ Return ONLY valid JSON, no markdown, no backticks.
     const logoBar     = `<tr><td style="background:#F4F4F4;padding:18px 32px;" align="center"><img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png" alt="Angloville" height="36" style="display:inline-block;height:36px;width:auto;border:0;max-width:200px;"></td></tr>`;
     const headlineRow = `<tr><td style="padding:36px 32px 4px;"><h1 style="margin:0;font-family:${FONT};font-size:36px;font-weight:900;line-height:115%;color:#111111;letter-spacing:-0.5px;">${e(campaign.headline)}</h1></td></tr>`;
     const heroImg     = imgs[0] ? img(imgs[0].thumb||imgs[0].url,'28px 32px 0',320) : '';
-    const introRow    = `<tr><td style="padding:24px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;"><p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p><p style="margin:0;">${e(campaign.intro)}</p></td></tr>`;
+    const greetingLine = campaign.showGreeting !== false
+      ? `<p style="margin:0 0 18px;font-size:17px;color:#111;">Hi <strong>*|FNAME|*</strong>,</p>` : '';
+    const introRow    = `<tr><td style="padding:24px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">${greetingLine}<p style="margin:0;">${e(campaign.intro)}</p></td></tr>`;
     const cta1Row     = `<tr><td style="padding:28px 32px 0;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td align="center" bgcolor="#FCD23A" style="border-radius:50px;padding:18px 32px;font-family:${FONT};font-size:17px;font-weight:bold;"><a href="${cta_url}" target="_blank" style="color:#111111;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta)}</a></td></tr></table></td></tr>`;
     const p1Row       = `<tr><td style="padding:20px 32px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">${safeHtml(campaign.body_p1)}</td></tr>`;
     const img2Row     = imgs[1] ? img(imgs[1].thumb||imgs[1].url) : '';
@@ -301,9 +309,8 @@ Return ONLY valid JSON, no markdown, no backticks.
     const psRow       = campaign.ps ? `<tr><td style="padding:12px 32px 0;font-family:${FONT};font-size:14px;color:#888;font-style:italic;"><p style="margin:0;">${e(campaign.ps)}</p></td></tr>` : '';
     const cta2Row     = `<tr><td style="padding:14px 32px 0;"><table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;"><tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 32px;font-family:${FONT};font-size:16px;font-weight:bold;"><a href="${cta_url}" target="_blank" style="color:#FFFFFF;text-decoration:none;font-weight:bold;font-family:${FONT};display:block;">${e(campaign.cta2||campaign.cta)}</a></td></tr></table></td></tr>`;
     const img4Row     = imgs[3] ? img(imgs[3].thumb||imgs[3].url) : '';
-    const signoffRow  = `<tr><td style="padding:24px 32px 36px;font-family:${FONT};font-size:15px;color:#888;"><p style="margin:0;">_______________<br>The Angloville Team</p></td></tr>`;
 
-    const rows = [logoBar,headlineRow,heroImg,introRow,cta1Row,p1Row,img2Row,p2Row,img3Row,p3Row,psRow,cta2Row,img4Row,signoffRow].filter(Boolean).join('\n');
+    const rows = [logoBar,headlineRow,heroImg,introRow,cta1Row,p1Row,img2Row,p2Row,img3Row,p3Row,psRow,cta2Row,img4Row].filter(Boolean).join('\n');
 
     const fullHtml = `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
