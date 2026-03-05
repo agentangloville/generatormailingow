@@ -771,11 +771,19 @@ let selFoot  = null;
 let libCat   = null;
 
 // Mailchimp library state
-let mcImages   = [];      // all fetched images
-let mcFolders  = [];      // folders from MC
-let mcFolder   = null;    // active folder filter (null = all)
+let mcImages   = [];
+let mcFolders  = [];
+let mcFolder   = null;
 let mcLoaded   = false;
 let mcLoading  = false;
+
+// Cloudinary library state
+let cldImages     = [];
+let cldFolders    = [];
+let cldFolder     = '';   // active folder filter
+let cldLoaded     = false;
+let cldLoading    = false;
+let cldNextCursor = null;
 
 // ═══════════════════════════════════════════════════════════
 //  INIT / MARKET SWITCH
@@ -831,133 +839,119 @@ function updateSelBar(){
 //  IMAGE LIBRARY
 // ═══════════════════════════════════════════════════════════
 function initLibCat(){
-  const cats=['📂 Mailchimp Library', '⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
-  if(!libCat||!cats.includes(libCat)) libCat=cats[0];
+  if(!libCat) libCat = '📷 Cloudinary';
+}
+function allLibCats(){
+  return ['📷 Cloudinary'];
 }
 function renderLibTabs(){
-  const cats=['📂 Mailchimp Library', '⭐ My Images', ...Object.keys(IMG_LIB[market]||{})];
-  document.getElementById('img-tabs').innerHTML=cats.map(cat=>
+  // Build folder sub-tabs if loaded
+  let html = `<button type="button" class="img-tab${libCat==='📷 Cloudinary'?' on':''}" onclick="switchCat('📷 Cloudinary')">📷 Wszystkie</button>`;
+  if(cldLoaded && cldFolders.length){
+    html += cldFolders.map(f =>
+      `<button type="button" class="img-tab${cldFolder===f.path?' on':''}"
+        onclick="cldFolder='${escAttr(f.path)}';renderLibTabs();renderGallery()">📁 ${esc(f.name)}</button>`
+    ).join('');
+  }
+  document.getElementById('img-tabs').innerHTML = html;
+}
+function renderLibTabs(){
+  document.getElementById('img-tabs').innerHTML = allLibCats().map(cat =>
     `<button type="button" class="img-tab${libCat===cat?' on':''}" onclick="switchCat('${escAttr(cat)}')">${cat}</button>`
   ).join('');
 }
 function escAttr(s){ return s.replace(/'/g,"\\'"); }
 function switchCat(c){
-  libCat=c;
+  libCat = c;
+  cldFolder = '';
   renderLibTabs();
-  if(c==='📂 Mailchimp Library' && !mcLoaded) loadMCLibrary();
+  if(!cldLoaded) loadCldLibrary();
   else renderGallery();
 }
 
-async function loadMCLibrary(){
-  if(mcLoading) return;
-  mcLoading=true;
-  document.getElementById('img-gallery').innerHTML=`
+async function loadCldLibrary(next_cursor){
+  if(cldLoading) return;
+  cldLoading = true;
+  if(!next_cursor) cldImages = []; // fresh load
+  document.getElementById('img-gallery').innerHTML = `
     <div style="grid-column:1/-1;padding:20px 0;text-align:center;">
-      <div style="font-size:12px;color:var(--sub);">⏳ Wczytywanie z Mailchimp…</div>
+      <div style="font-size:12px;color:var(--sub);">⏳ Wczytywanie z Cloudinary…</div>
     </div>`;
-  try{
-    const res = await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'mailchimp_images',count:200})});
+  try {
+    const res  = await fetch('/api/proxy', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'cloudinary_images', folder: cldFolder, next_cursor: next_cursor||'', max_results:50 }) });
     const data = await res.json();
     if(!data.ok) throw new Error(data.error);
-    mcImages  = data.files  || [];
-    mcFolders = data.folders|| [];
-    mcLoaded  = true;
-    renderMCFolderBar();
+    cldImages     = next_cursor ? [...cldImages, ...data.files] : data.files;
+    cldFolders    = data.folders || [];
+    cldNextCursor = data.next_cursor || null;
+    cldLoaded     = true;
+    renderLibTabs();
     renderGallery();
-  }catch(e){
-    document.getElementById('img-gallery').innerHTML=`
+  } catch(e) {
+    document.getElementById('img-gallery').innerHTML = `
       <div style="grid-column:1/-1;padding:16px;background:#FFF2F2;border-radius:8px;font-size:12px;color:#CC0000;">
-        ❌ Nie udało się wczytać: ${e.message}<br>
-        <button class="btn-out" style="margin-top:8px;font-size:11px" onclick="mcLoaded=false;loadMCLibrary()">Spróbuj ponownie</button>
+        ❌ ${e.message}<br>
+        <button class="btn-out" style="margin-top:8px;font-size:11px" onclick="cldLoaded=false;loadCldLibrary()">Spróbuj ponownie</button>
       </div>`;
   }
-  mcLoading=false;
-}
-
-function renderMCFolderBar(){
-  let bar = document.getElementById('mc-folder-bar');
-  if(!bar){
-    bar = document.createElement('div');
-    bar.id = 'mc-folder-bar';
-    bar.style.cssText='display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;';
-    const gallery = document.getElementById('img-gallery');
-    gallery.parentNode.insertBefore(bar, gallery);
-  }
-  const folders = [{id:null,name:'Wszystkie'},...mcFolders];
-  bar.innerHTML = folders.map(f=>`
-    <button type="button" class="img-tab${mcFolder===f.id?' on':''}"
-      onclick="mcFolder=${f.id===null?'null':"'"+f.id+"'"};renderMCFolderBar();renderGallery()">
-      ${esc(f.name)}
-    </button>`).join('');
+  cldLoading = false;
 }
 
 function renderGallery(){
-  // Remove MC folder bar if not on MC tab
-  if(libCat!=='📂 Mailchimp Library'){
-    const bar=document.getElementById('mc-folder-bar');
-    if(bar) bar.remove();
+  const gallery = document.getElementById('img-gallery');
+
+  // Filter by folder
+  const imgs = cldFolder
+    ? cldImages.filter(i => i.folder === cldFolder || i.id.startsWith(cldFolder + '/'))
+    : cldImages;
+
+  const selUrls  = new Set(selImgs.map(i=>i.url));
+  const orderMap = {}; selImgs.forEach((s,i)=>orderMap[s.url]=i+1);
+
+  if(!cldLoaded){
+    gallery.innerHTML = `<div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">
+      Kliknij żeby wczytać bibliotekę Cloudinary</div>`;
+    return;
   }
-
-  const isMC     = libCat==='📂 Mailchimp Library';
-  const isMyLib  = libCat==='⭐ My Images';
-
-  let imgs;
-  if(isMC){
-    imgs = mcFolder ? mcImages.filter(i=>i.folder_id==mcFolder) : mcImages;
-  } else if(isMyLib){
-    imgs = loadCustom();
-  } else {
-    imgs = (IMG_LIB[market]||{})[libCat]||[];
-  }
-
-  const selUrls=new Set(selImgs.map(i=>i.url));
-  const orderMap={};selImgs.forEach((s,i)=>orderMap[s.url]=i+1);
-
-  if(isMC && !mcLoaded){
-    document.getElementById('img-gallery').innerHTML=`
-      <div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">
-        Kliknij żeby wczytać bibliotekę Mailchimp
-      </div>`;
+  if(!imgs.length){
+    gallery.innerHTML = `<div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">
+      Brak zdjęć w tej kategorii</div>`;
     return;
   }
 
-  if(imgs.length===0){
-    document.getElementById('img-gallery').innerHTML=`
-      <div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">
-        ${isMC ? '📂 Brak zdjęć w Mailchimp File Manager.' : 'Brak zapisanych zdjęć — dodaj URL lub uploaduj ↓'}
-      </div>`;
-    return;
-  }
-
-  document.getElementById('img-gallery').innerHTML=imgs.map(img=>{
-    const lbl=img.lbl||img.label||'';
-    const on=selUrls.has(img.url);
-    const delBtn=(isMyLib)?`<div class="gdel" onclick="event.stopPropagation();removeFromCustomLib('${img.url.replace(/'/g,"\\'") }');renderGallery();">✕</div>`:'';
-    const reloadBtn=isMC?`<div class="gdel" style="left:auto;right:4px;" onclick="event.stopPropagation();mcLoaded=false;loadMCLibrary()">↻</div>`:'';
+  gallery.innerHTML = imgs.map(img=>{
+    const lbl = img.label || img.lbl || '';
+    const on  = selUrls.has(img.url);
     return `<div class="gal-item${on?' on':''}" onclick="toggleGalImg('${img.url.replace(/'/g,"\\'")}','${(img.thumb||img.url).replace(/'/g,"\\'")}','${esc(lbl)}')">
       <img src="${img.thumb||img.url}" alt="${esc(lbl)}" loading="lazy"
         onerror="this.parentElement.style.background='#DDD';this.style.display='none'">
       <div class="gnum">${on?orderMap[img.url]:''}</div>
       <div class="glbl">${esc(lbl)}</div>
-      ${delBtn}
     </div>`;
   }).join('');
 
-  // Reload button for MC tab
-  if(isMC){
-    const gallery=document.getElementById('img-gallery');
-    const reloadDiv=document.createElement('div');
-    reloadDiv.style.cssText='grid-column:1/-1;text-align:right;margin-top:4px;';
-    reloadDiv.innerHTML=`<button class="btn-cp" onclick="mcLoaded=false;loadMCLibrary()" style="font-size:10px">↻ Odśwież bibliotekę</button>`;
-    gallery.appendChild(reloadDiv);
+  // Load more button
+  if(cldNextCursor){
+    const more = document.createElement('div');
+    more.style.cssText = 'grid-column:1/-1;text-align:center;margin-top:8px;';
+    more.innerHTML = `<button class="btn-out" style="font-size:11px" onclick="loadCldLibrary('${cldNextCursor}')">Wczytaj więcej…</button>`;
+    gallery.appendChild(more);
   }
+
+  // Refresh button
+  const ref = document.createElement('div');
+  ref.style.cssText = 'grid-column:1/-1;text-align:right;margin-top:4px;';
+  ref.innerHTML = `<button class="btn-cp" style="font-size:10px" onclick="cldLoaded=false;cldNextCursor=null;loadCldLibrary()">↻ Odśwież</button>`;
+  gallery.appendChild(ref);
 }
+
 function toggleGalImg(url,thumb,label){
   const i=selImgs.findIndex(s=>s.url===url);
   if(i>=0) selImgs.splice(i,1); else selImgs.push({url,thumb,label});
   renderGallery(); renderSelImgs();
 }
+
 
 // ═══════════════════════════════════════════════════════════
 //  FILE UPLOAD → Mailchimp File Manager
@@ -982,7 +976,7 @@ function handleFiles(files){
         const res  = await fetch('/api/proxy', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'mailchimp_upload', filename, data: base64 }),
+          body: JSON.stringify({ action: 'cloudinary_upload', data: base64, filename, folder: 'angloville-emails' }),
         });
         const json = await res.json();
         if (!json.ok) throw new Error(json.error || 'Upload failed');
@@ -990,10 +984,9 @@ function handleFiles(files){
         // Replace placeholder with real URL
         const idx = selImgs.findIndex(s => s._id === tempId);
         if (idx >= 0) {
-          selImgs[idx] = { url: json.url, thumb: json.url, label: placeholder.label, lbl: placeholder.label };
-          addToCustomLib(selImgs[idx]);
-          // Also inject into MC cache so it appears immediately
-          mcImages.unshift({ url: json.url, thumb: json.url, label: placeholder.label, lbl: placeholder.label });
+          selImgs[idx] = { url: json.url, thumb: json.thumb||json.url, label: placeholder.label, lbl: placeholder.label };
+          // Inject into Cloudinary cache
+          cldImages.unshift({ url: json.url, thumb: json.thumb||json.url, label: placeholder.label, id: placeholder.label });
         }
       } catch(err) {
         // Remove placeholder on error, show message
