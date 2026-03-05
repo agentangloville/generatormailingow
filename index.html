@@ -713,18 +713,17 @@ Lingua: SOLO italiano.`,
 };
 
 // ═══════════════════════════════════════════════════════════
-//  CUSTOM IMAGE LIBRARY (persists in localStorage between sessions)
+//  CUSTOM IMAGE LIBRARY (in-memory, session only)
 // ═══════════════════════════════════════════════════════════
-const LS_KEY = 'av_custom_imgs_v1';
-function loadCustom(){ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); }catch{ return []; } }
-function saveCustom(arr){ try{ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }catch{} }
+let _customImgs = [];
+function loadCustom(){ return _customImgs; }
+function saveCustom(arr){ _customImgs = arr; }
 function addToCustomLib(img){
-  if(img.url.startsWith('data:')) return; // skip base64 – too large to store
-  const arr=loadCustom();
-  if(!arr.find(x=>x.url===img.url)){ arr.unshift(img); saveCustom(arr); }
+  if(img.url.startsWith('data:')) return; // skip base64
+  if(!_customImgs.find(x=>x.url===img.url)){ _customImgs.unshift(img); }
 }
 function removeFromCustomLib(url){
-  saveCustom(loadCustom().filter(x=>x.url!==url));
+  _customImgs = _customImgs.filter(x=>x.url!==url);
   // also remove from current selImgs if selected
   const i=selImgs.findIndex(s=>s.url===url);
   if(i>=0){ selImgs.splice(i,1); }
@@ -856,15 +855,16 @@ function handleFiles(files){
   });
 }
 function addUrl(){
-  const url=document.getElementById('img-url-inp').value.trim();
+  const urlInp=document.getElementById('img-url-inp');
+  const url=(urlInp?.value||'').trim();
   if(!url) return;
   const yt=url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
   const thumb=yt?'https://img.youtube.com/vi/'+yt[1]+'/hqdefault.jpg':url;
   const label=url.split('/').pop().split('?')[0]||'image';
   const img={url,thumb,label,lbl:label};
   selImgs.push(img);
-  addToCustomLib(img); // 💾 save to library
-  document.getElementById('img-url-inp').value='';
+  addToCustomLib(img);
+  urlInp.value='';
   renderGallery(); renderSelImgs();
 }
 function removeSelImg(i){
@@ -1303,7 +1303,11 @@ function resetAll(){
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // INIT
-renderAll();
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', renderAll);
+} else {
+  renderAll();
+}
 </script>
 </body>
 </html>
