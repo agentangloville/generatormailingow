@@ -100,7 +100,7 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation.
       });
     }
 
-    const { campaign, cta_url, images, program_name } = body;
+    const { campaign, cta_url, images, program_name, footer_html } = body;
     const dc = (mcKey.split('-')[1] || 'us1');
     const imgs = images || [];
 
@@ -134,7 +134,9 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation.
   </td></tr>
 </table>`;
 
-    let emailBody = '';
+    const logoBlock = `<table border="0" cellpadding="0" cellspacing="0" width="100%" style="min-width:100%;border-collapse:collapse;"><tr><td style="padding:18px 18px 9px;" align="center"><img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png" alt="Angloville" width="180" style="display:inline-block;height:auto;border:0;max-width:180px;"></td></tr></table>`;
+    const footerContent = footer_html || `<a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp; <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">Unsubscribe</a>`;
+    let emailBody = logoBlock;
     if (imgs[0]) emailBody += imgBlock(imgs[0]);
     emailBody += txtBlock(`
       <p style="margin:10px 0;font-size:15px;">Hi *|FNAME|*,</p>
@@ -157,10 +159,7 @@ Return ONLY a valid JSON object. No markdown, no backticks, no explanation.
 <body style="background:#f0f0f0;margin:0;padding:0;">
 <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="max-width:600px;background:#ffffff;margin:0 auto;">
   <tr><td style="padding:9px;">${emailBody}</td></tr>
-  <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#666;line-height:150%;border-top:1px solid #EAEAEA;">
-    <a href="*|UPDATE_PROFILE|*" style="color:#666;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp;
-    <a href="*|UNSUB|*" style="color:#666;text-decoration:underline;">Unsubscribe</a>
-  </td></tr>
+  <tr><td style="padding:9px 18px 18px;font-family:Arial,sans-serif;font-size:12px;color:#555;line-height:150%;border-top:1px solid #EAEAEA;">${footerContent}</td></tr>
 </table>
 </body></html>`;
 
