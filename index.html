@@ -117,6 +117,24 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--txt);min-
 }
 .sel-bar.show{display:block}
 
+/* ── CATEGORY TABS ── */
+.cat-tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.cat-tab{
+  padding:7px 14px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--sub);
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  border-radius:7px;cursor:pointer;transition:all .12s;
+}
+.cat-tab:hover{border-color:var(--b);color:var(--b)}
+.cat-tab.on{background:var(--dk);border-color:var(--dk);color:var(--y)}
+.cat-tab .cat-count{
+  display:inline-block;background:rgba(255,255,255,.15);
+  border-radius:3px;padding:0 5px;margin-left:5px;
+  font-size:9px;font-weight:700;
+}
+.cat-tab.on .cat-count{background:rgba(245,200,0,.2);color:var(--y)}
+.cat-tab:not(.on) .cat-count{background:var(--brd);color:var(--sub)}
+
 /* ── IMAGE SECTION ── */
 .img-tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
 .img-tab{
@@ -470,14 +488,63 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
     </div>
   </div>
 
-  <!-- STEP 3: FOOTER -->
+  <!-- STEP 3: LINKS & UTM -->
   <div class="step">
     <div class="step-head">
       <div class="step-num">3</div>
+      <div class="step-lbl">Links & UTM</div>
+      <div class="step-hint">Set destination URLs and tracking</div>
+    </div>
+    <div class="step-body">
+      <div class="utm-wrap">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="ef-group" style="margin:0">
+            <div class="ef-label" style="margin-bottom:4px"><span>🟡 Primary CTA link</span></div>
+            <input type="text" class="ef" id="utm-base" placeholder="https://angloville.com/apply/" oninput="utmPrev()">
+          </div>
+          <div class="ef-group" style="margin:0">
+            <div class="ef-label" style="margin-bottom:4px"><span>🔵 Secondary CTA link</span><span style="font-size:9px;color:var(--sub);font-weight:400">puste = tak samo jak primary</span></div>
+            <input type="text" class="ef" id="utm-base2" placeholder="(same as primary)" oninput="utmPrev()">
+          </div>
+        </div>
+        <div style="height:1px;background:var(--brd);margin-bottom:12px"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:8px">UTM Parameters</div>
+        <div class="utm-grid">
+          <div class="ef-group"><div class="ef-label">utm_source</div><input type="text" class="ef" id="utm-src" value="mailchimp" oninput="utmPrev()"></div>
+          <div class="ef-group"><div class="ef-label">utm_medium</div><input type="text" class="ef" id="utm-med" value="email" oninput="utmPrev()"></div>
+          <div class="ef-group"><div class="ef-label">utm_campaign</div><input type="text" class="ef" id="utm-cmp" value="" placeholder="np. summer-2026" oninput="utmPrev()"></div>
+          <div class="ef-group"><div class="ef-label">utm_content</div><input type="text" class="ef" id="utm-cnt" placeholder="cta_button" oninput="utmPrev()"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+          <div>
+            <div class="ef-label"><span>🟡 Primary full URL</span><button class="btn-cp" onclick="cp2(buildUrl(1),this)">copy</button></div>
+            <div class="utm-out" id="utm-out1">← wpisz URL wyżej</div>
+          </div>
+          <div>
+            <div class="ef-label"><span>🔵 Secondary full URL</span><button class="btn-cp" onclick="cp2(buildUrl(2),this)">copy</button></div>
+            <div class="utm-out" id="utm-out2">← wpisz URL wyżej</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: FOOTER -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">4</div>
       <div class="step-lbl">Email footer</div>
       <div class="step-hint">Choose domain footer</div>
     </div>
     <div class="step-body">
+      <!-- Platform toggle -->
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:6px">Platforma wysyłkowa</div>
+        <div style="display:flex;gap:4px" id="platform-pills">
+          <button type="button" class="img-tab on" id="plat-mc-btn" onclick="setPlatform('mc')">📬 Mailchimp</button>
+          <button type="button" class="img-tab" id="plat-hs-btn" onclick="setPlatform('hs')">🟠 HubSpot</button>
+        </div>
+      </div>
       <div class="footer-grid" id="footer-grid"></div>
       <div style="margin-top:12px">
         <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">
@@ -488,17 +555,18 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
           style="width:100%;padding:9px 12px;border:1.5px solid var(--brd);border-radius:8px;font-family:monospace;font-size:11px;color:var(--txt);resize:vertical;line-height:1.6;background:var(--w)"
           oninput="this.dataset.edited='1'"
           placeholder="Footer HTML will appear here after selecting a domain above…"></textarea>
-        <p style="font-size:10px;color:var(--sub);margin-top:4px;line-height:1.5">
-          Edit HTML directly. Mailchimp tags: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UNSUB|*</code> &nbsp; <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UPDATE_PROFILE|*</code>
-        </p>
+        <div id="footer-tags-ref" style="font-size:10px;color:var(--sub);margin-top:4px;line-height:1.5">
+          <span id="tags-mc">Mailchimp tags: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UNSUB|*</code> &nbsp; <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UPDATE_PROFILE|*</code> &nbsp; <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|FNAME|*</code></span>
+          <span id="tags-hs" style="display:none">HubSpot tags: <code style="background:#FFF3E0;padding:1px 4px;border-radius:3px">{{ unsubscribe_link }}</code> &nbsp; <code style="background:#FFF3E0;padding:1px 4px;border-radius:3px">{{ unsubscribe_link_all }}</code></span>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- STEP 4: NOTES -->
+  <!-- STEP 5: NOTES -->
   <div class="step">
     <div class="step-head">
-      <div class="step-num">4</div>
+      <div class="step-num">5</div>
       <div class="step-lbl">Additional instructions</div>
       <div class="step-hint">Optional — AI will follow these</div>
     </div>
@@ -590,22 +658,26 @@ const IMG_LIB = {
 };
 
 // ═══════════════════════════════════════════════════════════
-//  FOOTERS
+//  FOOTERS — per platform (Mailchimp / HubSpot)
 // ═══════════════════════════════════════════════════════════
 const FOOTERS = {
   com:[
     {id:'com-en',name:'angloville.com (EN)',prev:'hello@angloville.com · Unsubscribe · Privacy Policy',
-     html:`Want to change how you receive these emails?<br>You can <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">update your preferences</a> or <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">unsubscribe from this list</a>.<br><br>Your personal data controller is Angloville International Ltd. <a href="https://angloville.com/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
+     mc:`Want to change how you receive these emails?<br>You can <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">update your preferences</a> or <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">unsubscribe from this list</a>.<br><br>Your personal data controller is Angloville International Ltd. <a href="https://angloville.com/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`,
+     hs:`Want to change how you receive these emails?<br>You can <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">update your preferences</a> or <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">unsubscribe from this list</a>.<br><br>Your personal data controller is Angloville International Ltd. <a href="https://angloville.com/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
   ],
   pl:[
     {id:'pl-pl',name:'angloville.pl (PL)',prev:'kontakt@angloville.pl · Wypisz się · Polityka prywatności',
-     html:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville International Ltd. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
+     mc:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`,
+     hs:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
     {id:'pl-biz',name:'angloville.pl – B2B',prev:'Firmy · Wypisz się · Polityka prywatności',
-     html:`To jest wiadomość biznesowa. Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się</a>.<br><br>Angloville International Ltd. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
+     mc:`To jest wiadomość biznesowa. Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się</a>.<br><br>Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`,
+     hs:`To jest wiadomość biznesowa. Możesz <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">wypisać się</a>.<br><br>Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
   ],
   it:[
     {id:'it-it',name:'angloville.it (IT)',prev:'info@angloville.it · Cancellati · Privacy Policy',
-     html:`Vuoi modificare come ricevi queste email?<br>Puoi <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">aggiornare le preferenze</a> o <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">cancellarti dalla lista</a>.<br><br>Il titolare del trattamento dati è Angloville International Ltd. <a href="https://angloville.it/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
+     mc:`Vuoi modificare come ricevi queste email?<br>Puoi <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">aggiornare le preferenze</a> o <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">cancellarti dalla lista</a>.<br><br>Il titolare del trattamento dati è Angloville S.R.L. <a href="https://angloville.it/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`,
+     hs:`Vuoi modificare come ricevi queste email?<br>Puoi <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">aggiornare le preferenze</a> o <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">cancellarti dalla lista</a>.<br><br>Il titolare del trattamento dati è Angloville S.R.L. <a href="https://angloville.it/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
   ],
 };
 
@@ -622,33 +694,38 @@ Target: native English speakers – gap year, teaching abroad, cultural exchange
 CRITICAL: NEVER use "volunteer/volunteering". Always say "sponsored place", "sponsored programme" or "cultural exchange".
 Voice: adventurous, warm, community-driven. British English only (programme, colour, travelling, organised).
 Key messages: fully sponsored (free accommodation + meals), no teaching experience required, make international friends.`,
+    cats:[
+      {id:'programmes',lbl:'🎓 Programmes',groups:[0,1]},
+      {id:'roles',lbl:'🤝 Roles & TEFL',groups:[2,3]},
+      {id:'travel',lbl:'✈️ AV Travel',groups:[4]},
+    ],
     groups:[
       {lbl:'Junior Programmes',progs:[
-        {id:'poland-jr',  e:'🇵🇱',t:'Poland Junior Programmes',     d:'Warsaw, Wroclaw, Krakow & Poznan'},
-        {id:'italy-jr',   e:'🇮🇹',t:'Italy Junior Programmes',      d:'Bologna, Florence, Rome & Milan'},
-        {id:'malta-jr',   e:'🇲🇹',t:'Malta Junior Programmes',      d:'Valletta, Gozo & Mdina'},
-        {id:'eurotrip',   e:'🌍', t:'Eurotrip & Poland Programmes', d:'Paris, Brussels, Berlin & Amsterdam'},
-        {id:'roehampton', e:'🏛', t:'Roehampton & Kent (UK)',        d:'London, Cambridge & Canterbury'},
-        {id:'uk-trip',    e:'🎡', t:'UK Trip',                       d:'London, Oxford & Cambridge'},
+        {id:'poland-jr',  e:'🇵🇱',t:'Poland Junior',                  d:'Warsaw, Wroclaw, Krakow & Poznan'},
+        {id:'italy-jr',   e:'🇮🇹',t:'Italy Junior',                   d:'Bologna, Florence, Rome & Milan'},
+        {id:'malta-jr',   e:'🇲🇹',t:'Malta Junior',                   d:'Valletta, Gozo & Mdina'},
+        {id:'eurotrip',   e:'🌍', t:'Eurotrip & Poland',              d:'Paris, Brussels, Berlin & Amsterdam'},
+        {id:'roehampton', e:'🏛', t:'Roehampton & Kent (UK)',         d:'London, Cambridge & Canterbury'},
+        {id:'uk-trip',    e:'🎡', t:'UK Trip',                        d:'London, Oxford & Cambridge'},
       ]},
       {lbl:'Adult Programmes',progs:[
-        {id:'poland-adult',e:'🏡',t:'Poland Adult Programmes',       d:'Warsaw, Wroclaw & Krakow'},
+        {id:'poland-adult',e:'🏡',t:'Poland Adult',                   d:'Warsaw, Wroclaw & Krakow'},
       ]},
       {lbl:'Sponsored Roles',progs:[
-        {id:'esl-mentor', e:'🎓',t:'ESL Mentor – Sponsored Place',  d:'Help learners practise English, no experience needed'},
-        {id:'act-leader', e:'🏃',t:'Activity Leader – Sponsored',   d:'Lead activities and cultural exchange'},
-        {id:'prog-coord', e:'📋',t:'Programme Coordinator',         d:'Organise and run programmes across Europe'},
+        {id:'esl-mentor', e:'🎓',t:'ESL Mentor',                     d:'Sponsored — no experience needed'},
+        {id:'act-leader', e:'🏃',t:'Activity Leader',                d:'Sponsored — lead cultural exchange'},
+        {id:'prog-coord', e:'📋',t:'Programme Coordinator',          d:'Organise programmes across Europe'},
       ]},
       {lbl:'TEFL in Asia',progs:[
-        {id:'tefl-th',    e:'🇹🇭',t:'TEFL – Thailand',              d:'Paid teaching placement in Thailand'},
-        {id:'tefl-kr',    e:'🇰🇷',t:'TEFL – South Korea',          d:'Paid teaching placement in South Korea'},
-        {id:'tefl-jp',    e:'🇯🇵',t:'TEFL – Japan',                 d:'Paid teaching placement in Japan'},
-        {id:'tefl-vn',    e:'🇻🇳',t:'TEFL – Vietnam',              d:'Paid teaching placement in Vietnam'},
+        {id:'tefl-th',    e:'🇹🇭',t:'TEFL – Thailand',               d:'Paid teaching placement'},
+        {id:'tefl-kr',    e:'🇰🇷',t:'TEFL – South Korea',            d:'Paid teaching placement'},
+        {id:'tefl-jp',    e:'🇯🇵',t:'TEFL – Japan',                  d:'Paid teaching placement'},
+        {id:'tefl-vn',    e:'🇻🇳',t:'TEFL – Vietnam',                d:'Paid teaching placement'},
       ]},
       {lbl:'AV Travel',progs:[
-        {id:'travel-east',e:'🗽',t:'AV Travel – USA East Coast',   d:'New York, Washington & Boston'},
-        {id:'travel-west',e:'🌴',t:'AV Travel – USA West Coast',   d:'Los Angeles, San Francisco & Grand Canyon'},
-        {id:'travel-jp',  e:'⛩', t:'AV Travel – Japan',            d:'Tokyo, Kyoto & Osaka'},
+        {id:'travel-east',e:'🗽',t:'USA East Coast',                 d:'New York, Washington & Boston'},
+        {id:'travel-west',e:'🌴',t:'USA West Coast',                 d:'LA, San Francisco & Grand Canyon'},
+        {id:'travel-jp',  e:'⛩', t:'Japan',                          d:'Tokyo, Kyoto & Osaka'},
       ]},
     ],
   },
@@ -661,36 +738,51 @@ Odbiorcy: Polacy – rodzice dzieci, dorośli z barierą językową, menedżerow
 Głos: ciepły, energiczny, motywujący. Aktywny język polski. Konkretne korzyści.
 Wartości: pełna immersja – 0 książek – 0 klasy. 7000+ uczestników rocznie. 4.8★
 Język: WYŁĄCZNIE po polsku.`,
+    cats:[
+      {id:'dorosli',lbl:'👤 Dorośli',groups:[0,1,2]},
+      {id:'dzieci',lbl:'🎒 Dzieci i Młodzież',groups:[3,4,5,6]},
+      {id:'wymiana',lbl:'🏫 Wymiana Licealna',groups:[7]},
+    ],
     groups:[
-      {lbl:'Dorośli',progs:[
-        {id:'wioska-d',  e:'🏡',t:'Angielska Wioska – Dorośli',       d:'70h 1:1 z native speakerami w 6 dni'},
-        {id:'wioska-p',  e:'🌱',t:'Angielska Wioska – Początkujący',  d:'Kurs online + wyjazd z native speakerami'},
-        {id:'biz-en',    e:'💼',t:'Business English dla firm',         d:'Blended learning dla firm i korporacji'},
-        {id:'kali-ya',   e:'🌴',t:'Kalifornia 18–40',                 d:'Turystyczno-językowy wyjazd do Kalifornii'},
-        {id:'nyc-40',    e:'🗽',t:'Nowy Jork + Toronto 40+',          d:'Wyjazd językowy dla dorosłych 40+'},
-        {id:'jap-40',    e:'🗾',t:'Japonia – Dorośli 40+',            d:'Turystyczno-językowy wyjazd do Japonii'},
+      {lbl:'Wyjazdy językowe',progs:[
+        {id:'wioska-d',  e:'🏡',t:'Angielska Wioska',                d:'70h 1:1 z native speakerami w 6 dni'},
+        {id:'wioska-p',  e:'🌱',t:'Wioska – Początkujący',           d:'Nauka online + wyjazd z native speakerami'},
+        {id:'malta-d',   e:'🇲🇹',t:'Malta',                          d:'1:1 lub 2:1 z native speakerami w 8 dni'},
+      ]},
+      {lbl:'Turystyczno-językowe 18–40',progs:[
+        {id:'kali-ya',   e:'🌴',t:'Kalifornia',                      d:'Wyjazd turystyczno-językowy'},
+        {id:'jap-ya',    e:'🗾',t:'Japonia',                         d:'Wyjazd turystyczno-językowy'},
+      ]},
+      {lbl:'Turystyczno-językowe 40+',progs:[
+        {id:'nyc-40',    e:'🗽',t:'Nowy Jork + Toronto',             d:'Wyjazd językowy dla dorosłych'},
+        {id:'kali-40',   e:'🌴',t:'Kalifornia',                      d:'Wyjazd turystyczno-językowy'},
+        {id:'jap-40',    e:'🗾',t:'Japonia',                         d:'Wyjazd turystyczno-językowy'},
       ]},
       {lbl:'Obozy w Polsce',progs:[
-        {id:'kids',      e:'🧒',t:'Angloville Kids 7–11 lat',         d:'Obóz językowy w Polsce przez zabawę'},
-        {id:'junior',    e:'🎒',t:'Angloville Junior 11–18 lat',      d:'Obóz językowy dla młodzieży w Polsce'},
-        {id:'family',    e:'👨‍👩‍👧',t:'Angloville Family',              d:'Obóz językowy dla całych rodzin'},
+        {id:'kids',      e:'🧒',t:'Kids 7–11 lat',                   d:'Obóz przez zabawę'},
+        {id:'junior',    e:'🎒',t:'Junior 11–18 lat',                d:'Obóz dla młodzieży'},
+        {id:'family',    e:'👨‍👩‍👧',t:'Family',                        d:'Dla całych rodzin'},
       ]},
-      {lbl:'Obozy za Granicą',progs:[
-        {id:'malta',     e:'🇲🇹',t:'Junior International – Malta',    d:'13–18 lat'},
-        {id:'anglia',    e:'🇬🇧',t:'Junior International – Anglia',   d:'13–18 lat'},
-        {id:'uk-trip',   e:'🎡',t:'Junior Plus – UK Trip',            d:'Londyn, Oxford, Cambridge 12–18'},
-        {id:'eurotrip',  e:'🌍',t:'Junior Plus – Eurotrip',           d:'Paryż, Berlin, Bruksela 12–18'},
-        {id:'baltic',    e:'🌊',t:'Junior Plus – Baltic Trip',        d:'Kraje bałtyckie 12–18'},
-        {id:'italy-t',   e:'🍕',t:'Junior Plus – Italy Trip',         d:'Włochy z native speakerami 12–18'},
-        {id:'nyk',       e:'🗽',t:'Junior – Nowy Jork 14–18',         d:'Z native speakerami'},
-        {id:'kali',      e:'🌴',t:'Junior – Kalifornia 14–18',        d:'Z native speakerami'},
-        {id:'miami',     e:'🏖',t:'Junior – Miami 14–18',             d:'Z native speakerami'},
-        {id:'japonia',   e:'⛩', t:'Junior – Japonia 14–18',           d:'Z native speakerami'},
+      {lbl:'Obozy za granicą',progs:[
+        {id:'malta',     e:'🇲🇹',t:'Malta',                          d:'13–18 lat'},
+        {id:'anglia',    e:'🇬🇧',t:'Anglia',                         d:'13–18 lat'},
+      ]},
+      {lbl:'Europa — Junior Plus',progs:[
+        {id:'uk-trip',   e:'🎡',t:'UK Trip',                         d:'Londyn, Oxford, Cambridge · 12–18'},
+        {id:'eurotrip',  e:'🌍',t:'Eurotrip',                        d:'Paryż, Berlin, Bruksela · 12–18'},
+        {id:'baltic',    e:'🌊',t:'Baltic Trip',                     d:'Kraje bałtyckie · 12–18'},
+        {id:'italy-t',   e:'🍕',t:'Italy Trip',                      d:'Włochy z native speakerami · 12–18'},
+      ]},
+      {lbl:'Świat — Junior',progs:[
+        {id:'nyk',       e:'🗽',t:'Nowy Jork',                       d:'14–18 lat'},
+        {id:'kali',      e:'🌴',t:'Kalifornia',                      d:'14–18 lat'},
+        {id:'floryda',   e:'🏖',t:'Floryda',                         d:'14–18 lat'},
+        {id:'japonia',   e:'⛩', t:'Japonia',                         d:'14–18 lat'},
       ]},
       {lbl:'Wymiana Licealna',progs:[
-        {id:'usa',       e:'🏫',t:'Rok w USA – Wymiana licealna',     d:'US High School 15–18.5 lat'},
-        {id:'kanada',    e:'🍁',t:'Rok w Kanadzie',                   d:'Kanadyjskie liceum'},
-        {id:'online',    e:'💻',t:'Amerykańskie Liceum Online',       d:'US program bez wyjazdu'},
+        {id:'usa',       e:'🏫',t:'Rok w USA',                       d:'High School 15–18.5 lat'},
+        {id:'kanada',    e:'🍁',t:'Rok w Kanadzie',                  d:'Kanadyjskie liceum'},
+        {id:'online',    e:'💻',t:'Liceum Online (USA)',             d:'Amerykański program bez wyjazdu'},
       ]},
     ],
   },
@@ -702,25 +794,30 @@ Język: WYŁĄCZNIE po polsku.`,
 Voce: calda, coinvolgente, motivante. Italiano naturale. Parlare direttamente ai genitori o ai ragazzi.
 Valori: Full immersion – 0 libri – 0 lezioni. 70-100h con madrelingua. Metodo naturale.
 Lingua: SOLO italiano.`,
+    cats:[
+      {id:'italia',lbl:'🇮🇹 In Italia',groups:[0]},
+      {id:'estero',lbl:'✈️ All\'Estero',groups:[1,2]},
+      {id:'anno',lbl:'🏫 Anno all\'Estero',groups:[3]},
+    ],
     groups:[
       {lbl:'Programmi in Italia',progs:[
-        {id:'kids-it',   e:'🧒',t:'Villaggio Inglese – Bambini 7–11', d:'60h con madrelingua in 7 giorni in Italia'},
-        {id:'jr-it',     e:'🎒',t:'Villaggio Inglese – Ragazzi 12–17',d:'70h full immersion con madrelingua'},
-        {id:'adult-it',  e:'🏡',t:'Corsi per Adulti – Full Immersion',d:'Full immersion per adulti'},
+        {id:'kids-it',   e:'🧒',t:'Bambini 7–11',                    d:'60h con madrelingua in 7 giorni'},
+        {id:'jr-it',     e:'🎒',t:'Ragazzi 12–17',                   d:'70h full immersion con madrelingua'},
+        {id:'adult-it',  e:'🏡',t:'Adulti – Full Immersion',         d:'Full immersion per adulti'},
       ]},
-      {lbl:"Programmi all'Estero",progs:[
-        {id:'londra',    e:'🇬🇧',t:'Vacanza Studio – Londra 13–19',  d:'College a Londra'},
-        {id:'malta-it',  e:'🇲🇹',t:'Vacanza Studio – Malta 12–17',   d:'Residence a Malta'},
-        {id:'baltic-it', e:'🌊',t:'Junior Plus – Baltic Trip 13–19', d:'Paesi Baltici'},
-        {id:'euro-it',   e:'🌍',t:'Junior Plus – Eurotrip 13–19',    d:'Parigi, Berlino, Bruxelles'},
+      {lbl:'Vacanze Studio & Junior Plus',progs:[
+        {id:'londra',    e:'🇬🇧',t:'Londra 13–19',                   d:'College a Londra'},
+        {id:'malta-it',  e:'🇲🇹',t:'Malta 12–17',                    d:'Residence a Malta'},
+        {id:'baltic-it', e:'🌊',t:'Baltic Trip 13–19',               d:'Paesi Baltici'},
+        {id:'euro-it',   e:'🌍',t:'Eurotrip 13–19',                  d:'Parigi, Berlino, Bruxelles'},
       ]},
       {lbl:'Junior Adventure',progs:[
-        {id:'ny-it',     e:'🗽',t:'Junior Adventure – New York 13–19',d:'Times Square, Central Park'},
-        {id:'miami-it',  e:'🏖',t:'Junior Adventure – Miami 13–19',  d:'Florida'},
-        {id:'jap-it',    e:'⛩', t:'Junior Adventure – Giappone 13–19',d:'Tokyo, Kyoto, Osaka'},
+        {id:'ny-it',     e:'🗽',t:'New York 13–19',                  d:'Times Square, Central Park'},
+        {id:'miami-it',  e:'🏖',t:'Florida 13–19',                   d:'Miami & Florida'},
+        {id:'jap-it',    e:'⛩', t:'Giappone 13–19',                  d:'Tokyo, Kyoto, Osaka'},
       ]},
       {lbl:"Anno all'Estero",progs:[
-        {id:'anno-usa',  e:'🏫',t:"Anno all'estero in USA",           d:'Liceo americano 12–18 anni'},
+        {id:'anno-usa',  e:'🏫',t:'Anno in USA',                     d:'Liceo americano 12–18 anni'},
       ]},
     ],
   },
@@ -749,9 +846,11 @@ function removeFromCustomLib(url){
 // ═══════════════════════════════════════════════════════════
 let market   = 'com';
 let selected = new Set();
+let activeCat = null; // active category tab
 let selHero  = null;   // single hero image {url, thumb, label}
 let selBody  = [];     // max 2 body images
 let selFoot  = null;
+let selPlatform = 'mc'; // 'mc' = Mailchimp, 'hs' = HubSpot
 let libCat   = null;
 let activeSlot = 'hero'; // 'hero' or 'body' — which gallery is active
 
@@ -774,7 +873,7 @@ let cldNextCursor = null;
 //  INIT / MARKET SWITCH
 // ═══════════════════════════════════════════════════════════
 function setMarket(mkt, btn) {
-  market = mkt; selected.clear(); selHero = null; selBody = []; selFoot = null; libCat = null;
+  market = mkt; selected.clear(); selHero = null; selBody = []; selFoot = null; libCat = null; activeCat = null;
   document.querySelectorAll('.mkt-pill').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('extra').placeholder = MKT[mkt].ph;
@@ -795,8 +894,35 @@ function renderAll(){
 //  PROGRAMMES
 // ═══════════════════════════════════════════════════════════
 function renderProgs(){
-  document.getElementById('prog-container').innerHTML = MKT[market].groups.map(g=>`
-    <div class="prog-section">
+  const M = MKT[market];
+  const cats = M.cats || [];
+  // Default to first cat
+  if(!activeCat && cats.length) activeCat = cats[0].id;
+
+  // Count selected per cat
+  const allProgs = M.groups.flatMap(g=>g.progs);
+  const catCounts = {};
+  cats.forEach(c=>{
+    const ids = c.groups.flatMap(gi=>M.groups[gi]?.progs||[]).map(p=>p.id);
+    catCounts[c.id] = ids.filter(id=>selected.has(id)).length;
+  });
+
+  // Tabs
+  let tabsH = cats.map(c=>{
+    const cnt = catCounts[c.id];
+    const badge = cnt > 0 ? `<span class="cat-count">${cnt}</span>` : '';
+    return `<button type="button" class="cat-tab${activeCat===c.id?' on':''}"
+      onclick="activeCat='${c.id}';renderProgs();updateSelBar();">${c.lbl}${badge}</button>`;
+  }).join('');
+
+  // Visible groups
+  const visibleCat = cats.find(c=>c.id===activeCat);
+  const visibleIdx = visibleCat ? visibleCat.groups : M.groups.map((_,i)=>i);
+
+  let groupsH = visibleIdx.map(i=>{
+    const g = M.groups[i];
+    if(!g) return '';
+    return `<div class="prog-section">
       <div class="prog-section-lbl">${g.lbl}</div>
       <div class="prog-grid">
         ${g.progs.map(p=>`
@@ -805,7 +931,11 @@ function renderProgs(){
             <div><div class="prog-t">${p.t}</div><div class="prog-d">${p.d}</div></div>
           </button>`).join('')}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
+
+  document.getElementById('prog-container').innerHTML =
+    (cats.length ? `<div class="cat-tabs">${tabsH}</div>` : '') + groupsH;
 }
 function toggleP(id){
   selected.has(id)?selected.delete(id):selected.add(id);
@@ -987,7 +1117,18 @@ function renderFooters(){
   // Set textarea to current footer html if not yet customised
   const current=opts.find(f=>f.id===selFoot)||opts[0];
   const el=document.getElementById('footer-editor');
-  if(el && !el.dataset.edited) el.value=current?.html||'';
+  if(el && !el.dataset.edited) el.value=current?.[selPlatform]||'';
+
+  // Update platform pill styles
+  document.querySelectorAll('#platform-pills .img-tab').forEach(b=>b.classList.remove('on'));
+  const platBtn = document.getElementById('plat-'+selPlatform+'-btn');
+  if(platBtn) platBtn.classList.add('on');
+
+  // Show correct tags reference
+  const tagsMc = document.getElementById('tags-mc');
+  const tagsHs = document.getElementById('tags-hs');
+  if(tagsMc) tagsMc.style.display = selPlatform==='mc' ? '' : 'none';
+  if(tagsHs) tagsHs.style.display = selPlatform==='hs' ? '' : 'none';
 
   document.getElementById('footer-grid').innerHTML=opts.map(f=>`
     <button type="button" class="footer-opt${selFoot===f.id?' on':''}" onclick="selectFoot('${f.id}')">
@@ -995,26 +1136,33 @@ function renderFooters(){
       <div class="footer-opt-prev">${f.prev}</div>
     </button>`).join('');
 }
+function setPlatform(p){
+  selPlatform = p;
+  // Reset editor to new platform's template
+  const el=document.getElementById('footer-editor');
+  if(el) delete el.dataset.edited;
+  renderFooters();
+}
 function selectFoot(id){
   selFoot=id;
-  // Update editor with this footer's default html, reset edited flag
+  // Update editor with this footer's default html for current platform, reset edited flag
   const opts=FOOTERS[market]||[];
   const f=opts.find(x=>x.id===id);
   const el=document.getElementById('footer-editor');
-  if(el){ el.value=f?.html||''; delete el.dataset.edited; }
+  if(el){ el.value=f?.[selPlatform]||''; delete el.dataset.edited; }
   renderFooters();
 }
 function resetFooter(){
   const opts=FOOTERS[market]||[];
   const f=opts.find(x=>x.id===selFoot)||opts[0];
   const el=document.getElementById('footer-editor');
-  if(el){ el.value=f?.html||''; delete el.dataset.edited; }
+  if(el){ el.value=f?.[selPlatform]||''; delete el.dataset.edited; }
 }
 function getFooterHtml(){
   const el=document.getElementById('footer-editor');
   if(el&&el.value.trim()) return el.value.trim();
   const opts=FOOTERS[market]||[];
-  return (opts.find(f=>f.id===selFoot)||opts[0])?.html||'';
+  return (opts.find(f=>f.id===selFoot)||opts[0])?.[selPlatform]||'';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1131,13 +1279,22 @@ function renderResults(c,progs){
     ['e-h1','Headline (H2 in email)',c.headline,1],
     ['e-intro','Opening paragraph',c.intro,3],
   ]);
-  // Hi First Name toggle
-  h+=`<div class="rcard" style="margin-top:-6px;padding:10px 16px;background:#FAFBFD;">
-    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12px;color:var(--txt);">
-      <input type="checkbox" id="show-greeting" checked onchange="renderGreetingPreview()"
-        style="width:16px;height:16px;accent-color:var(--dk);cursor:pointer;">
-      <span>Pokaż <strong>Hi *|FNAME|*,</strong> na początku emaila</span>
-    </label>
+  // Greeting per market
+  const fn = fnameTag();
+  const greetOpts = {
+    com: [{id:'hi-fname',lbl:`Hi ${fn},`},{id:'hello',lbl:'Hello!'},{id:'custom-g',lbl:'Custom…'}],
+    pl: [{id:'dzien-dobry',lbl:`Dzień dobry ${fn}!`},{id:'czesc',lbl:`Cześć ${fn}!`},{id:'hi-fname',lbl:`Hi ${fn},`},{id:'custom-g',lbl:'Custom…'}],
+    it: [{id:'ciao',lbl:`Ciao ${fn}!`},{id:'buongiorno',lbl:`Buongiorno ${fn}!`},{id:'hi-fname',lbl:`Hi ${fn},`},{id:'custom-g',lbl:'Custom…'}],
+  };
+  const gOpts = greetOpts[market]||greetOpts.com;
+  h+=`<div class="rcard" style="margin-top:-6px;padding:12px 16px;background:#FAFBFD;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:8px">Powitanie na początku emaila</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
+      <button type="button" class="img-tab on" id="greet-none-btn" onclick="setGreeting('none')">❌ Brak</button>
+      ${gOpts.map((g,i)=>`<button type="button" class="img-tab" id="greet-${g.id}-btn" onclick="setGreeting('${g.id}')">${esc(g.lbl)}</button>`).join('')}
+    </div>
+    <input type="text" class="ef" id="greeting-custom" placeholder="Wpisz własne powitanie…" style="display:none;margin-top:6px" oninput="updateGreetingVal()">
+    <input type="hidden" id="greeting-val" value="">
   </div>`;
 
   // Body — RTE fields
@@ -1163,23 +1320,14 @@ function renderResults(c,progs){
     ['e-ps','PS line',c.ps||'',1],
   ]);
 
-  // UTM
-  h+=`<div class="rcard">
-    <div class="rcard-head"><span class="rcard-tag tag-p">URL + UTM</span></div>
-    <div class="utm-wrap">
-      <div class="ef-group">
-        <div class="ef-label">Destination URL</div>
-        <input type="text" class="ef" id="utm-base" placeholder="https://angloville.com/apply/" oninput="utmPrev()">
-      </div>
-      <div class="utm-grid">
-        <div class="ef-group"><div class="ef-label">utm_source</div><input type="text" class="ef" id="utm-src" value="mailchimp" oninput="utmPrev()"></div>
-        <div class="ef-group"><div class="ef-label">utm_medium</div><input type="text" class="ef" id="utm-med" value="email" oninput="utmPrev()"></div>
-        <div class="ef-group"><div class="ef-label">utm_campaign</div><input type="text" class="ef" id="utm-cmp" value="${esc(market+'-campaign')}" oninput="utmPrev()"></div>
-        <div class="ef-group"><div class="ef-label">utm_content</div><input type="text" class="ef" id="utm-cnt" placeholder="cta_button" oninput="utmPrev()"></div>
-      </div>
-      <div class="ef-label"><span>Full URL</span><button class="btn-cp" onclick="cp2(buildUrl(),this)">copy</button></div>
-      <div class="utm-out" id="utm-out">← fill in URL above</div>
+  // Link info from Step 3
+  h+=`<div class="rcard" style="background:#F7FBFF;border-color:#CCE8F8">
+    <div class="rcard-head"><span class="rcard-tag tag-p">🔗 Links (from Step 3)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="font-size:11px;color:var(--sub)">🟡 Primary: <strong style="color:var(--txt);word-break:break-all">${esc(buildUrl(1)||'nie ustawiono')}</strong></div>
+      <div style="font-size:11px;color:var(--sub)">🔵 Secondary: <strong style="color:var(--txt);word-break:break-all">${esc(buildUrl(2)||'nie ustawiono')}</strong></div>
     </div>
+    <div style="margin-top:6px;font-size:10px;color:var(--sub)">← Zmień linki i UTM w kroku 3 wyżej</div>
   </div>`;
 
   h+=rcard('A/B Subject Variants','tag-p',[
@@ -1209,8 +1357,10 @@ function renderResults(c,progs){
 // ═══════════════════════════════════════════════════════════
 //  UTM
 // ═══════════════════════════════════════════════════════════
-function buildUrl(){
-  const base=(document.getElementById('utm-base')?.value||'').trim();
+function buildUrl(which){
+  const base1=(document.getElementById('utm-base')?.value||'').trim();
+  const base2=(document.getElementById('utm-base2')?.value||'').trim();
+  const base = which===2 ? (base2||base1) : base1;
   if(!base) return '';
   const pts=[];
   [['utm-src','utm_source'],['utm-med','utm_medium'],['utm-cmp','utm_campaign'],['utm-cnt','utm_content']].forEach(([id,k])=>{
@@ -1219,12 +1369,15 @@ function buildUrl(){
   });
   return base+(pts.length?(base.includes('?')?'&':'?')+pts.join('&'):'');
 }
-function utmPrev(){const el=document.getElementById('utm-out');if(el)el.textContent=buildUrl()||'← fill in URL above';}
+function utmPrev(){
+  const el1=document.getElementById('utm-out1');if(el1)el1.textContent=buildUrl(1)||'← wpisz URL wyżej';
+  const el2=document.getElementById('utm-out2');if(el2)el2.textContent=buildUrl(2)||'← wpisz URL wyżej';
+}
 
 // ═══════════════════════════════════════════════════════════
 //  EMAIL HTML BUILDER — clean editorial style (like EF/screenshot)
 // ═══════════════════════════════════════════════════════════
-function buildEmailHTML(c, ctaUrl, imgs) {
+function buildEmailHTML(c, ctaUrl1, ctaUrl2, imgs) {
   const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
   const e = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const footerHtml = getFooterHtml();
@@ -1254,8 +1407,8 @@ function buildEmailHTML(c, ctaUrl, imgs) {
 
   const heroImg = imgs[0] ? imgRow(imgs[0].thumb||imgs[0].url) : '';
 
-  const greetingLine = c.showGreeting !== false
-    ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">Hi <strong>*|FNAME|*</strong>,</p>` : '';
+  const greetingLine = c.greetingHtml
+    ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">${c.greetingHtml}</p>` : '';
   const intro = `
 <tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">
   ${greetingLine}<p style="margin:0;">${e(c.intro)}</p>
@@ -1265,7 +1418,7 @@ function buildEmailHTML(c, ctaUrl, imgs) {
 <tr><td style="padding:24px 20px 0;">
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
     <tr><td align="center" bgcolor="#FCD23A" style="border-radius:50px;padding:18px 20px;">
-      <a href="${ctaUrl}" target="_blank"
+      <a href="${ctaUrl1}" target="_blank"
         style="color:#111111;text-decoration:none;font-weight:800;font-family:${FONT};font-size:17px;display:block;">${e(c.cta)}</a>
     </td></tr>
   </table>
@@ -1299,7 +1452,7 @@ function buildEmailHTML(c, ctaUrl, imgs) {
 <tr><td style="padding:14px 20px 24px;">
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
     <tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 20px;">
-      <a href="${ctaUrl}" target="_blank"
+      <a href="${ctaUrl2}" target="_blank"
         style="color:#FFFFFF;text-decoration:none;font-weight:800;font-family:${FONT};font-size:16px;display:block;">${e(c.cta2||c.cta)}</a>
     </td></tr>
   </table>
@@ -1307,7 +1460,9 @@ function buildEmailHTML(c, ctaUrl, imgs) {
 
   const img4 = imgs[3] ? imgRow(imgs[3].thumb||imgs[3].url) : '';
 
-  const rows = [logoBar,headline,heroImg,intro,cta1,p1,img2,p2,img3,p3,ps,cta2,img4].filter(Boolean).join('\n');
+  const socialRow = buildSocialRow();
+
+  const rows = [logoBar,headline,heroImg,intro,cta1,p1,img2,p2,img3,p3,ps,cta2,img4,socialRow].filter(Boolean).join('\n');
 
   return `<div style="background:#EBEBEB;padding:0;">
 <style>
@@ -1344,8 +1499,10 @@ function setPreviewMode(mode){
   }
 }
 function showPreview(){
-  const c=getCurrent(); const url=buildUrl()||'https://angloville.com/apply/';
-  document.getElementById('prev-content').innerHTML=buildEmailHTML(c,url,[selHero,...selBody].filter(Boolean));
+  const c=getCurrent();
+  const url1=buildUrl(1)||'https://angloville.com/apply/';
+  const url2=buildUrl(2)||url1;
+  document.getElementById('prev-content').innerHTML=buildEmailHTML(c,url1,url2,[selHero,...selBody].filter(Boolean));
   setPreviewMode('desktop');
   document.getElementById('prev-modal').classList.add('open');
 }
@@ -1360,12 +1517,12 @@ async function sendMC(){
   document.getElementById('mc-status').innerHTML='';
   const all=MKT[market].groups.flatMap(g=>g.progs);
   const name=[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
-  const c=getCurrent();const url=buildUrl()||'https://angloville.com/apply/';
+  const c=getCurrent();const url1=buildUrl(1)||'https://angloville.com/apply/';const url2=buildUrl(2)||url1;
   try{
     const res=await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({action:'mailchimp_draft',campaign:c,cta_url:url,
+      body:JSON.stringify({action:'mailchimp_draft',campaign:c,cta_url:url1,cta_url2:url2,
         images:[selHero,...selBody].filter(i=>i&&!i.url.startsWith('data:')),
-        program_name:name,footer_html:getFooterHtml()})
+        program_name:name,footer_html:getFooterHtml(),social_html:buildSocialRow()})
     });
     const data=await res.json();
     if(!data.ok) throw new Error(data.error||'Mailchimp error');
@@ -1381,30 +1538,139 @@ async function sendMC(){
 }
 
 // ═══════════════════════════════════════════════════════════
+//  GREETING
+// ═══════════════════════════════════════════════════════════
+function fnameTag(){ return selPlatform==='hs' ? '{{ contact.firstname }}' : '*|FNAME|*'; }
+function greetMap(){
+  const fn = fnameTag();
+  return {
+    'hi-fname':`Hi <strong>${fn}</strong>,`,
+    'hello':'Hello!',
+    'dzien-dobry':`Dzień dobry <strong>${fn}</strong>!`,
+    'czesc':`Cześć <strong>${fn}</strong>!`,
+    'ciao':`Ciao <strong>${fn}</strong>!`,
+    'buongiorno':`Buongiorno <strong>${fn}</strong>!`,
+  };
+}
+let activeGreeting = 'none';
+function setGreeting(id){
+  activeGreeting = id;
+  document.querySelectorAll('[id^="greet-"][id$="-btn"]').forEach(b=>b.classList.remove('on'));
+  const btn = document.getElementById('greet-'+id+'-btn');
+  if(btn) btn.classList.add('on');
+  const customEl = document.getElementById('greeting-custom');
+  if(customEl) customEl.style.display = id==='custom-g' ? 'block' : 'none';
+  const valEl = document.getElementById('greeting-val');
+  const gm = greetMap();
+  if(valEl) valEl.value = id==='none' ? '' : (id==='custom-g' ? customEl?.value||'' : gm[id]||'');
+}
+function updateGreetingVal(){
+  const valEl = document.getElementById('greeting-val');
+  const customEl = document.getElementById('greeting-custom');
+  if(valEl && customEl) valEl.value = customEl.value;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SOCIAL MEDIA
+// ═══════════════════════════════════════════════════════════
+const SOCIAL_LINKS = {
+  com: {
+    instagram: 'https://www.instagram.com/anglovillementors/',
+    youtube: 'https://www.youtube.com/@anglovilleInternational/featured',
+    tiktok: 'https://www.tiktok.com/@anglovillementors',
+  },
+  pl: {
+    instagram: 'https://www.instagram.com/anglovillepoland/',
+    youtube: 'https://www.youtube.com/@angloville',
+    tiktok: 'https://www.tiktok.com/@angloville',
+  },
+  pl_wymiana: {
+    instagram: 'https://www.instagram.com/angloville_usa/',
+    tiktok: 'https://www.tiktok.com/@angloville_usa',
+  },
+  it: {
+    instagram: 'https://www.instagram.com/anglovilleitalia/',
+    youtube: 'https://www.youtube.com/@angloville-italia/featured',
+    tiktok: 'https://www.tiktok.com/@anglovilleitalia',
+  },
+};
+
+const PL_WYMIANA_IDS = new Set(['usa','kanada','online']);
+
+function getActiveSocialLinks(){
+  // For PL: if ONLY wymiana products selected, use wymiana profiles
+  // If mix or non-wymiana, use main PL profiles
+  // If wymiana + other, show both rows
+  if(market === 'pl' && selected.size > 0){
+    const hasWymiana = [...selected].some(id => PL_WYMIANA_IDS.has(id));
+    const hasOther   = [...selected].some(id => !PL_WYMIANA_IDS.has(id));
+    if(hasWymiana && !hasOther) return [SOCIAL_LINKS.pl_wymiana];
+    if(hasWymiana && hasOther)  return [SOCIAL_LINKS.pl, SOCIAL_LINKS.pl_wymiana];
+  }
+  return [SOCIAL_LINKS[market] || SOCIAL_LINKS.com];
+}
+
+function buildSocialRow(){
+  const linkSets = getActiveSocialLinks();
+  const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const followLabel = market==='pl' ? 'Obserwuj nas' : market==='it' ? 'Seguici' : 'Follow us';
+
+  const pill = (url, label, bg) => url
+    ? `<a href="${url}" target="_blank" style="display:inline-block;margin:0 4px 6px;padding:8px 16px;background:${bg};color:#FFFFFF;font-family:${FONT};font-size:12px;font-weight:700;text-decoration:none;border-radius:20px;letter-spacing:0.3px;">${label}</a>`
+    : '';
+
+  const renderIcons = (links) => {
+    let h = '';
+    if(links.instagram) h += pill(links.instagram, 'Instagram', '#E1306C');
+    if(links.youtube)   h += pill(links.youtube,   'YouTube',   '#FF0000');
+    if(links.tiktok)    h += pill(links.tiktok,    'TikTok',    '#000000');
+    return h;
+  };
+
+  let rows = '';
+  if(linkSets.length === 1){
+    rows = `<div style="font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#BBBBBB;margin-bottom:14px;">${followLabel}</div>
+    <div>${renderIcons(linkSets[0])}</div>`;
+  } else {
+    rows = `<div style="font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#BBBBBB;margin-bottom:10px;">Angloville Polska</div>
+    <div style="margin-bottom:16px;">${renderIcons(linkSets[0])}</div>
+    <div style="font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#BBBBBB;margin-bottom:10px;">Angloville USA</div>
+    <div>${renderIcons(linkSets[1])}</div>`;
+  }
+
+  return `
+<tr><td style="padding:32px 20px 28px;text-align:center;">
+  ${rows}
+</td></tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════════
 function renderGreetingPreview(){ /* preview updates via getCurrent */ }
 function getCurrent(){
   const g=id=>(document.getElementById(id)?.value||'').trim();
   const gh=id=>(document.getElementById(id)?.innerHTML||'').trim();
-  const showGreeting = document.getElementById('show-greeting')?.checked !== false;
+  const greetingHtml = g('greeting-val');
   return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),
-    headline:g('e-h1'),intro:g('e-intro'),showGreeting,
+    headline:g('e-h1'),intro:g('e-intro'),greetingHtml,
     body_p1:gh('e-p1'),body_p2:gh('e-p2'),body_p3:gh('e-p3'),
     cta:g('e-cta1'),cta2:g('e-cta2'),ps:g('e-ps'),ab1:g('e-ab1'),ab2:g('e-ab2')};
 }
 function cpHtml(btn){
   const c=getCurrent();
-  const url=buildUrl()||'https://angloville.com/apply/';
+  const url1=buildUrl(1)||'https://angloville.com/apply/';
+  const url2=buildUrl(2)||url1;
   const imgs=[selHero,...selBody].filter(Boolean);
-  const html=buildEmailHTML(c,url,imgs);
+  const html=buildEmailHTML(c,url1,url2,imgs);
   cp2(html,btn);
 }
 function cpAll(){
   const c=getCurrent();
   navigator.clipboard.writeText(['SUBJECT: '+c.subject,'WITH EMOJI: '+c.subject_emoji,
     'PREHEADER: '+c.preheader,'',c.headline,'',c.intro,'',c.body_p1,'',c.body_p2,'',c.body_p3,'',
-    '[ '+c.cta+' ]',buildUrl()?'URL: '+buildUrl():'',c.ps?'PS: '+c.ps:''].filter(Boolean).join('\n'));
+    '[ '+c.cta+' ]',buildUrl(1)?'PRIMARY URL: '+buildUrl(1):'',
+    buildUrl(2)?'SECONDARY URL: '+buildUrl(2):'',c.ps?'PS: '+c.ps:''].filter(Boolean).join('\n'));
 }
 function cp(id,btn){cp2((document.getElementById(id)?.value||''),btn);}
 function cp2(text,btn){
@@ -1414,7 +1680,7 @@ function cp2(text,btn){
 }
 function showErr(m){const el=document.getElementById('err-box');el.textContent=m;el.style.display='block';}
 function resetAll(){
-  selected.clear();selHero=null;selBody=[];selFoot=null;libCat=null;
+  selected.clear();selHero=null;selBody=[];selFoot=null;libCat=null;activeCat=null;
   document.getElementById('extra').value='';
   document.getElementById('results').style.display='none';
   document.getElementById('results').innerHTML='';
