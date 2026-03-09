@@ -270,9 +270,10 @@ Return ONLY valid JSON, no markdown, no backticks.
     const mcList = process.env.MAILCHIMP_LIST_ID;
     if (!mcKey || !mcList) return res.status(200).json({ ok: true, draft_url: 'https://mailchimp.com', message: 'Mailchimp not configured' });
 
-    const { campaign, cta_url, images, program_name, footer_html } = body;
+    const { campaign, cta_url, cta_url2, images, program_name, footer_html, social_html } = body;
     const dc   = mcKey.split('-')[1] || 'us1';
     const imgs = images || [];
+    const ctaUrl2 = cta_url2 || cta_url;
     const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
     const e = s => String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const footerContent = footer_html || `<a href="*|UPDATE_PROFILE|*" style="color:#AAA;text-decoration:underline;">Update preferences</a> &nbsp;|&nbsp; <a href="*|UNSUB|*" style="color:#AAA;text-decoration:underline;">Unsubscribe</a>`;
@@ -314,8 +315,8 @@ Return ONLY valid JSON, no markdown, no backticks.
     style="display:block;width:100%;height:auto;border-radius:10px;object-fit:cover;border:0;">
 </td></tr>` : '';
 
-    const greetingLine = campaign.showGreeting !== false
-      ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">Hi <strong>*|FNAME|*</strong>,</p>` : '';
+    const greetingLine = campaign.greetingHtml
+      ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">${campaign.greetingHtml}</p>` : '';
     const introRow = `
 <tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">
   ${greetingLine}<p style="margin:0;">${e(campaign.intro)}</p>
@@ -359,7 +360,7 @@ Return ONLY valid JSON, no markdown, no backticks.
 <tr><td style="padding:14px 20px 24px;">
   <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
     <tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 24px;">
-      <a href="${cta_url}" target="_blank"
+      <a href="${ctaUrl2}" target="_blank"
         style="color:#FFFFFF;text-decoration:none;font-weight:800;font-family:${FONT};font-size:16px;display:block;white-space:nowrap;">${e(campaign.cta2||campaign.cta)}</a>
     </td></tr>
   </table>
@@ -367,7 +368,9 @@ Return ONLY valid JSON, no markdown, no backticks.
 
     const img4Row = imgs[3] ? img(imgs[3].thumb||imgs[3].url) : '';
 
-    const rows = [logoBar,headlineRow,heroImg,introRow,cta1Row,p1Row,img2Row,p2Row,img3Row,p3Row,psRow,cta2Row,img4Row].filter(Boolean).join('\n');
+    const socialRow = social_html || '';
+
+    const rows = [logoBar,headlineRow,heroImg,introRow,cta1Row,p1Row,img2Row,p2Row,img3Row,p3Row,psRow,cta2Row,img4Row,socialRow].filter(Boolean).join('\n');
 
     const fullHtml = `<!DOCTYPE html>
 <html lang="en"><head>
