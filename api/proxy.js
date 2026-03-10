@@ -12,14 +12,75 @@ module.exports = async function handler(req, res) {
 
   // ── GENERATE ──────────────────────────────────────────
   if (body.action === 'generate') {
-    const { market, lang, brand, programmes, extra, imageCount } = body;
+    const { market, lang, brand, programmes, extra, imageCount, emailType } = body;
     const progList = (programmes || []).map((p, i) => `${i + 1}. ${p}`).join('\n');
     const imgNote  = imageCount > 0 ? `The email will include ${imageCount} image(s).` : 'No images.';
     const langNote = lang === 'pl' ? 'Write EVERYTHING in Polish. Do NOT use English.'
       : lang === 'it' ? 'Write EVERYTHING in Italian. Do NOT use English.'
       : 'Write in British English (programme, colour, travelling, organised).';
 
-    const prompt = `You are an expert email marketing copywriter for Angloville.
+    let prompt;
+
+    if (emailType === 'plaintext') {
+      prompt = `You are an elite sales copywriter writing a personal 1-to-1 email on behalf of Angloville. You write like a top-performing salesperson who NEVER gives up — every email must make the reader feel that Angloville is the missing piece in their life. Not pushy. Not salesy. But deeply persuasive through genuine value, storytelling, and emotional connection.
+
+BRAND CONTEXT:
+${brand}
+
+PROGRAMMES TO COVER:
+${progList}
+
+ADDITIONAL INSTRUCTIONS:
+${extra || 'None'}
+
+LANGUAGE RULE: ${langNote}
+
+═══ COPYWRITING RULES (follow these strictly) ═══
+
+SUBJECT LINE MASTERY:
+- Max 50 characters — must be fully visible on mobile
+- Write like a real person, NOT a brand. No "Newsletter #12" or "Angloville update"
+- Use ONE of these proven high-open-rate formulas:
+  • Curiosity gap: hint at something without revealing it ("I have an idea for your summer")
+  • Question that demands an answer ("What if you could speak English in 7 days?")
+  • Personal & direct: sounds like it came from a friend ("Quick thought about your plans")
+  • Pattern interrupt: unexpected, breaks inbox monotony ("This isn't a typical email")
+- NEVER use spam triggers: "free", "act now", "guaranteed", "!!!". No ALL CAPS words.
+- Preheader must COMPLEMENT subject, not repeat it — together they tell a mini-story
+
+PERSUASION FRAMEWORK (apply throughout the email):
+1. OPEN WITH EMPATHY — show you understand the reader's world. Don't start with Angloville. Start with THEM.
+2. PAINT THE TRANSFORMATION — help them SEE and FEEL what life looks like AFTER. Use sensory language.
+3. SOCIAL PROOF — weave in proof naturally: "7000+ people have done this", "participants say…"
+4. MAKE IT FEEL SCARCE AND REAL — limited spots, specific dates, real constraints. Never fake urgency.
+5. SOFT CTA — not "BUY NOW" but an invitation: "I'd love to tell you more", "worth a look?"
+
+TONE:
+- This is a PERSONAL email — like a real human writing from their inbox
+- No marketing buzzwords. No images. No buttons. No HTML formatting
+- Conversational, warm, like emailing someone you genuinely want to help
+- Short paragraphs (1-3 sentences each). Easy to scan on mobile
+- The reader should finish thinking "this sounds amazing, I need to check this out"
+
+CRITICAL: Make the reader feel that Angloville is something extraordinary that they would regret not exploring. Not through pressure — through genuine excitement and painted possibilities.
+
+Return ONLY valid JSON, no markdown, no backticks.
+
+{
+  "subject": "curiosity-driven subject max 50 chars, sounds personal not branded",
+  "subject_emoji": "same subject with 1 emoji max 55 chars",
+  "greeting": "warm personal greeting",
+  "body": "4-6 short paragraphs. Open with empathy about THEM. Paint the transformation. Weave in social proof. Mention programme naturally. End with soft invitation. Separate with newlines.",
+  "cta": "soft CTA text for the link — an invitation, not a command",
+  "closing": "warm human sign-off with first name,\\ne.g. Pozdrawiam,\\nKasia z Angloville",
+  "ab1": "A/B subject variant A — different formula than main",
+  "ab2": "A/B subject variant B — yet another angle",
+  "send_time": "best send day/time with reason based on email marketing data"
+}`;
+    } else {
+      prompt = `You are an elite email marketing copywriter and conversion specialist for Angloville. You write like the best salespeople in the world — you NEVER let the reader leave without feeling that Angloville is exactly what they need. Not through pressure — through irresistible value, storytelling, FOMO, and emotional connection.
+
+Your emails consistently achieve 35%+ open rates and 8%+ click rates because you follow proven best practices from top brands.
 
 BRAND CONTEXT:
 ${brand}
@@ -34,36 +95,88 @@ ${imgNote}
 
 LANGUAGE RULE: ${langNote}
 
-IMPORTANT for body_p2: Write 2-4 short punchy lines each starting with a relevant emoji, separated by newlines.
-Example:
-🏡 Free accommodation and meals included
-✈️ No experience required
-🎓 Gain internationally recognised experience
+═══ SUBJECT LINE MASTERY (this is the MOST critical element) ═══
+- Max 50 characters — must be fully visible on mobile
+- Use ONE of these proven high-open-rate formulas:
+  • Curiosity gap: "Co się stanie, gdy..." / "You won't believe what happened in Italy"
+  • FOMO/scarcity: "Ostatnie 5 miejsc" / "This won't be available again"
+  • Question: "Mówisz po angielsku?" / "Ready for the summer of your life?"
+  • Number + benefit: "7 dni do płynnego angielskiego" / "3 reasons to apply today"
+  • Pattern interrupt: something unexpected that breaks inbox monotony
+- NEVER use spam triggers: "free", "act now", "guaranteed", "!!!". No ALL CAPS words.
+- Preheader must COMPLEMENT subject (not repeat it) — together they're a 1-2 punch
+- A/B variants should test DIFFERENT psychological angles (curiosity vs FOMO vs question)
+
+═══ EMAIL BODY — PERSUASION ARCHITECTURE ═══
+
+HEADLINE: Powerful, benefit-driven. Max 70 chars. Should make the reader STOP scrolling. Use one of: transformation promise, provocative question, or bold claim with proof.
+
+INTRO (2-3 sentences): 
+- Start with the READER, not with Angloville. Show you understand their world.
+- Use the "before" state — the frustration, the dream, the gap in their life
+- Then hint at the solution (Angloville) without hard-selling
+
+BODY_P1 (what they'll experience):
+- Paint the TRANSFORMATION with sensory language — what does a day look like?
+- Make them FEEL it: the conversations, the laughter, the food, the friendships
+- This is not a feature list — it's a movie trailer of their future experience
+
+BODY_P2 (emoji bullet points):
+- 2-4 short punchy lines, each starting with a relevant emoji
+- Each line = one concrete benefit that removes an objection or amplifies desire
+- Use social proof where possible: "7000+ uczestników" / "4.8★ rating"
+- Example format:
+  🏡 70h rozmów 1:1 z native speakerami w 6 dni
+  ✈️ Zakwaterowanie i wyżywienie w cenie
+  🎓 Bez podręczników, bez klasy — 100% immersja
+
+BODY_P3 (urgency + call to action):
+- Create GENUINE urgency — real deadlines, limited spots, seasonal timing
+- Use loss aversion: "don't miss" > "sign up". Frame what they LOSE by not acting
+- End with a clear reason to click NOW, not "someday"
+
+CTA BUTTONS:
+- Primary: action-oriented, benefit-focused. NOT "Learn more" — instead "Zarezerwuj miejsce" / "See available dates"
+- Secondary: lower commitment alternative. "Sprawdź program" / "Show me more"
+
+PS LINE:
+- Use as a "second chance" hook — many readers skip to PS first
+- Add one more reason to act: bonus info, social proof stat, or deadline reminder
+
+═══ CRITICAL MINDSET ═══
+The reader's inbox has 50 other emails. Yours must be the one they CANNOT ignore.
+Make them feel that Angloville is not just another programme — it's THE experience they've been waiting for.
+Write as if the reader is your friend and you're genuinely excited to share something life-changing with them.
+Never be generic. Never be boring. Every sentence must earn the right to the next sentence.
+
+DATES TABLE: If the additional instructions mention ANY dates, terms, sessions, or time periods, you MUST generate a "dates_table" array. Each entry: "programme" (name), "dates" (date range), optionally "note" (e.g. "ostatnie 3 miejsca!", "early bird -15%"). If no dates mentioned, set to [].
 
 Return ONLY valid JSON, no markdown, no backticks.
 
 {
-  "subject": "subject line no emoji max 55 chars",
-  "subject_emoji": "subject with 1-2 emojis max 65 chars",
-  "preheader": "preheader max 90 chars",
-  "headline": "strong punchy headline max 70 chars",
-  "intro": "2-3 sentence warm opening paragraph",
-  "body_p1": "2-3 sentences what participants do",
-  "body_p2": "2-4 emoji bullet lines separated by newlines",
-  "body_p3": "2-3 sentences urgency and call to action",
-  "cta": "primary CTA button max 35 chars",
-  "cta2": "secondary CTA button max 35 chars",
-  "ps": "short PS with urgency or bonus",
-  "ab1": "A/B subject variant A",
-  "ab2": "A/B subject variant B",
-  "send_time": "best send day and time with short reason"
+  "subject": "curiosity/FOMO subject max 50 chars, irresistible to open",
+  "subject_emoji": "same with 1-2 emojis max 55 chars",
+  "preheader": "complements subject, max 90 chars — together they're a 1-2 punch",
+  "headline": "powerful benefit-driven headline max 70 chars",
+  "intro": "2-3 sentences — start with THEM, not Angloville. Empathy + hint of solution",
+  "body_p1": "2-3 sentences painting the transformation — sensory, emotional, cinematic",
+  "body_p2": "2-4 emoji bullet lines — concrete benefits + social proof, separated by newlines",
+  "body_p3": "2-3 sentences — genuine urgency, loss aversion, reason to act NOW",
+  "cta": "primary CTA max 35 chars — action + benefit, not generic",
+  "cta2": "secondary CTA max 35 chars — lower commitment alternative",
+  "ps": "PS with one more hook — bonus, social proof stat, or deadline",
+  "ab1": "A/B variant A — DIFFERENT psychological angle than main subject",
+  "ab2": "A/B variant B — yet another angle (question vs FOMO vs curiosity)",
+  "send_time": "best send day/time with data-backed reason",
+  "dates_table": [{"programme":"Programme Name","dates":"21 Jun – 28 Jun 2026","note":"last spots!"}]
 }`;
+    }
 
     try {
       const aiRes = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model: 'claude-opus-4-5', max_tokens: 2000, messages: [{ role: 'user', content: prompt }] }),
+        body: JSON.stringify({ model: 'claude-opus-4-5', max_tokens: 2500, messages: [{ role: 'user', content: prompt }] }),
       });
       const aiData = await aiRes.json();
       if (!aiRes.ok) throw new Error(aiData.error?.message || 'Anthropic API error');
@@ -151,7 +264,9 @@ Return ONLY valid JSON, no markdown, no backticks.
 
       const files = (data.resources || []).map(item => ({
         id:    item.public_id,
-        url:   item.secure_url.replace('/upload/', '/upload/w_1240,c_fill,g_auto:faces,q_100,f_auto/'),
+        url:   item.secure_url,
+        hero:  item.secure_url.replace('/upload/', '/upload/w_1140,h_751,c_fill,g_auto:faces,q_100,f_auto/'),
+        body:  item.secure_url.replace('/upload/', '/upload/w_1140,h_450,c_fill,g_auto:faces,q_100,f_auto/'),
         thumb: item.secure_url.replace('/upload/', '/upload/w_600,h_400,c_fill,g_auto:faces,q_90,f_auto/'),
         label: item.public_id.split('/').pop(),
         folder: item.public_id.includes('/') ? item.public_id.split('/').slice(0,-1).join('/') : '',
@@ -270,7 +385,7 @@ Return ONLY valid JSON, no markdown, no backticks.
     const mcList = process.env.MAILCHIMP_LIST_ID;
     if (!mcKey || !mcList) return res.status(200).json({ ok: true, draft_url: 'https://mailchimp.com', message: 'Mailchimp not configured' });
 
-    const { campaign, cta_url, cta_url2, images, program_name, footer_html, social_html } = body;
+    const { campaign, cta_url, cta_url2, images, program_name, footer_html, social_html, dates_table_html } = body;
     const dc   = mcKey.split('-')[1] || 'us1';
     const imgs = images || [];
     const ctaUrl2 = cta_url2 || cta_url;
@@ -306,12 +421,12 @@ Return ONLY valid JSON, no markdown, no backticks.
 
     const headlineRow = `
 <tr><td style="padding:28px 20px 6px;">
-  <h1 style="margin:0;font-family:${FONT};font-size:28px;font-weight:900;line-height:115%;color:#111111;letter-spacing:-0.3px;">${e(campaign.headline)}</h1>
+  <h1 style="margin:0;font-family:${FONT};font-size:28px;font-weight:900;line-height:115%;color:#111111;letter-spacing:-0.3px;">${campaign.headline}</h1>
 </td></tr>`;
 
     const heroImg = imgs[0] ? `
 <tr><td style="padding:20px 20px 0;line-height:0;">
-  <img src="${imgs[0].thumb||imgs[0].url}" alt="" width="100%"
+  <img src="${imgs[0].heroUrl||imgs[0].thumb||imgs[0].url}" alt="" width="100%"
     style="display:block;width:100%;height:auto;border-radius:10px;object-fit:cover;border:0;">
 </td></tr>` : '';
 
@@ -319,7 +434,7 @@ Return ONLY valid JSON, no markdown, no backticks.
       ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">${campaign.greetingHtml}</p>` : '';
     const introRow = `
 <tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">
-  ${greetingLine}<p style="margin:0;">${e(campaign.intro)}</p>
+  ${greetingLine}${safeHtml(campaign.intro)}
 </td></tr>`;
 
     const cta1Row = `
@@ -337,14 +452,14 @@ Return ONLY valid JSON, no markdown, no backticks.
   ${safeHtml(campaign.body_p1)}
 </td></tr>`;
 
-    const img2Row = imgs[1] ? img(imgs[1].thumb||imgs[1].url) : '';
+    const img2Row = imgs[1] ? img(imgs[1].bodyUrl||imgs[1].thumb||imgs[1].url) : '';
 
     const p2Row = `
 <tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">
   ${bullets(campaign.body_p2)}
 </td></tr>`;
 
-    const img3Row = imgs[2] ? img(imgs[2].thumb||imgs[2].url) : '';
+    const img3Row = imgs[2] ? img(imgs[2].bodyUrl||imgs[2].thumb||imgs[2].url) : '';
 
     const p3Row = `
 <tr><td style="padding:16px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
@@ -366,11 +481,20 @@ Return ONLY valid JSON, no markdown, no backticks.
   </table>
 </td></tr>`;
 
-    const img4Row = imgs[3] ? img(imgs[3].thumb||imgs[3].url) : '';
+    const img4Row = imgs[3] ? img(imgs[3].bodyUrl||imgs[3].thumb||imgs[3].url) : '';
+
+    const datesRow = dates_table_html || '';
 
     const socialRow = social_html || '';
 
-    const rows = [logoBar,headlineRow,heroImg,introRow,cta1Row,p1Row,img2Row,p2Row,img3Row,p3Row,psRow,cta2Row,img4Row,socialRow].filter(Boolean).join('\n');
+    const dividerBeforeSocial = `
+<tr><td style="padding:0 20px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td style="border-top:2px solid #EEEEEE;font-size:0;line-height:0;">&nbsp;</td></tr>
+  </table>
+</td></tr>`;
+
+    const rows = [logoBar,headlineRow,heroImg,introRow,cta1Row,p1Row,img2Row,p2Row,img3Row,p3Row,datesRow,psRow,cta2Row,img4Row,dividerBeforeSocial,socialRow].filter(Boolean).join('\n');
 
     const fullHtml = `<!DOCTYPE html>
 <html lang="en"><head>
@@ -431,6 +555,52 @@ Return ONLY valid JSON, no markdown, no backticks.
         method: 'PUT',
         headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
         body: JSON.stringify({ html: fullHtml }),
+      });
+
+      return res.status(200).json({
+        ok: true,
+        draft_url: `https://${dc}.admin.mailchimp.com/campaigns/edit?id=${campaignId}`,
+      });
+    } catch (e) {
+      return res.status(500).json({ ok: false, error: e.message });
+    }
+  }
+
+  // ── MAILCHIMP DRAFT — RAW HTML (for personal emails) ──
+  if (body.action === 'mailchimp_draft_raw') {
+    const mcKey  = process.env.MAILCHIMP_API_KEY;
+    const mcList = process.env.MAILCHIMP_LIST_ID;
+    if (!mcKey || !mcList) return res.status(200).json({ ok: true, draft_url: 'https://mailchimp.com', message: 'Mailchimp not configured' });
+
+    const { html, subject, preheader, program_name } = body;
+    const dc = mcKey.split('-')[1] || 'us1';
+
+    try {
+      const auth = 'Basic ' + Buffer.from('anystring:' + mcKey).toString('base64');
+      const createRes = await fetch(`https://${dc}.api.mailchimp.com/3.0/campaigns`, {
+        method: 'POST',
+        headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'regular',
+          settings: {
+            subject_line: subject || 'Personal email',
+            preview_text: preheader || '',
+            title: `[PERSONAL] ${program_name || 'Email'} – ${new Date().toLocaleDateString('en-GB')}`,
+            from_name: 'Angloville',
+            reply_to: 'hello@angloville.com',
+            to_name: '*|FNAME|*',
+          },
+          recipients: { list_id: mcList },
+        }),
+      });
+      const createData = await createRes.json();
+      if (!createRes.ok) throw new Error(createData.detail || JSON.stringify(createData));
+      const campaignId = createData.id;
+
+      await fetch(`https://${dc}.api.mailchimp.com/3.0/campaigns/${campaignId}/content`, {
+        method: 'PUT',
+        headers: { 'Authorization': auth, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html }),
       });
 
       return res.status(200).json({
