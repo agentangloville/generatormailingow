@@ -219,6 +219,33 @@ textarea.notes:focus{outline:none;border-color:var(--b)}
 
 /* GENERATE BTN */
 .gen-row{margin-top:8px}
+
+/* COLLAPSIBLE STEPS */
+.step.collapsible .step-head{cursor:pointer;user-select:none;transition:background .12s}
+.step.collapsible .step-head:hover{background:#F0F1F5}
+.step.collapsible .step-body{display:none}
+.step.collapsible.open .step-body{display:block}
+.step-chevron{
+  margin-left:auto;font-size:12px;color:var(--sub);
+  transition:transform .2s;flex-shrink:0;
+}
+.step.collapsible.open .step-chevron{transform:rotate(180deg)}
+.step-summary{
+  font-size:11px;color:var(--b);font-weight:500;
+  margin-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;
+}
+
+/* FOOTER EDIT SECTION */
+.footer-edit-wrap{display:none;margin-top:12px}
+.footer-edit-wrap.show{display:block}
+.footer-edit-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:8px;padding:6px 13px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--sub);
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;
+  border-radius:7px;cursor:pointer;transition:all .12s;
+}
+.footer-edit-btn:hover{border-color:var(--b);color:var(--b)}
 .btn-gen{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:100%;padding:16px 32px;
@@ -382,15 +409,178 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
   cursor:pointer;flex-shrink:0;
 }
 .rte-content{
-  padding:8px 11px;min-height:68px;
-  font-family:'DM Sans',sans-serif;font-size:13px;
-  color:var(--txt);line-height:1.6;outline:none;
+  padding:10px 13px;min-height:120px;
+  font-family:'DM Sans',sans-serif;font-size:14px;
+  color:var(--txt);line-height:1.7;outline:none;
 }
 .rte-content p{margin:0 0 5px}
 .rte-content p:last-child{margin-bottom:0}
 
+/* Font size dropdown */
+.rte-fontsize{
+  padding:1px 4px;border:1px solid var(--brd);border-radius:4px;
+  font-family:'DM Sans',sans-serif;font-size:10px;color:var(--txt);
+  background:var(--w);cursor:pointer;height:24px;
+}
+.rte-fontsize:focus{outline:none;border-color:var(--b)}
+
+/* Emoji picker popover */
+.emoji-pop{
+  position:absolute;top:100%;left:0;z-index:50;
+  background:var(--w);border:1px solid var(--brd);border-radius:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,.16);
+  display:none;width:320px;overflow:hidden;
+}
+.emoji-pop.open{display:flex;flex-direction:column}
+.emoji-search-wrap{padding:8px 8px 4px;}
+.emoji-search{
+  width:100%;padding:7px 10px;border:1.5px solid var(--brd);border-radius:6px;
+  font-family:'DM Sans',sans-serif;font-size:12px;color:var(--txt);
+  background:#FAFBFD;outline:none;
+}
+.emoji-search:focus{border-color:var(--b)}
+.emoji-search::placeholder{color:var(--sub)}
+.emoji-cats{
+  display:flex;gap:1px;padding:0 6px;border-bottom:1px solid var(--brd);
+  overflow-x:auto;flex-shrink:0;
+}
+.emoji-cat-btn{
+  border:none;background:transparent;font-size:15px;
+  padding:5px 6px;cursor:pointer;border-radius:5px 5px 0 0;
+  opacity:.5;transition:all .12s;flex-shrink:0;
+}
+.emoji-cat-btn:hover{opacity:.85;background:#F0F0F0}
+.emoji-cat-btn.on{opacity:1;background:#FFFBEA;border-bottom:2px solid var(--y)}
+.emoji-grid{
+  display:flex;flex-wrap:wrap;padding:6px;gap:1px;
+  max-height:220px;overflow-y:auto;align-content:flex-start;
+}
+.emoji-grid button{
+  border:none;background:transparent;font-size:20px;
+  padding:2px;cursor:pointer;border-radius:5px;
+  width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+  transition:background .1s,transform .1s;
+}
+.emoji-grid button:hover{background:#F0F0F0;transform:scale(1.15)}
+.emoji-no-results{
+  padding:16px;text-align:center;font-size:12px;color:var(--sub);
+}
+.rte-toolbar{position:relative}
+
+/* Divider in email */
+.email-divider{
+  border:none;border-top:2px solid #EEEEEE;margin:8px 0;
+}
+
+/* Dates table toggle & editor */
+.dates-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;background:#FAFBFD;
+  border:1px solid var(--brd);border-radius:var(--radius);
+  margin-bottom:7px;cursor:pointer;transition:all .12s;
+}
+.dates-toggle:hover{border-color:var(--b)}
+.dates-toggle.on{border-color:var(--y);background:#FFFBEA}
+.dates-toggle-switch{
+  width:38px;height:22px;border-radius:11px;
+  background:#D1D5DB;position:relative;transition:background .2s;flex-shrink:0;
+}
+.dates-toggle.on .dates-toggle-switch{background:var(--y)}
+.dates-toggle-switch::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);
+  transition:transform .2s;
+}
+.dates-toggle.on .dates-toggle-switch::after{transform:translateX(16px)}
+.dates-toggle-lbl{font-size:13px;font-weight:600;color:var(--txt)}
+.dates-toggle-hint{font-size:11px;color:var(--sub);margin-left:auto}
+
+.dates-editor{display:none;margin-bottom:7px}
+.dates-editor.show{display:block}
+.dates-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.dates-tbl th{
+  text-align:left;padding:7px 8px;font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;color:var(--sub);
+  border-bottom:2px solid var(--brd);background:#FAFBFD;
+}
+.dates-tbl td{padding:5px 8px;border-bottom:1px solid var(--brd);vertical-align:middle}
+.dates-tbl input{
+  width:100%;padding:5px 7px;border:1px solid var(--brd);border-radius:5px;
+  font-family:'DM Sans',sans-serif;font-size:12px;color:var(--txt);background:var(--w);
+}
+.dates-tbl input:focus{outline:none;border-color:var(--b)}
+.dates-rm{
+  background:none;border:none;color:#CC0000;font-size:14px;
+  cursor:pointer;padding:2px 6px;border-radius:4px;
+}
+.dates-rm:hover{background:#FFF2F2}
+.dates-add{
+  margin-top:6px;padding:6px 14px;background:transparent;
+  border:1.5px dashed var(--brd);color:var(--sub);
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;
+  border-radius:7px;cursor:pointer;transition:all .12s;width:100%;
+}
+.dates-add:hover{border-color:var(--b);color:var(--b)}
+.dates-heading-input{
+  margin-bottom:8px;
+}
+
 /* MODAL */
 .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;overflow-y:auto;padding:16px}
+
+/* EMAIL TYPE TOGGLE */
+.etype-wrap{
+  display:flex;gap:6px;margin-bottom:12px;
+}
+
+/* PROMO CONTEXT (PL only) */
+.promo-wrap{display:none}
+.promo-wrap.show{display:block}
+.promo-seasons{display:flex;gap:4px;margin-bottom:10px}
+.promo-season-btn{
+  padding:7px 16px;border:1.5px solid var(--brd);background:var(--w);
+  border-radius:7px;cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:600;color:var(--sub);transition:all .12s;
+}
+.promo-season-btn:hover{border-color:var(--b);color:var(--b)}
+.promo-season-btn.on{background:var(--dk);border-color:var(--dk);color:var(--y)}
+.promo-phases{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.promo-phase{
+  padding:8px 14px;border:1.5px solid var(--brd);background:var(--w);
+  border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:12px;font-weight:600;color:var(--txt);transition:all .12s;
+  display:flex;align-items:center;gap:6px;
+}
+.promo-phase:hover{border-color:var(--y)}
+.promo-phase.on{border-color:var(--y);background:#FFFBEA}
+.promo-phase .pp-icon{font-size:15px}
+.promo-detail{
+  display:none;padding:12px 14px;
+  background:#FFFBEA;border:1.5px solid var(--y);border-radius:8px;
+  margin-top:6px;
+}
+.promo-detail.show{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.promo-detail .ef-group{margin:0;flex:1;min-width:120px}
+.etype-btn{
+  flex:1;display:flex;align-items:center;gap:10px;
+  padding:14px 16px;border:2px solid var(--brd);
+  background:var(--w);border-radius:10px;cursor:pointer;
+  font-family:'DM Sans',sans-serif;text-align:left;
+  transition:all .15s;position:relative;
+}
+.etype-btn:hover{border-color:#b8baff}
+.etype-btn.on{border-color:var(--y);background:#FFFBEA;box-shadow:0 0 0 3px rgba(245,200,0,.12)}
+.etype-btn.on::after{
+  content:'✓';position:absolute;top:8px;right:8px;
+  font-size:9px;font-weight:900;color:var(--dk);
+  background:var(--y);width:18px;height:18px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+}
+.etype-icon{font-size:22px;flex-shrink:0}
+.etype-t{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.etype-d{font-size:11px;color:var(--sub);line-height:1.4}
+
 .modal.open{display:flex;align-items:flex-start;justify-content:center}
 .modal-box{background:#EEE;border-radius:14px;width:100%;max-width:680px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 .modal-box.desktop-mode{max-width:680px;}
@@ -448,12 +638,28 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
     </div>
   </div>
 
+  <!-- PROMO CONTEXT (PL only) -->
+  <div class="step collapsible promo-wrap" id="promo-step">
+    <div class="step-head" onclick="toggleStep('promo-step')">
+      <div class="step-num" style="background:var(--y);color:var(--dk)">%</div>
+      <div class="step-lbl">Promocja czasowa</div>
+      <span class="step-summary" id="step-promo-sum">Brak</span>
+      <div class="step-chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="promo-seasons" id="promo-seasons"></div>
+      <div class="promo-phases" id="promo-phases"></div>
+      <div class="promo-detail" id="promo-detail"></div>
+    </div>
+  </div>
+
   <!-- STEP 2: IMAGES -->
-  <div class="step">
-    <div class="step-head">
+  <div class="step collapsible" id="step-images">
+    <div class="step-head" onclick="toggleStep('step-images')">
       <div class="step-num">2</div>
       <div class="step-lbl">Choose images</div>
-      <div class="step-hint">Optional — select from Cloudinary library</div>
+      <span class="step-summary" id="step-images-sum">Optional</span>
+      <div class="step-chevron">▼</div>
     </div>
     <div class="step-body">
 
@@ -489,11 +695,12 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
   </div>
 
   <!-- STEP 3: LINKS & UTM -->
-  <div class="step">
-    <div class="step-head">
+  <div class="step collapsible" id="step-utm">
+    <div class="step-head" onclick="toggleStep('step-utm')">
       <div class="step-num">3</div>
       <div class="step-lbl">Links & UTM</div>
-      <div class="step-hint">Set destination URLs and tracking</div>
+      <span class="step-summary" id="step-utm-sum">Optional</span>
+      <div class="step-chevron">▼</div>
     </div>
     <div class="step-body">
       <div class="utm-wrap">
@@ -530,11 +737,12 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
   </div>
 
   <!-- STEP 4: FOOTER -->
-  <div class="step">
-    <div class="step-head">
+  <div class="step collapsible" id="step-footer">
+    <div class="step-head" onclick="toggleStep('step-footer')">
       <div class="step-num">4</div>
       <div class="step-lbl">Email footer</div>
-      <div class="step-hint">Choose domain footer</div>
+      <span class="step-summary" id="step-footer-sum">Default</span>
+      <div class="step-chevron">▼</div>
     </div>
     <div class="step-body">
       <!-- Platform toggle -->
@@ -546,7 +754,8 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
         </div>
       </div>
       <div class="footer-grid" id="footer-grid"></div>
-      <div style="margin-top:12px">
+      <button type="button" class="footer-edit-btn" id="footer-edit-toggle" onclick="toggleFooterEdit()">✏️ Edytuj footer</button>
+      <div class="footer-edit-wrap" id="footer-edit-wrap">
         <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">
           <span>Footer content — editable</span>
           <button class="btn-cp" onclick="resetFooter()">&#8635; Reset to default</button>
@@ -576,6 +785,33 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
     </div>
   </div>
 
+  <!-- EMAIL TYPE SELECTOR -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">6</div>
+      <div class="step-lbl">Email type</div>
+      <div class="step-hint">Marketing campaign or personal email</div>
+    </div>
+    <div class="step-body">
+      <div class="etype-wrap">
+        <button type="button" class="etype-btn on" id="etype-mkt" onclick="setEmailType('marketing')">
+          <div class="etype-icon">📣</div>
+          <div>
+            <div class="etype-t">Marketing Campaign</div>
+            <div class="etype-d">Branded HTML email z hero image, CTA buttons, logo bar i footer</div>
+          </div>
+        </button>
+        <button type="button" class="etype-btn" id="etype-pt" onclick="setEmailType('plaintext')">
+          <div class="etype-icon">✉️</div>
+          <div>
+            <div class="etype-t">Personal Email</div>
+            <div class="etype-d">Zwykły tekst jak od człowieka — person-to-person, bez grafik i przycisków</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- GENERATE -->
   <div class="gen-row">
     <button class="btn-gen" id="gen-btn" onclick="generate()">
@@ -600,14 +836,14 @@ input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
 <div class="modal" id="prev-modal">
   <div class="modal-box desktop-mode" id="prev-modal-box">
     <div class="modal-head">
-      <span>Email Preview</span>
+      <span id="prev-title">Email Preview</span>
       <div style="display:flex;align-items:center;gap:4px;">
         <button class="prev-mode-btn active" id="prev-desktop-btn" onclick="setPreviewMode('desktop')">🖥 Desktop</button>
         <button class="prev-mode-btn" id="prev-mobile-btn" onclick="setPreviewMode('mobile')">📱 Mobile</button>
         <button onclick="closePreview()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;margin-left:6px;line-height:1;">✕</button>
       </div>
     </div>
-    <div style="background:#EBEBEB;padding:16px;overflow-y:auto;max-height:82vh;">
+    <div id="prev-body" style="background:#EBEBEB;padding:16px;overflow-y:auto;max-height:82vh;">
       <div id="prev-content"></div>
     </div>
   </div>
@@ -670,9 +906,6 @@ const FOOTERS = {
     {id:'pl-pl',name:'angloville.pl (PL)',prev:'kontakt@angloville.pl · Wypisz się · Polityka prywatności',
      mc:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`,
      hs:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
-    {id:'pl-biz',name:'angloville.pl – B2B',prev:'Firmy · Wypisz się · Polityka prywatności',
-     mc:`To jest wiadomość biznesowa. Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się</a>.<br><br>Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`,
-     hs:`To jest wiadomość biznesowa. Możesz <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">wypisać się</a>.<br><br>Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
   ],
   it:[
     {id:'it-it',name:'angloville.it (IT)',prev:'info@angloville.it · Cancellati · Privacy Policy',
@@ -851,8 +1084,14 @@ let selHero  = null;   // single hero image {url, thumb, label}
 let selBody  = [];     // max 2 body images
 let selFoot  = null;
 let selPlatform = 'mc'; // 'mc' = Mailchimp, 'hs' = HubSpot
+let emailType   = 'marketing'; // 'marketing' or 'plaintext'
 let libCat   = null;
 let activeSlot = 'hero'; // 'hero' or 'body' — which gallery is active
+
+// Dates table state
+let datesEnabled = false;
+let datesRows = []; // [{programme:'', dates:'', note:''}]
+let datesHeading = ''; // heading above the table
 
 // Mailchimp library state
 let mcImages   = [];
@@ -869,11 +1108,35 @@ let cldLoaded     = false;
 let cldLoading    = false;
 let cldNextCursor = null;
 
+// Promo context state (PL only)
+let promoSeason = null;  // 'wakacje' or 'ferie'
+let promoPhase  = null;  // phase id or null
+let promoDate   = '';     // editable deadline
+let promoDiscount = '';   // e.g. '-15%', '-500 zł'
+
+const PROMO_DATA = {
+  wakacje: {
+    label: '🏖 Wakacje',
+    phases: [
+      {id:'super-early', icon:'🔥', name:'Super Early Bird', defaultDate:'31.03', desc:'Najwcześniejsza zniżka'},
+      {id:'early',       icon:'⏰', name:'Early Bird',       defaultDate:'30.05', desc:'Przed sezonem'},
+    ]
+  },
+  ferie: {
+    label: '❄️ Ferie zimowe',
+    phases: [
+      {id:'super-early', icon:'🔥', name:'Super Early Bird', defaultDate:'30.10', desc:'Najwcześniejsza zniżka'},
+      {id:'black-week',  icon:'🖤', name:'Black Week',       defaultDate:'30.11', desc:'Koniec listopada'},
+    ]
+  },
+};
+
 // ═══════════════════════════════════════════════════════════
 //  INIT / MARKET SWITCH
 // ═══════════════════════════════════════════════════════════
 function setMarket(mkt, btn) {
   market = mkt; selected.clear(); selHero = null; selBody = []; selFoot = null; libCat = null; activeCat = null;
+  promoSeason = null; promoPhase = null; promoDate = ''; promoDiscount = '';
   document.querySelectorAll('.mkt-pill').forEach(t=>t.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('extra').placeholder = MKT[mkt].ph;
@@ -887,7 +1150,151 @@ function setMarket(mkt, btn) {
 function renderAll(){
   renderProgs(); updateSelBar();
   initLibCat(); renderLibTabs(); renderGallery('hero'); renderGallery('body');
-  renderSelImages(); renderFooters();
+  renderSelImages(); renderFooters(); renderPromo(); updateStepSummaries();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PROMO CONTEXT (PL only)
+// ═══════════════════════════════════════════════════════════
+function renderPromo(){
+  const wrap = document.getElementById('promo-step');
+  if(!wrap) return;
+  // Only show for PL market
+  wrap.classList.toggle('show', market === 'pl');
+  if(market !== 'pl') return;
+
+  // Season tabs
+  const seasonsEl = document.getElementById('promo-seasons');
+  seasonsEl.innerHTML = `<button type="button" class="promo-season-btn${promoSeason===null?' on':''}" onclick="selectPromoSeason(null)">❌ Brak promocji</button>` +
+    Object.entries(PROMO_DATA).map(([key,s])=>
+      `<button type="button" class="promo-season-btn${promoSeason===key?' on':''}" onclick="selectPromoSeason('${key}')">${s.label}</button>`
+    ).join('');
+
+  // Phase pills
+  const phasesEl = document.getElementById('promo-phases');
+  const detailEl = document.getElementById('promo-detail');
+  if(!promoSeason){
+    phasesEl.innerHTML = '';
+    detailEl.classList.remove('show');
+    return;
+  }
+
+  const season = PROMO_DATA[promoSeason];
+  phasesEl.innerHTML = season.phases.map(p =>
+    `<button type="button" class="promo-phase${promoPhase===p.id?' on':''}" onclick="selectPromoPhase('${p.id}')">
+      <span class="pp-icon">${p.icon}</span>
+      <div><div style="font-size:12px;font-weight:700">${p.name}</div><div style="font-size:10px;color:var(--sub)">${p.desc}</div></div>
+    </button>`
+  ).join('');
+
+  // Detail row
+  if(promoPhase){
+    const phase = season.phases.find(p=>p.id===promoPhase);
+    const yr = new Date().getFullYear();
+    if(!promoDate && phase) promoDate = phase.defaultDate + '.' + yr;
+    detailEl.classList.add('show');
+    detailEl.innerHTML = `
+      <div class="ef-group">
+        <div class="ef-label"><span>📅 Deadline promocji</span></div>
+        <input type="text" class="ef" id="promo-date-input" value="${esc(promoDate)}" placeholder="np. 31.03.2026" oninput="promoDate=this.value">
+      </div>
+      <div class="ef-group">
+        <div class="ef-label"><span>💰 Zniżka (opcjonalnie)</span></div>
+        <input type="text" class="ef" id="promo-discount-input" value="${esc(promoDiscount)}" placeholder="np. -15%, -500 zł" oninput="promoDiscount=this.value">
+      </div>`;
+  } else {
+    detailEl.classList.remove('show');
+  }
+  updateStepSummaries();
+}
+
+function selectPromoSeason(key){
+  promoSeason = key;
+  promoPhase = null;
+  promoDate = '';
+  promoDiscount = '';
+  // Auto-select first phase if season chosen
+  if(key && PROMO_DATA[key]){
+    const first = PROMO_DATA[key].phases[0];
+    if(first){
+      promoPhase = first.id;
+      const yr = new Date().getFullYear();
+      promoDate = first.defaultDate + '.' + yr;
+    }
+  }
+  renderPromo();
+}
+
+function selectPromoPhase(id){
+  if(promoPhase === id){ promoPhase = null; promoDate = ''; promoDiscount = ''; }
+  else {
+    promoPhase = id;
+    const season = PROMO_DATA[promoSeason];
+    const phase = season?.phases.find(p=>p.id===id);
+    const yr = new Date().getFullYear();
+    promoDate = phase ? phase.defaultDate + '.' + yr : '';
+    promoDiscount = '';
+  }
+  renderPromo();
+}
+
+function getPromoContext(){
+  if(market !== 'pl' || !promoSeason || !promoPhase) return '';
+  const season = PROMO_DATA[promoSeason];
+  const phase = season?.phases.find(p=>p.id===promoPhase);
+  if(!phase) return '';
+  let ctx = `PROMO CONTEXT (treat as secondary info, not the main topic): ${phase.name} promotion, deadline: ${promoDate || 'TBD'}.`;
+  if(promoDiscount) ctx += ` Discount: ${promoDiscount}.`;
+  ctx += ` Mention this naturally as urgency/limitation near the end or in PS — do NOT make it the headline or main focus of the email.`;
+  return ctx;
+}
+
+function setEmailType(type){
+  emailType = type;
+  document.getElementById('etype-mkt').classList.toggle('on', type==='marketing');
+  document.getElementById('etype-pt').classList.toggle('on', type==='plaintext');
+  const lbl = document.querySelector('.btn-label');
+  if(lbl) lbl.textContent = type==='plaintext' ? 'Generate Personal Email' : 'Generate Campaign';
+}
+
+function toggleStep(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('open');
+}
+
+function toggleFooterEdit(){
+  const wrap = document.getElementById('footer-edit-wrap');
+  if(wrap) wrap.classList.toggle('show');
+}
+
+function updateStepSummaries(){
+  // Images summary
+  const imgCount = (selHero?1:0) + selBody.length;
+  const imgSum = document.getElementById('step-images-sum');
+  if(imgSum) imgSum.textContent = imgCount > 0 ? imgCount + ' selected' : 'Optional';
+
+  // UTM summary
+  const utmBase = (document.getElementById('utm-base')?.value||'').trim();
+  const utmSum = document.getElementById('step-utm-sum');
+  if(utmSum) utmSum.textContent = utmBase ? utmBase.replace(/https?:\/\//,'').slice(0,30) : 'Optional';
+
+  // Footer summary
+  const opts = FOOTERS[market]||[];
+  const foot = opts.find(f=>f.id===selFoot)||opts[0];
+  const footSum = document.getElementById('step-footer-sum');
+  if(footSum) footSum.textContent = foot ? foot.name : 'Default';
+
+  // Promo summary
+  const promoSum = document.getElementById('step-promo-sum');
+  if(promoSum){
+    if(promoSeason && promoPhase){
+      const season = PROMO_DATA[promoSeason];
+      const phase = season?.phases.find(p=>p.id===promoPhase);
+      promoSum.textContent = phase ? phase.name + (promoDate ? ' → ' + promoDate : '') : 'Brak';
+    } else {
+      promoSum.textContent = 'Brak';
+    }
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1032,6 +1439,8 @@ function renderGallery(slot){
 
   gallery.innerHTML = imgs.map(img=>{
     const lbl = img.label || '';
+    const heroUrl = (img.hero || img.url).replace(/'/g,"\\'");
+    const bodyUrl = (img.body || img.url).replace(/'/g,"\\'");
     let on, badge;
     if(slot === 'hero'){
       on = selHero && selHero.url === img.url;
@@ -1041,7 +1450,7 @@ function renderGallery(slot){
       on = idx >= 0;
       badge = on ? idx+1 : '';
     }
-    return `<div class="gal-item${on?' on':''}" onclick="toggleSlotImg('${slot}','${img.url.replace(/'/g,"\\'")}','${(img.thumb||img.url).replace(/'/g,"\\'")}','${esc(lbl)}')">
+    return `<div class="gal-item${on?' on':''}" onclick="toggleSlotImg('${slot}','${img.url.replace(/'/g,"\\'")}','${(img.thumb||img.url).replace(/'/g,"\\'")}','${esc(lbl)}','${heroUrl}','${bodyUrl}')">
       <img src="${img.thumb||img.url}" alt="${esc(lbl)}" loading="lazy" onerror="this.parentElement.style.background='#DDD';this.style.display='none'">
       <div class="gnum">${badge}</div>
       <div class="glbl">${esc(lbl)}</div>
@@ -1060,13 +1469,13 @@ function renderGallery(slot){
   gallery.appendChild(ref);
 }
 
-function toggleSlotImg(slot, url, thumb, label){
+function toggleSlotImg(slot, url, thumb, label, heroUrl, bodyUrl){
   if(slot === 'hero'){
-    selHero = (selHero && selHero.url === url) ? null : {url, thumb, label};
+    selHero = (selHero && selHero.url === url) ? null : {url, thumb, label, heroUrl: heroUrl||url, bodyUrl: bodyUrl||url};
   } else {
     const idx = selBody.findIndex(s=>s.url===url);
     if(idx >= 0) selBody.splice(idx,1);
-    else if(selBody.length < 2) selBody.push({url, thumb, label});
+    else if(selBody.length < 2) selBody.push({url, thumb, label, heroUrl: heroUrl||url, bodyUrl: bodyUrl||url});
     // max 2 body images — ignore click if already 2 selected
   }
   renderGallery('hero'); renderGallery('body');
@@ -1105,16 +1514,12 @@ function renderSelImages(){
       bodyRow.innerHTML = '';
     }
   }
+  updateStepSummaries();
 }
-
-
-// ═══════════════════════════════════════════════════════════
-//  FOOTERS
 // ═══════════════════════════════════════════════════════════
 function renderFooters(){
   const opts=FOOTERS[market]||[];
   if(!selFoot&&opts.length) selFoot=opts[0].id;
-  // Set textarea to current footer html if not yet customised
   const current=opts.find(f=>f.id===selFoot)||opts[0];
   const el=document.getElementById('footer-editor');
   if(el && !el.dataset.edited) el.value=current?.[selPlatform]||'';
@@ -1130,11 +1535,22 @@ function renderFooters(){
   if(tagsMc) tagsMc.style.display = selPlatform==='mc' ? '' : 'none';
   if(tagsHs) tagsHs.style.display = selPlatform==='hs' ? '' : 'none';
 
-  document.getElementById('footer-grid').innerHTML=opts.map(f=>`
-    <button type="button" class="footer-opt${selFoot===f.id?' on':''}" onclick="selectFoot('${f.id}')">
-      <div class="footer-opt-name">${f.name}</div>
-      <div class="footer-opt-prev">${f.prev}</div>
-    </button>`).join('');
+  const footerGrid = document.getElementById('footer-grid');
+  if(opts.length <= 1){
+    // Single option — just show name, no grid needed
+    footerGrid.innerHTML = current
+      ? `<div style="font-size:12px;color:var(--txt);padding:6px 0"><strong>${current.name}</strong> <span style="color:var(--sub);font-size:11px">— ${current.prev}</span></div>`
+      : '';
+    footerGrid.style.display = 'block';
+  } else {
+    footerGrid.style.display = '';
+    footerGrid.innerHTML=opts.map(f=>`
+      <button type="button" class="footer-opt${selFoot===f.id?' on':''}" onclick="selectFoot('${f.id}')">
+        <div class="footer-opt-name">${f.name}</div>
+        <div class="footer-opt-prev">${f.prev}</div>
+      </button>`).join('');
+  }
+  updateStepSummaries();
 }
 function setPlatform(p){
   selPlatform = p;
@@ -1179,18 +1595,23 @@ async function generate(){
   document.getElementById('results').style.display='none';
   document.getElementById('gen-btn').disabled=true;
 
+  const promoCtx = getPromoContext();
+  const extraText = [document.getElementById('extra').value, promoCtx].filter(Boolean).join('\n\n');
+
   try{
     const res=await fetch('/api/proxy',{
       method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'generate',market,lang:M.lang,brand:M.brand,
-        programmes:progs,extra:document.getElementById('extra').value,
-        imageCount:(selHero?1:0)+selBody.length})
+        programmes:progs,extra:extraText,
+        imageCount:emailType==='plaintext'?0:((selHero?1:0)+selBody.length),
+        emailType})
     });
     const raw=await res.text();
     let data;
     try{data=JSON.parse(raw);}catch{showErr('Server error: '+raw.slice(0,300));return;}
     if(!data.ok) throw new Error(data.error||'Unknown error');
-    renderResults(data.campaign,progs);
+    if(emailType==='plaintext') renderPlaintextResults(data.campaign,progs);
+    else renderResults(data.campaign,progs);
   }catch(e){showErr('Error: '+e.message);}
 
   document.getElementById('loader-wrap').style.display='none';
@@ -1206,7 +1627,98 @@ const RTE_COLORS = [
   {c:'#2ECC71',t:'Green'},{c:'#FFFFFF',t:'White'},
 ];
 
-function rteField(id, html){
+const EMOJI_DATA = {
+  '⭐ Popularne': {icon:'⭐',emojis:[
+    {e:'✅',k:'check yes ok'},{e:'⭐',k:'star'},{e:'🔥',k:'fire hot'},{e:'✨',k:'sparkle magic'},{e:'💡',k:'idea bulb'},{e:'❤️',k:'heart love'},
+    {e:'👉',k:'point right'},{e:'👋',k:'wave hello hi'},{e:'🙌',k:'hands celebrate'},{e:'💪',k:'muscle strong'},{e:'🎯',k:'target goal'},
+    {e:'💰',k:'money bag'},{e:'🎁',k:'gift present'},{e:'📌',k:'pin'},{e:'📅',k:'calendar date'},{e:'⏰',k:'clock time alarm'},
+    {e:'🤝',k:'handshake deal'},{e:'👍',k:'thumbs up'},{e:'🏆',k:'trophy winner'},{e:'🎉',k:'party tada celebrate'},
+    {e:'💯',k:'hundred percent perfect'},{e:'⚡',k:'lightning fast energy'},{e:'🚀',k:'rocket launch'},
+    {e:'📣',k:'megaphone announce'},{e:'🔔',k:'bell notification'},{e:'💬',k:'speech bubble chat'},
+    {e:'📧',k:'email mail letter'},{e:'🆓',k:'free gratis'},{e:'🆕',k:'new nowy'},
+    {e:'⚠️',k:'warning caution'},{e:'❗',k:'exclamation important'},{e:'❓',k:'question'},
+    {e:'🔗',k:'link chain url'},{e:'📎',k:'paperclip attach'},{e:'✏️',k:'pencil edit write'},
+  ]},
+  '😊 Twarze': {icon:'😊',emojis:[
+    {e:'😊',k:'smile happy'},{e:'😀',k:'grin happy'},{e:'😍',k:'love eyes heart'},{e:'🤩',k:'star struck excited'},
+    {e:'😎',k:'cool sunglasses'},{e:'🥳',k:'party celebrate'},{e:'😄',k:'laugh happy'},{e:'🤗',k:'hug warm'},
+    {e:'😇',k:'angel innocent'},{e:'🤔',k:'thinking hmm'},{e:'😮',k:'surprised wow'},{e:'😢',k:'cry sad'},
+    {e:'🫶',k:'heart hands love'},{e:'🥰',k:'love smiling hearts'},{e:'😁',k:'grin beam'},
+    {e:'👀',k:'eyes look see'},{e:'🫡',k:'salute respect'},{e:'😏',k:'smirk'},
+  ]},
+  '🏡 Angloville': {icon:'🏡',emojis:[
+    {e:'🏡',k:'house home village wioska'},{e:'🎓',k:'graduation education nauka learn'},
+    {e:'✈️',k:'airplane plane travel podróż lot'},{e:'🌍',k:'globe world earth świat'},
+    {e:'🗣️',k:'speaking talk mówić conversation'},{e:'📚',k:'books reading nauka study'},
+    {e:'🏫',k:'school szkoła liceum'},{e:'💻',k:'laptop computer online zdalnie'},
+    {e:'🎒',k:'backpack school plecak szkoła'},{e:'🧒',k:'child kid dziecko'},
+    {e:'👨‍👩‍👧',k:'family rodzina'},{e:'🏕️',k:'camp obóz kemping'},
+    {e:'🤝',k:'handshake meet people spotkanie'},{e:'📋',k:'clipboard list plan'},
+    {e:'🏃',k:'running sport activity aktywność'},{e:'🧑‍🏫',k:'teacher mentor nauczyciel'},
+    {e:'🗺️',k:'map mapa travel'},{e:'🎭',k:'arts culture kultura'},
+    {e:'🎤',k:'microphone speak talk conversation'},{e:'🏰',k:'castle zamek culture'},
+  ]},
+  '🇵🇱 Flagi': {icon:'🇵🇱',emojis:[
+    {e:'🇵🇱',k:'poland polska'},{e:'🇮🇹',k:'italy italia włochy'},{e:'🇬🇧',k:'uk england anglia wielkaBrytania'},
+    {e:'🇲🇹',k:'malta'},{e:'🇺🇸',k:'usa america ameryka stanyZjednoczone'},{e:'🇨🇦',k:'canada kanada'},
+    {e:'🇯🇵',k:'japan japonia'},{e:'🇰🇷',k:'korea południowa south'},{e:'🇹🇭',k:'thailand tajlandia'},
+    {e:'🇻🇳',k:'vietnam wietnam'},{e:'🇫🇷',k:'france francja'},{e:'🇩🇪',k:'germany niemcy'},
+    {e:'🇪🇸',k:'spain hiszpania'},{e:'🇧🇪',k:'belgium belgia'},{e:'🇳🇱',k:'netherlands holandia'},
+    {e:'🇦🇹',k:'austria'},{e:'🇨🇿',k:'czech czechy'},{e:'🇭🇺',k:'hungary węgry'},
+    {e:'🇱🇹',k:'lithuania litwa'},{e:'🇱🇻',k:'latvia łotwa'},{e:'🇪🇪',k:'estonia'},
+    {e:'🇪🇺',k:'eu europe europa unia'},{e:'🇦🇺',k:'australia'},
+  ]},
+  '🌴 Podróże': {icon:'🌴',emojis:[
+    {e:'🌴',k:'palm tropical tropik'},{e:'🗽',k:'statue liberty new york nowy jork'},
+    {e:'⛩',k:'shrine japan torii japonia'},{e:'🏖',k:'beach plaża morze'},
+    {e:'🎡',k:'ferris wheel london londyn'},{e:'🗾',k:'japan map japonia'},
+    {e:'🌊',k:'wave ocean morze baltic'},{e:'🍕',k:'pizza italy włochy'},
+    {e:'🍁',k:'maple leaf canada kanada jesień'},{e:'🏔️',k:'mountain góra'},
+    {e:'🏝️',k:'island wyspa'},{e:'🌅',k:'sunrise sunset zachód wschód'},
+    {e:'🚆',k:'train pociąg transport'},{e:'🚌',k:'bus autobus transport'},
+    {e:'🛫',k:'takeoff start odlot samolot'},{e:'🛬',k:'landing lądowanie przylot'},
+    {e:'🗼',k:'tower wieża paris paryż'},{e:'🌆',k:'city miasto skyline'},
+    {e:'🏛️',k:'museum muzeum classical'},{e:'⛱️',k:'beach umbrella parasol plaża'},
+    {e:'🧳',k:'luggage baggage walizka'},
+  ]},
+  '🍎 Jedzenie': {icon:'🍎',emojis:[
+    {e:'🍎',k:'apple jabłko'},{e:'☕',k:'coffee kawa'},{e:'🍽️',k:'plate dining jedzenie meal posiłek'},
+    {e:'🥐',k:'croissant breakfast śniadanie'},{e:'🍕',k:'pizza italy'},
+    {e:'🍝',k:'pasta spaghetti makaron'},{e:'🥗',k:'salad salátka healthy'},
+    {e:'🧁',k:'cupcake cake ciasto'},{e:'🍰',k:'cake tort'},{e:'🍷',k:'wine wino'},
+    {e:'🥤',k:'drink napój'},{e:'🍔',k:'burger hamburger'},{e:'🌮',k:'taco mexican'},
+    {e:'🥘',k:'cooking gotowanie pan'},{e:'🍳',k:'egg jajko breakfast'},
+  ]},
+  '⏰ Czas & Finanse': {icon:'⏰',emojis:[
+    {e:'⏰',k:'alarm clock czas time budzik'},{e:'📅',k:'calendar kalendarz date termin'},
+    {e:'⏳',k:'hourglass time waiting czekanie czas'},{e:'🕐',k:'clock one godzina'},
+    {e:'📆',k:'tear-off calendar kalendarz'},{e:'🗓️',k:'spiral calendar plan'},
+    {e:'💰',k:'money bag pieniądze'},{e:'💳',k:'credit card karta płatność payment'},
+    {e:'💸',k:'money wings wydatki spending'},{e:'🏷️',k:'tag price cena etykieta label'},
+    {e:'📉',k:'chart down spadek discount'},{e:'📈',k:'chart up wzrost growth'},
+    {e:'🎫',k:'ticket bilet'},{e:'🧾',k:'receipt paragon rachunek'},
+    {e:'💎',k:'gem diamond diament premium'},{e:'👑',k:'crown korona premium king'},
+    {e:'🆓',k:'free gratis darmowe bezpłatne'},
+  ]},
+  '🔢 Numery': {icon:'🔢',emojis:[
+    {e:'1️⃣',k:'one jeden'},{e:'2️⃣',k:'two dwa'},{e:'3️⃣',k:'three trzy'},
+    {e:'4️⃣',k:'four cztery'},{e:'5️⃣',k:'five pięć'},{e:'6️⃣',k:'six sześć'},
+    {e:'7️⃣',k:'seven siedem'},{e:'8️⃣',k:'eight osiem'},{e:'9️⃣',k:'nine dziewięć'},
+    {e:'🔟',k:'ten dziesięć'},{e:'0️⃣',k:'zero'},{e:'#️⃣',k:'hash number numer'},
+    {e:'🅰️',k:'a letter'},{e:'🅱️',k:'b letter'},{e:'🆎',k:'ab blood'},
+    {e:'➡️',k:'arrow right strzałka'},{e:'⬅️',k:'arrow left strzałka'},
+    {e:'⬆️',k:'arrow up strzałka góra'},{e:'⬇️',k:'arrow down strzałka dół'},
+    {e:'↗️',k:'arrow up right'},
+  ]},
+};
+
+// Flatten for search
+const ALL_EMOJIS = Object.entries(EMOJI_DATA).flatMap(([cat,{emojis}]) =>
+  emojis.map(em => ({...em, cat}))
+);
+
+function rteField(id, html, opts){
+  opts = opts || {};
   const colorBtns = RTE_COLORS.map(({c,t})=>
     `<button type="button" class="rte-color-btn" title="${t}" style="background:${c};"
       onmousedown="event.preventDefault();rteCmd('foreColor','${c}')"></button>`
@@ -1217,17 +1729,122 @@ function rteField(id, html){
       <button type="button" class="rte-btn" title="Italic" onmousedown="event.preventDefault();rteCmd('italic')"><i style="font-style:italic">I</i></button>
       <button type="button" class="rte-btn" title="Underline" onmousedown="event.preventDefault();rteCmd('underline')"><u>U</u></button>
       <div class="rte-sep"></div>
+      <select class="rte-fontsize" title="Font size" onchange="rteFontSize(this.value);this.value='';">
+        <option value="" disabled selected>Aa</option>
+        <option value="1">S — 12px</option>
+        <option value="3">M — 16px</option>
+        <option value="4">L — 18px</option>
+        <option value="5">XL — 22px</option>
+        <option value="6">XXL — 28px</option>
+      </select>
+      <div class="rte-sep"></div>
       ${colorBtns}
       <div class="rte-sep"></div>
-      <button type="button" class="rte-btn" title="Clear formatting" onmousedown="event.preventDefault();rteCmd('removeFormat')" style="font-size:10px;width:32px">✕ fmt</button>
+      <button type="button" class="rte-btn" title="Insert emoji" onmousedown="event.preventDefault();toggleEmojiPicker('ep-${id}','${id}')" style="font-size:14px">😊</button>
+      <button type="button" class="rte-btn" title="Insert divider" onmousedown="event.preventDefault();rteInsertDivider('${id}')" style="font-size:10px;width:32px">― ―</button>
+      <button type="button" class="rte-btn" title="Clear formatting" onmousedown="event.preventDefault();rteCmd('removeFormat')" style="font-size:10px;width:32px">✕fmt</button>
       <div class="rte-sep"></div>
       <button class="btn-cp" style="font-size:10px" onmousedown="event.preventDefault();cp2(document.getElementById('${id}').innerText,this)">copy</button>
+      <div class="emoji-pop" id="ep-${id}"></div>
     </div>
     <div class="rte-content" id="${id}" contenteditable="true">${html}</div>
   </div>`;
 }
 function rteCmd(cmd, val){
   document.execCommand(cmd, false, val||null);
+}
+function rteFontSize(size){
+  if(size) document.execCommand('fontSize', false, size);
+}
+
+// ── EMOJI PICKER ──
+let _epEditorId = null; // which editor the picker is for
+let _epCat = null;      // active category
+
+function toggleEmojiPicker(pickerId, editorId){
+  const el = document.getElementById(pickerId);
+  if(!el) return;
+  // Close all other pickers
+  document.querySelectorAll('.emoji-pop.open').forEach(p=>{if(p.id!==pickerId) p.classList.remove('open');});
+  const wasOpen = el.classList.contains('open');
+  if(wasOpen){ el.classList.remove('open'); return; }
+  _epEditorId = editorId;
+  _epCat = Object.keys(EMOJI_DATA)[0];
+  renderEmojiPicker(pickerId, '');
+  el.classList.add('open');
+  // Focus search after render
+  setTimeout(()=>{const s=el.querySelector('.emoji-search');if(s)s.focus();},50);
+}
+
+function renderEmojiPicker(pickerId, query){
+  const el = document.getElementById(pickerId);
+  if(!el) return;
+  const q = (query||'').toLowerCase().trim();
+
+  // Category tabs
+  const catTabs = Object.entries(EMOJI_DATA).map(([name,{icon}])=>
+    `<button type="button" class="emoji-cat-btn${_epCat===name?' on':''}"
+      onmousedown="event.preventDefault();_epCat='${name.replace(/'/g,"\\'")}';updateEmojiGrid('${pickerId}')"
+      title="${name}">${icon}</button>`
+  ).join('');
+
+  // Filter emojis
+  let filtered;
+  if(q){
+    filtered = ALL_EMOJIS.filter(em => em.e.includes(q) || em.k.toLowerCase().includes(q));
+  } else {
+    const catData = EMOJI_DATA[_epCat];
+    filtered = catData ? catData.emojis : ALL_EMOJIS;
+  }
+
+  let gridHtml;
+  if(filtered.length === 0){
+    gridHtml = `<div class="emoji-no-results">Brak wyników dla "${esc(q)}"</div>`;
+  } else {
+    gridHtml = filtered.map(em =>
+      `<button type="button" title="${esc(em.k)}" onmousedown="event.preventDefault();rteInsertText('${_epEditorId}','${em.e}')">${em.e}</button>`
+    ).join('');
+  }
+
+  // Check if structure already exists (search input rendered) — if so, only update grid + cats
+  const existingSearch = el.querySelector('.emoji-search');
+  if(existingSearch){
+    const catsEl = el.querySelector('.emoji-cats-wrap');
+    if(catsEl) catsEl.innerHTML = q ? '' : '<div class="emoji-cats">'+catTabs+'</div>';
+    const gridEl = el.querySelector('.emoji-grid');
+    if(gridEl) gridEl.innerHTML = gridHtml;
+  } else {
+    // First render — build full structure
+    el.innerHTML = `
+      <div class="emoji-search-wrap">
+        <input type="text" class="emoji-search" placeholder="🔍 Szukaj emoji… np. heart, fire, polska"
+          value="${esc(q)}"
+          oninput="updateEmojiGrid('${pickerId}')"
+          onkeydown="if(event.key==='Escape'){document.querySelectorAll('.emoji-pop.open').forEach(p=>p.classList.remove('open'));}">
+      </div>
+      <div class="emoji-cats-wrap">${q ? '' : '<div class="emoji-cats">'+catTabs+'</div>'}</div>
+      <div class="emoji-grid">${gridHtml}</div>`;
+  }
+}
+
+function updateEmojiGrid(pickerId){
+  const el = document.getElementById(pickerId);
+  if(!el) return;
+  const searchInput = el.querySelector('.emoji-search');
+  const q = searchInput ? searchInput.value : '';
+  renderEmojiPicker(pickerId, q);
+}
+
+function rteInsertText(editorId, text){
+  const ed = document.getElementById(editorId);
+  if(ed) ed.focus();
+  document.execCommand('insertText', false, text);
+  // Don't close picker — let user add multiple emojis
+}
+function rteInsertDivider(editorId){
+  const ed = document.getElementById(editorId);
+  if(ed) ed.focus();
+  document.execCommand('insertHTML', false, '<hr class="email-divider" style="border:none;border-top:2px solid #EEEEEE;margin:12px 0;">');
 }
 function textToHtml(txt){
   // Convert newline-separated plain text to HTML paragraphs
@@ -1254,6 +1871,55 @@ function rcard(tag,tagCls,fields,extraHead){
   return h+'</div>';
 }
 
+// ═══════════════════════════════════════════════════════════
+//  DATES TABLE
+// ═══════════════════════════════════════════════════════════
+function toggleDates(){
+  datesEnabled = !datesEnabled;
+  const toggle = document.querySelector('.dates-toggle');
+  const editor = document.getElementById('dates-editor');
+  if(toggle) toggle.classList.toggle('on', datesEnabled);
+  if(toggle){
+    const hint = toggle.querySelector('.dates-toggle-hint');
+    if(hint) hint.textContent = datesEnabled ? 'ON — tabela dat w mailu' : 'OFF — kliknij żeby włączyć';
+  }
+  if(editor) editor.classList.toggle('show', datesEnabled);
+  // Add one empty row if enabling with no rows
+  if(datesEnabled && !datesRows.length){
+    addDateRow();
+    // Set default heading
+    const defaultHeadings = {com:'Upcoming dates',pl:'Najbliższe terminy',it:'Prossime date'};
+    datesHeading = defaultHeadings[market] || 'Upcoming dates';
+    const hEl = document.getElementById('dates-heading');
+    if(hEl) hEl.value = datesHeading;
+  }
+}
+
+function addDateRow(){
+  datesRows.push({programme:'', dates:'', note:''});
+  renderDatesTable();
+}
+
+function removeDateRow(i){
+  datesRows.splice(i, 1);
+  renderDatesTable();
+}
+
+function updateDateRow(i, field, val){
+  if(datesRows[i]) datesRows[i][field] = val;
+}
+
+function renderDatesTable(){
+  const tbody = document.getElementById('dates-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = datesRows.map((r,i) => `<tr>
+    <td><input type="text" value="${esc(r.programme)}" placeholder="np. Italy Junior" oninput="updateDateRow(${i},'programme',this.value)"></td>
+    <td><input type="text" value="${esc(r.dates)}" placeholder="21 Jun – 28 Jun" oninput="updateDateRow(${i},'dates',this.value)"></td>
+    <td><input type="text" value="${esc(r.note)}" placeholder="last spots!" oninput="updateDateRow(${i},'note',this.value)"></td>
+    <td><button type="button" class="dates-rm" onclick="removeDateRow(${i})">✕</button></td>
+  </tr>`).join('');
+}
+
 function renderResults(c,progs){
   const all=MKT[market].groups.flatMap(g=>g.progs);
   const names=[...selected].map(id=>all.find(p=>p.id===id)?.t||id);
@@ -1275,10 +1941,18 @@ function renderResults(c,progs){
     ['e-pre','Preheader',c.preheader,1],
   ]);
 
-  h+=rcard('Headline + Opening','tag-b',[
-    ['e-h1','Headline (H2 in email)',c.headline,1],
-    ['e-intro','Opening paragraph',c.intro,3],
-  ]);
+  // Headline + Opening — now with RTE
+  h+=`<div class="rcard">
+    <div class="rcard-head"><span class="rcard-tag tag-b">Headline + Opening</span></div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Headline (H2 in email)</span></div>
+      ${rteField('e-h1', esc(c.headline))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Opening paragraph</span></div>
+      ${rteField('e-intro', textToHtml(c.intro))}
+    </div>
+  </div>`;
   // Greeting per market
   const fn = fnameTag();
   const greetOpts = {
@@ -1311,6 +1985,44 @@ function renderResults(c,progs){
     <div class="ef-group">
       <div class="ef-label"><span>Section 3</span></div>
       ${rteField('e-p3', textToHtml(c.body_p3))}
+    </div>
+  </div>`;
+
+  // ── DATES TABLE (optional) ──
+  const hasDates = c.dates_table && c.dates_table.length > 0;
+  if(hasDates && !datesRows.length){
+    datesEnabled = true;
+    datesRows = c.dates_table.map(d=>({programme:d.programme||'', dates:d.dates||'', note:d.note||''}));
+    const defaultHeadings = {com:'Upcoming dates',pl:'Najbliższe terminy',it:'Prossime date'};
+    datesHeading = defaultHeadings[market] || 'Upcoming dates';
+  }
+
+  h+=`<div class="dates-toggle${datesEnabled?' on':''}" onclick="toggleDates()">
+    <div class="dates-toggle-switch"></div>
+    <div class="dates-toggle-lbl">📅 Dates table</div>
+    <div class="dates-toggle-hint">${datesEnabled ? 'ON — tabela dat w mailu' : 'OFF — kliknij żeby włączyć'}</div>
+  </div>`;
+
+  const dtLabels = {com:['Programme','Dates','Note'],pl:['Program','Terminy','Uwagi'],it:['Programma','Date','Note']};
+  const [dtProg,dtDates,dtNote] = dtLabels[market]||dtLabels.com;
+
+  h+=`<div class="dates-editor${datesEnabled?' show':''}" id="dates-editor">
+    <div class="rcard" style="border-color:#CCE8F8;background:#F7FBFF">
+      <div class="rcard-head"><span class="rcard-tag tag-b">📅 Dates Table</span></div>
+      <div class="dates-heading-input ef-group">
+        <div class="ef-label"><span>Nagłówek sekcji dat</span></div>
+        <input type="text" class="ef" id="dates-heading" value="${esc(datesHeading)}" placeholder="np. Najbliższe terminy" oninput="datesHeading=this.value">
+      </div>
+      <table class="dates-tbl" id="dates-tbl">
+        <thead><tr>
+          <th style="width:38%">${dtProg}</th>
+          <th style="width:30%">${dtDates}</th>
+          <th style="width:25%">${dtNote}</th>
+          <th style="width:7%"></th>
+        </tr></thead>
+        <tbody id="dates-tbody"></tbody>
+      </table>
+      <button type="button" class="dates-add" onclick="addDateRow()">+ Dodaj wiersz</button>
     </div>
   </div>`;
 
@@ -1351,7 +2063,226 @@ function renderResults(c,progs){
 
   const el=document.getElementById('results');
   el.innerHTML=h; el.style.display='block';
+  renderDatesTable();
   el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PLAIN TEXT RESULTS
+// ═══════════════════════════════════════════════════════════
+function renderPlaintextResults(c, progs){
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const names=[...selected].map(id=>all.find(p=>p.id===id)?.t||id);
+
+  let h=`<div class="res-banner">
+    <div class="res-banner-left">
+      <div class="tag">✉️ Personal Email Ready</div>
+      <div class="meta">${esc(names.join(' + '))}</div>
+    </div>
+    <div class="res-actions">
+      <button class="btn-ghost" onclick="showPlaintextPreview()">👁 Preview</button>
+      <button class="btn-ghost" id="cp-pt-btn" onclick="cpPlaintext(this)">📋 Copy text</button>
+      <button class="btn-ghost" id="cp-pt-html-btn" onclick="cpPlaintextHtml(this)">⬇ Copy HTML</button>
+    </div>
+  </div>`;
+
+  h+=rcard('Subject Lines','tag-y',[
+    ['pt-sub','Subject',c.subject,1],
+    ['pt-sub-em','With emoji',c.subject_emoji||'',1],
+  ]);
+
+  h+=`<div class="rcard">
+    <div class="rcard-head"><span class="rcard-tag tag-b">✉️ Email Body</span></div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Greeting</span></div>
+      ${rteField('pt-greeting', esc(c.greeting||''))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Body — main content</span></div>
+      ${rteField('pt-body', textToHtml(c.body))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>CTA / link w tekście</span></div>
+      <input type="text" class="ef" id="pt-cta" value="${esc(c.cta||'')}">
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Closing + signature</span></div>
+      ${rteField('pt-closing', textToHtml(c.closing||''))}
+    </div>
+  </div>`;
+
+  h+=rcard('A/B Subject Variants','tag-p',[
+    ['pt-ab1','Variant A',c.ab1||'',1],
+    ['pt-ab2','Variant B',c.ab2||'',1],
+  ]);
+
+  if(c.send_time) h+=`<div style="background:#F0FDF8;border:1px solid #C0E8D4;border-radius:9px;padding:10px 14px;font-size:12px;color:#2D7A5A;margin-bottom:8px">⏱ ${esc(c.send_time)}</div>`;
+
+  h+=`<div class="mc-box">
+    <h3>📧 Send to Mailchimp</h3>
+    <p>Personal email — plain text style, full width, no images or buttons. Ready for Mailchimp.</p>
+    <div class="mc-btns">
+      <button class="btn-out" onclick="showPlaintextPreview()">👁 Preview email</button>
+      <button class="btn-gen" id="pt-mc-btn" onclick="sendPtMC()" style="padding:10px 22px;font-size:13px">📧 Create Mailchimp draft</button>
+    </div>
+    <div id="pt-mc-status"></div>
+  </div>`;
+
+  h+=`<div style="text-align:center;margin-top:20px"><button class="btn-out" onclick="resetAll()">← New campaign</button></div>`;
+
+  const el=document.getElementById('results');
+  el.innerHTML=h; el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function getPlaintextCurrent(){
+  const g=id=>(document.getElementById(id)?.value||'').trim();
+  const gh=id=>(document.getElementById(id)?.innerHTML||'').trim();
+  return {
+    subject: g('pt-sub'),
+    subject_emoji: g('pt-sub-em'),
+    greeting: gh('pt-greeting'),
+    body: gh('pt-body'),
+    cta: g('pt-cta'),
+    closing: gh('pt-closing'),
+  };
+}
+
+function stripHtml(html){
+  const tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  return tmp.innerText||tmp.textContent||'';
+}
+
+function cpPlaintext(btn){
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'';
+  const lines=[
+    stripHtml(c.greeting),
+    '',
+    stripHtml(c.body),
+    '',
+    c.cta && url ? c.cta+': '+url : c.cta || '',
+    '',
+    stripHtml(c.closing),
+  ].filter((l,i,a)=>!(l===''&&a[i-1]==='')).join('\n').trim();
+  cp2(lines,btn);
+}
+
+function cpPlaintextHtml(btn){
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'#';
+  const html=buildPlaintextEmailHtml(c,url);
+  cp2(html,btn);
+}
+
+function buildPtSigBlock(FONT){
+  const siteUrls={com:'https://angloville.com',pl:'https://angloville.pl',it:'https://angloville.it'};
+  const siteUrl=siteUrls[market]||'https://angloville.com';
+  const links = getActiveSocialLinks()[0]; // primary social set
+
+  const socialLink = (url, label) => url
+    ? `<a href="${url}" target="_blank" style="color:#888;text-decoration:none;font-family:${FONT};font-size:11px;font-weight:500;">${label}</a>`
+    : '';
+
+  const socialParts = [
+    socialLink(links.instagram, 'Instagram'),
+    socialLink(links.youtube, 'YouTube'),
+    socialLink(links.tiktok, 'TikTok'),
+  ].filter(Boolean);
+
+  const socialLine = socialParts.length
+    ? `<div style="margin-top:8px;">${socialParts.join('<span style="color:#ccc;margin:0 6px;">·</span>')}</div>`
+    : '';
+
+  return `<div style="margin-top:20px;padding-top:14px;border-top:1px solid #e0e0e0;">
+<a href="${siteUrl}" target="_blank" style="text-decoration:none;display:inline-block;"><img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png" alt="Angloville" height="20" style="display:block;height:20px;width:auto;border:0;"></a>
+${socialLine}
+</div>`;
+}
+
+function buildPlaintextEmailHtml(c, url){
+  const FONT="Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const footerHtml=getFooterHtml();
+
+  const ctaHtml = c.cta && url && url!=='#'
+    ? `<p style="margin:14px 0;font-family:${FONT};font-size:14px;line-height:170%;color:#333;"><a href="${url}" style="color:#1a73e8;text-decoration:underline;">${c.cta}</a></p>`
+    : '';
+
+  const sigBlock = buildPtSigBlock(FONT);
+
+  // Full-width email — no card, no grey background, no max-width box
+  // Just white background edge to edge, like a real person's email
+  return `<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#ffffff;-webkit-text-size-adjust:100%;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+<tr><td style="padding:20px 24px;font-family:${FONT};font-size:14px;line-height:180%;color:#222;">
+${c.greeting}
+<br><br>
+${c.body}
+${ctaHtml}
+<br>
+<div style="color:#555;">${c.closing}</div>
+${sigBlock}
+</td></tr>
+<tr><td style="padding:12px 24px 20px;font-family:${FONT};font-size:11px;color:#999;line-height:160%;border-top:1px solid #eee;">
+${footerHtml}
+</td></tr>
+</table>
+</body></html>`;
+}
+
+function showPlaintextPreview(){
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'#';
+  const FONT="Arial,'Helvetica Neue',Helvetica,sans-serif";
+
+  // Build Gmail-like preview chrome
+  const senderNames={com:'Angloville Team',pl:'Zespół Angloville',it:'Team Angloville'};
+  const senderEmails={com:'hello@angloville.com',pl:'kontakt@angloville.pl',it:'info@angloville.it'};
+  const sender=senderNames[market]||'Angloville';
+  const senderEmail=senderEmails[market]||'hello@angloville.com';
+  const subject=c.subject||'(no subject)';
+  const fnTag=fnameTag();
+  const toName=selPlatform==='hs'?'{{ contact.firstname }}':'*|FNAME|*';
+  const sigBlock=buildPtSigBlock(FONT);
+
+  const gmailHtml=`
+  <div style="background:#fff;border-radius:0;font-family:${FONT};width:100%;margin:0;">
+    <!-- Subject bar -->
+    <div style="padding:18px 20px 14px;border-bottom:1px solid #e8e8e8;">
+      <div style="font-size:20px;font-weight:400;color:#202124;line-height:1.3;">${esc(subject)}</div>
+    </div>
+    <!-- Sender row -->
+    <div style="padding:14px 20px;display:flex;align-items:flex-start;gap:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#1a73e8;color:#fff;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${sender.charAt(0)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;color:#202124;"><strong>${esc(sender)}</strong> <span style="color:#5f6368;font-weight:400;">&lt;${esc(senderEmail)}&gt;</span></div>
+        <div style="font-size:12px;color:#5f6368;margin-top:1px;">to ${esc(toName)}</div>
+      </div>
+      <div style="font-size:11px;color:#5f6368;white-space:nowrap;">just now</div>
+    </div>
+    <!-- Email body -->
+    <div style="padding:4px 20px 28px 66px;font-size:14px;line-height:180%;color:#222;">
+      <div>${c.greeting}</div>
+      <br>
+      <div>${c.body}</div>
+      ${c.cta && url && url!=='#' ? '<p style="margin:14px 0;"><a href="'+url+'" style="color:#1a73e8;text-decoration:underline;">'+esc(c.cta)+'</a></p>' : ''}
+      <br>
+      <div style="color:#555;">${c.closing}</div>
+      ${sigBlock}
+    </div>
+  </div>`;
+
+  document.getElementById('prev-content').innerHTML=gmailHtml;
+  document.getElementById('prev-body').style.background='#FFFFFF';
+  document.getElementById('prev-title').textContent='Gmail Preview';
+  setPreviewMode('desktop');
+  document.getElementById('prev-modal').classList.add('open');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1372,6 +2303,7 @@ function buildUrl(which){
 function utmPrev(){
   const el1=document.getElementById('utm-out1');if(el1)el1.textContent=buildUrl(1)||'← wpisz URL wyżej';
   const el2=document.getElementById('utm-out2');if(el2)el2.textContent=buildUrl(2)||'← wpisz URL wyżej';
+  updateStepSummaries();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1402,16 +2334,16 @@ function buildEmailHTML(c, ctaUrl1, ctaUrl2, imgs) {
 
   const headline = `
 <tr><td style="padding:28px 20px 6px;">
-  <h1 style="margin:0;font-family:${FONT};font-size:26px;font-weight:900;line-height:118%;color:#111111;letter-spacing:-0.3px;">${e(c.headline)}</h1>
+  <h1 style="margin:0;font-family:${FONT};font-size:26px;font-weight:900;line-height:118%;color:#111111;letter-spacing:-0.3px;">${c.headline}</h1>
 </td></tr>`;
 
-  const heroImg = imgs[0] ? imgRow(imgs[0].thumb||imgs[0].url) : '';
+  const heroImg = imgs[0] ? imgRow(imgs[0].heroUrl||imgs[0].thumb||imgs[0].url) : '';
 
   const greetingLine = c.greetingHtml
     ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">${c.greetingHtml}</p>` : '';
   const intro = `
 <tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">
-  ${greetingLine}<p style="margin:0;">${e(c.intro)}</p>
+  ${greetingLine}${c.intro}
 </td></tr>`;
 
   const cta1 = `
@@ -1429,19 +2361,21 @@ function buildEmailHTML(c, ctaUrl1, ctaUrl2, imgs) {
   ${c.body_p1}
 </td></tr>`;
 
-  const img2 = imgs[1] ? imgRow(imgs[1].thumb||imgs[1].url) : '';
+  const img2 = imgs[1] ? imgRow(imgs[1].bodyUrl||imgs[1].thumb||imgs[1].url) : '';
 
   const p2 = `
 <tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">
   ${bullets(c.body_p2)}
 </td></tr>`;
 
-  const img3 = imgs[2] ? imgRow(imgs[2].thumb||imgs[2].url) : '';
+  const img3 = imgs[2] ? imgRow(imgs[2].bodyUrl||imgs[2].thumb||imgs[2].url) : '';
 
   const p3 = `
 <tr><td style="padding:16px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
   ${c.body_p3}
 </td></tr>`;
+
+  const datesTableRow = buildDatesTableHtml();
 
   const ps = c.ps ? `
 <tr><td style="padding:12px 20px 0;font-family:${FONT};font-size:14px;line-height:160%;color:#888888;font-style:italic;">
@@ -1458,11 +2392,18 @@ function buildEmailHTML(c, ctaUrl1, ctaUrl2, imgs) {
   </table>
 </td></tr>`;
 
-  const img4 = imgs[3] ? imgRow(imgs[3].thumb||imgs[3].url) : '';
+  const img4 = imgs[3] ? imgRow(imgs[3].bodyUrl||imgs[3].thumb||imgs[3].url) : '';
 
   const socialRow = buildSocialRow();
 
-  const rows = [logoBar,headline,heroImg,intro,cta1,p1,img2,p2,img3,p3,ps,cta2,img4,socialRow].filter(Boolean).join('\n');
+  const dividerBeforeSocial = `
+<tr><td style="padding:0 20px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td style="border-top:2px solid #EEEEEE;font-size:0;line-height:0;">&nbsp;</td></tr>
+  </table>
+</td></tr>`;
+
+  const rows = [logoBar,headline,heroImg,intro,cta1,p1,img2,p2,img3,p3,datesTableRow,ps,cta2,img4,dividerBeforeSocial,socialRow].filter(Boolean).join('\n');
 
   return `<div style="background:#EBEBEB;padding:0;">
 <style>
@@ -1503,6 +2444,8 @@ function showPreview(){
   const url1=buildUrl(1)||'https://angloville.com/apply/';
   const url2=buildUrl(2)||url1;
   document.getElementById('prev-content').innerHTML=buildEmailHTML(c,url1,url2,[selHero,...selBody].filter(Boolean));
+  document.getElementById('prev-body').style.background='#EBEBEB';
+  document.getElementById('prev-title').textContent='Email Preview';
   setPreviewMode('desktop');
   document.getElementById('prev-modal').classList.add('open');
 }
@@ -1522,7 +2465,8 @@ async function sendMC(){
     const res=await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'mailchimp_draft',campaign:c,cta_url:url1,cta_url2:url2,
         images:[selHero,...selBody].filter(i=>i&&!i.url.startsWith('data:')),
-        program_name:name,footer_html:getFooterHtml(),social_html:buildSocialRow()})
+        program_name:name,footer_html:getFooterHtml(),social_html:buildSocialRow(),
+        dates_table_html:buildDatesTableHtml()})
     });
     const data=await res.json();
     if(!data.ok) throw new Error(data.error||'Mailchimp error');
@@ -1533,6 +2477,36 @@ async function sendMC(){
     btn.textContent='✓ Done!';
   }catch(e){
     document.getElementById('mc-status').innerHTML=`<div class="err-box" style="display:block;margin-top:8px">Error: ${e.message}</div>`;
+    btn.disabled=false;btn.textContent='📧 Create Mailchimp draft';
+  }
+}
+
+async function sendPtMC(){
+  const btn=document.getElementById('pt-mc-btn');
+  btn.disabled=true;btn.textContent='Creating draft…';
+  document.getElementById('pt-mc-status').innerHTML='';
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const name=[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'https://angloville.com/apply/';
+  const fullHtml=buildPlaintextEmailHtml(c,url);
+  try{
+    const res=await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'mailchimp_draft_raw',
+        html:fullHtml,
+        subject:c.subject_emoji||c.subject,
+        preheader:'',
+        program_name:name})
+    });
+    const data=await res.json();
+    if(!data.ok) throw new Error(data.error||'Mailchimp error');
+    document.getElementById('pt-mc-status').innerHTML=`<div class="ok-box">
+      ✅ <strong>Draft created!</strong>
+      <a href="${data.draft_url}" target="_blank" style="color:#428BCA;font-weight:700;margin-left:6px;">→ Open in Mailchimp</a>
+    </div>`;
+    btn.textContent='✓ Done!';
+  }catch(e){
+    document.getElementById('pt-mc-status').innerHTML=`<div class="err-box" style="display:block;margin-top:8px">Error: ${e.message}</div>`;
     btn.disabled=false;btn.textContent='📧 Create Mailchimp draft';
   }
 }
@@ -1645,6 +2619,101 @@ function buildSocialRow(){
 }
 
 // ═══════════════════════════════════════════════════════════
+//  DATES TABLE
+// ═══════════════════════════════════════════════════════════
+function toggleDates(){
+  datesEnabled = !datesEnabled;
+  if(datesEnabled && !datesRows.length) addDateRow();
+  // Re-render toggle
+  const tog = document.querySelector('.dates-toggle');
+  if(tog){
+    tog.classList.toggle('on', datesEnabled);
+    tog.querySelector('.dates-toggle-hint').textContent = datesEnabled ? 'ON — tabela dat w mailu' : 'OFF — kliknij żeby włączyć';
+  }
+  const ed = document.getElementById('dates-editor');
+  if(ed) ed.classList.toggle('show', datesEnabled);
+}
+
+function renderDatesTable(){
+  const tbody = document.getElementById('dates-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = datesRows.map((r,i) => `<tr>
+    <td><input type="text" value="${esc(r.programme)}" onchange="datesRows[${i}].programme=this.value" placeholder="np. Italy Junior"></td>
+    <td><input type="text" value="${esc(r.dates)}" onchange="datesRows[${i}].dates=this.value" placeholder="21 Jun – 28 Jun"></td>
+    <td><input type="text" value="${esc(r.note)}" onchange="datesRows[${i}].note=this.value" placeholder="last spots!"></td>
+    <td><button type="button" class="dates-rm" onclick="removeDateRow(${i})" title="Usuń">✕</button></td>
+  </tr>`).join('');
+}
+
+function addDateRow(){
+  datesRows.push({programme:'', dates:'', note:''});
+  renderDatesTable();
+}
+
+function removeDateRow(i){
+  datesRows.splice(i, 1);
+  renderDatesTable();
+  if(!datesRows.length){ datesEnabled = false; toggleDates(); toggleDates(); /* force re-render off */ }
+}
+
+function readDatesFromDOM(){
+  // Read current values from DOM inputs (in case user typed but didn't trigger onchange)
+  const rows = document.querySelectorAll('#dates-tbody tr');
+  rows.forEach((tr,i) => {
+    const inputs = tr.querySelectorAll('input');
+    if(datesRows[i] && inputs.length >= 3){
+      datesRows[i].programme = inputs[0].value;
+      datesRows[i].dates = inputs[1].value;
+      datesRows[i].note = inputs[2].value;
+    }
+  });
+  const headEl = document.getElementById('dates-heading');
+  if(headEl) datesHeading = headEl.value;
+}
+
+function buildDatesTableHtml(){
+  if(!datesEnabled || !datesRows.length) return '';
+  readDatesFromDOM();
+  const validRows = datesRows.filter(r => r.programme || r.dates);
+  if(!validRows.length) return '';
+  const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const e = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const heading = datesHeading || 'Dates';
+
+  const thLabels = {
+    com: ['Programme','Dates',''],
+    pl: ['Program','Terminy',''],
+    it: ['Programma','Date',''],
+  };
+  const [thProg, thDates, thNote] = thLabels[market] || thLabels.com;
+
+  let tblRows = validRows.map(r => `
+    <tr>
+      <td style="padding:10px 12px;font-family:${FONT};font-size:14px;font-weight:700;color:#111;border-bottom:1px solid #EEEEEE;">${e(r.programme)}</td>
+      <td style="padding:10px 12px;font-family:${FONT};font-size:14px;color:#333;border-bottom:1px solid #EEEEEE;white-space:nowrap;">${e(r.dates)}</td>
+      <td style="padding:10px 12px;font-family:${FONT};font-size:13px;color:#E03E3E;font-weight:600;border-bottom:1px solid #EEEEEE;">${e(r.note)}</td>
+    </tr>`).join('');
+
+  const thStyle = `padding:10px 12px;font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;text-align:left;border-bottom:2px solid #E0E0E0;`;
+
+  return `
+<tr><td style="padding:20px 20px 0;">
+  <p style="margin:0 0 10px;font-family:${FONT};font-size:18px;font-weight:800;color:#111;">${e(heading)}</p>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+    style="border-collapse:collapse;border:1px solid #EEEEEE;border-radius:10px;overflow:hidden;">
+    <thead>
+      <tr style="background:#F4F4F4;">
+        <th style="${thStyle}">${e(thProg)}</th>
+        <th style="${thStyle}">${e(thDates)}</th>
+        <th style="${thStyle}"></th>
+      </tr>
+    </thead>
+    <tbody>${tblRows}</tbody>
+  </table>
+</td></tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════════════════════════════
 function renderGreetingPreview(){ /* preview updates via getCurrent */ }
@@ -1653,7 +2722,7 @@ function getCurrent(){
   const gh=id=>(document.getElementById(id)?.innerHTML||'').trim();
   const greetingHtml = g('greeting-val');
   return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),
-    headline:g('e-h1'),intro:g('e-intro'),greetingHtml,
+    headline:gh('e-h1'),intro:gh('e-intro'),greetingHtml,
     body_p1:gh('e-p1'),body_p2:gh('e-p2'),body_p3:gh('e-p3'),
     cta:g('e-cta1'),cta2:g('e-cta2'),ps:g('e-ps'),ab1:g('e-ab1'),ab2:g('e-ab2')};
 }
@@ -1672,7 +2741,11 @@ function cpAll(){
     '[ '+c.cta+' ]',buildUrl(1)?'PRIMARY URL: '+buildUrl(1):'',
     buildUrl(2)?'SECONDARY URL: '+buildUrl(2):'',c.ps?'PS: '+c.ps:''].filter(Boolean).join('\n'));
 }
-function cp(id,btn){cp2((document.getElementById(id)?.value||''),btn);}
+function cp(id,btn){
+  const el = document.getElementById(id);
+  const text = el?.value !== undefined && el?.tagName !== 'DIV' ? el.value : (el?.innerText || '');
+  cp2(text, btn);
+}
 function cp2(text,btn){
   navigator.clipboard.writeText(text);
   const o=btn.textContent;btn.textContent='✓';btn.classList.add('ok');
@@ -1681,17 +2754,26 @@ function cp2(text,btn){
 function showErr(m){const el=document.getElementById('err-box');el.textContent=m;el.style.display='block';}
 function resetAll(){
   selected.clear();selHero=null;selBody=[];selFoot=null;libCat=null;activeCat=null;
+  datesEnabled=false;datesRows=[];datesHeading='';
+  emailType='marketing';
+  promoSeason=null;promoPhase=null;promoDate='';promoDiscount='';
   document.getElementById('extra').value='';
   document.getElementById('results').style.display='none';
   document.getElementById('results').innerHTML='';
   document.getElementById('err-box').style.display='none';
   document.getElementById('prog-hint').style.display='';
+  setEmailType('marketing');
   renderAll();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
 // INIT
+document.addEventListener('click', function(ev){
+  if(!ev.target.closest('.emoji-pop') && !ev.target.closest('.rte-btn[title="Insert emoji"]')){
+    document.querySelectorAll('.emoji-pop.open').forEach(p=>p.classList.remove('open'));
+  }
+});
 if(document.readyState==='loading'){
   document.addEventListener('DOMContentLoaded', renderAll);
 } else {
