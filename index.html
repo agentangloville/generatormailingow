@@ -1,0 +1,2984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Angloville — Email Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --y:#3b82f6; --b:#7c3aed; --dk:#111827; --panel:#1f2937;
+  --bg:#f9fafb; --w:#fff; --txt:#111827; --sub:#6b7280;
+  --brd:#e5e7eb; --radius:12px; --accent:#3b82f6; --accent-light:#eff6ff;
+}
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── TOPBAR ── */
+.topbar{
+  background:#fff;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 28px; height:52px; position:sticky; top:0; z-index:100;
+  border-bottom:1px solid var(--brd);
+}
+.logo{display:flex;align-items:center;gap:9px;text-decoration:none}
+.logo-mark{
+  width:28px;height:28px;background:var(--y);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:800;color:#fff;
+  flex-shrink:0;letter-spacing:-.5px;
+}
+.logo-text{font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;font-weight:700;color:var(--txt);letter-spacing:-.2px}
+.logo-badge{font-size:9px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);padding:2px 7px;border:1px solid var(--brd);border-radius:20px}
+
+/* ── MARKET SWITCHER ── */
+.mkt-pills{display:flex;gap:3px;background:#f3f4f6;border-radius:8px;padding:3px}
+.mkt-pill{
+  padding:5px 13px;border:none;background:transparent;
+  color:var(--sub);font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:500;border-radius:6px;cursor:pointer;
+  transition:all .15s; white-space:nowrap;
+}
+.mkt-pill:hover:not(.active){color:var(--txt);background:#e5e7eb}
+.mkt-pill.active{background:var(--y);color:#fff;font-weight:600}
+
+/* ── LAYOUT ── */
+.wrap{max-width:820px;margin:0 auto;padding:24px 20px 80px}
+
+/* ── PAGE HEADER ── */
+.page-header{
+  text-align:center;padding:32px 0 28px;
+}
+.page-header h1{
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:800;
+  color:var(--txt);letter-spacing:-.5px;line-height:1.1;margin-bottom:8px;
+}
+.page-header h1 em{font-style:normal;color:#fff;background:var(--y);padding:2px 10px;border-radius:6px;}
+.page-header p{font-size:14px;color:var(--sub);line-height:1.6}
+
+/* ── STEPS ── */
+.step{
+  background:var(--w);border-radius:var(--radius);
+  border:1px solid var(--brd);
+  margin-bottom:10px;
+  overflow:hidden;
+  transition:box-shadow .2s;
+}
+.step:focus-within{box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.step-head{
+  display:flex;align-items:center;gap:10px;
+  padding:13px 18px;
+  border-bottom:1px solid var(--brd);
+  background:#fafbfc;
+}
+.step-num{
+  width:22px;height:22px;border-radius:5px;
+  background:var(--y);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.step-lbl{font-size:13px;font-weight:600;color:var(--txt);letter-spacing:-.1px}
+.step-hint{font-size:11px;color:var(--sub);margin-left:auto}
+.step-body{padding:16px 18px}
+
+/* ── PROGRAMMES ── */
+.prog-section{margin-bottom:14px}
+.prog-section:last-child{margin-bottom:0}
+.prog-section-lbl{
+  font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+  color:var(--sub);margin-bottom:7px;
+}
+.prog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:5px}
+.prog-btn{
+  display:flex;align-items:flex-start;gap:7px;
+  padding:8px 9px;
+  border:1.5px solid var(--brd);background:var(--w);
+  border-radius:8px;cursor:pointer;text-align:left;
+  width:100%;font-family:'Plus Jakarta Sans',sans-serif;
+  transition:border-color .12s, background .12s;
+  position:relative;
+}
+.prog-btn:hover{border-color:#93c5fd}
+.prog-btn.on{border-color:var(--y);background:var(--accent-light)}
+.prog-btn.on::after{
+  content:'✓';position:absolute;top:5px;right:6px;
+  font-size:8px;font-weight:900;color:#fff;
+  background:var(--y);width:14px;height:14px;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;line-height:14px;
+}
+.prog-e{font-size:14px;flex-shrink:0;margin-top:1px;line-height:1}
+.prog-t{font-size:11px;font-weight:600;color:var(--txt);margin-bottom:1px;padding-right:16px;line-height:1.3}
+.prog-d{font-size:10px;color:var(--sub);line-height:1.3}
+.sel-bar{
+  margin-top:10px;padding:8px 12px;
+  background:var(--accent-light);border:1.5px solid var(--y);border-radius:8px;
+  font-size:11px;font-weight:600;color:var(--txt);
+  display:none;
+}
+.sel-bar.show{display:block}
+
+/* ── CATEGORY TABS ── */
+.cat-tabs{display:flex;gap:4px;margin-bottom:14px;flex-wrap:wrap}
+.cat-tab{
+  padding:7px 14px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--sub);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;
+  border-radius:7px;cursor:pointer;transition:all .12s;
+}
+.cat-tab:hover{border-color:var(--y);color:var(--y)}
+.cat-tab.on{background:var(--y);border-color:var(--y);color:#fff}
+.cat-tab .cat-count{
+  display:inline-block;background:rgba(255,255,255,.15);
+  border-radius:3px;padding:0 5px;margin-left:5px;
+  font-size:9px;font-weight:700;
+}
+.cat-tab.on .cat-count{background:rgba(255,255,255,.25);color:#fff}
+.cat-tab:not(.on) .cat-count{background:var(--brd);color:var(--sub)}
+
+/* ── IMAGE SECTION ── */
+.img-tabs{display:flex;gap:4px;margin-bottom:10px;flex-wrap:wrap}
+.img-tab{
+  padding:4px 11px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--sub);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;
+  border-radius:6px;cursor:pointer;transition:all .12s;
+}
+.img-tab:hover{border-color:var(--y);color:var(--y)}
+.img-tab.on{background:var(--y);border-color:var(--y);color:#fff}
+
+.img-gallery{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  gap:6px;margin-bottom:10px;
+}
+.gal-item{
+  position:relative;aspect-ratio:16/9;
+  border-radius:7px;overflow:hidden;
+  cursor:pointer;border:2px solid transparent;
+  transition:all .12s;background:#EEE;
+}
+.gal-item img{width:100%;height:100%;object-fit:cover;display:block}
+.gal-item:hover{border-color:var(--y);transform:translateY(-1px)}
+.gal-item.on{border-color:var(--y);box-shadow:0 0 0 2px rgba(59,130,246,.3)}
+.gal-item .gnum{
+  position:absolute;top:4px;right:4px;
+  background:var(--y);color:#fff;
+  font-size:9px;font-weight:800;
+  width:16px;height:16px;border-radius:3px;
+  display:none;align-items:center;justify-content:center;
+}
+.gal-item.on .gnum{display:flex}
+.gal-item .glbl{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.6),transparent);
+  color:#fff;font-size:8px;padding:10px 4px 3px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* SELECTED IMAGES ROW */
+.sel-imgs-row{display:flex;gap:7px;flex-wrap:wrap}
+.sel-thumb{
+  position:relative;width:68px;height:44px;
+  border-radius:6px;overflow:hidden;
+  border:2px solid var(--y);flex-shrink:0;
+}
+.sel-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.sel-thumb .rm{
+  position:absolute;top:2px;right:2px;
+  background:rgba(0,0,0,.7);color:#fff;border:none;
+  border-radius:3px;padding:0 4px;font-size:10px;
+  cursor:pointer;line-height:16px;
+}
+.sel-thumb .sn{
+  position:absolute;bottom:2px;left:3px;
+  background:var(--y);color:#fff;
+  font-size:8px;font-weight:800;padding:1px 4px;border-radius:3px;
+}
+
+/* FOOTER SELECTOR */
+.footer-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.footer-opt{
+  padding:10px 12px;border:1.5px solid var(--brd);
+  background:var(--w);border-radius:8px;cursor:pointer;
+  transition:all .12s;text-align:left;font-family:'Plus Jakarta Sans',sans-serif;
+  width:100%;
+}
+.footer-opt:hover{border-color:var(--b)}
+.footer-opt.on{border-color:var(--y);background:var(--accent-light)}
+.footer-opt-name{font-size:12px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.footer-opt-prev{font-size:10px;color:var(--sub);line-height:1.4}
+
+/* NOTES */
+textarea.notes{
+  width:100%;padding:10px 12px;
+  border:1.5px solid var(--brd);border-radius:8px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13px;
+  color:var(--txt);resize:vertical;line-height:1.6;
+  background:var(--w);
+}
+textarea.notes:focus{outline:none;border-color:var(--b)}
+
+/* GENERATE BTN */
+.gen-row{margin-top:8px}
+
+/* COLLAPSIBLE STEPS */
+.step.collapsible .step-head{cursor:pointer;user-select:none;transition:background .12s}
+.step.collapsible .step-head:hover{background:#F0F1F5}
+.step.collapsible .step-body{display:none}
+.step.collapsible.open .step-body{display:block}
+.step-chevron{
+  margin-left:auto;font-size:12px;color:var(--sub);
+  transition:transform .2s;flex-shrink:0;
+}
+.step.collapsible.open .step-chevron{transform:rotate(180deg)}
+.step-summary{
+  font-size:11px;color:var(--b);font-weight:500;
+  margin-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px;
+}
+
+/* FOOTER EDIT SECTION */
+.footer-edit-wrap{display:none;margin-top:12px}
+.footer-edit-wrap.show{display:block}
+.footer-edit-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  margin-top:8px;padding:6px 13px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--sub);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;
+  border-radius:7px;cursor:pointer;transition:all .12s;
+}
+.footer-edit-btn:hover{border-color:var(--b);color:var(--b)}
+.btn-gen{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  width:100%;padding:16px 32px;
+  background:var(--y);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;
+  border:none;border-radius:10px;cursor:pointer;
+  transition:all .18s;letter-spacing:-.2px;
+  position:relative;overflow:hidden;
+}
+.btn-gen::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,#2563eb 0%,#1d4ed8 100%);
+  opacity:0;transition:opacity .18s;
+}
+.btn-gen:hover::before{opacity:1}
+.btn-gen:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(59,130,246,.25)}
+.btn-gen:hover{color:#fff}
+.btn-gen span,.btn-gen .btn-label{position:relative;z-index:1}
+.btn-gen:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-gen:disabled::before{opacity:0}
+.prog-req{font-size:12px;color:var(--sub);text-align:center;margin-top:7px;min-height:16px}
+
+/* LOADER */
+.loader-wrap{display:none;padding:32px 0;text-align:center}
+.loader{display:inline-flex;gap:6px;margin-bottom:10px}
+.loader span{
+  width:8px;height:8px;border-radius:50%;background:var(--y);
+  animation:bounce 1s infinite;
+}
+.loader span:nth-child(2){animation-delay:.15s}
+.loader span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0);opacity:.4}50%{transform:translateY(-9px);opacity:1}}
+.loader-txt{font-size:13px;color:var(--sub)}
+
+/* ERROR */
+.err-box{
+  background:#FFF2F2;border:1px solid #FFCCCC;
+  border-radius:8px;padding:12px 14px;color:#CC0000;
+  font-size:12px;margin-top:10px;display:none;
+}
+
+/* ── RESULTS ── */
+.results-wrap{margin-top:20px;display:none}
+.res-banner{
+  background:var(--y);border-radius:var(--radius);
+  padding:16px 20px;margin-bottom:12px;
+  display:flex;justify-content:space-between;align-items:center;
+  gap:12px;flex-wrap:wrap;
+}
+.res-banner-left .tag{
+  font-size:9px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:#fff;margin-bottom:3px;
+}
+.res-banner-left .meta{color:rgba(255,255,255,.7);font-size:11px}
+.res-actions{display:flex;gap:6px}
+
+.rcard{
+  background:var(--w);border:1px solid var(--brd);
+  border-radius:var(--radius);padding:13px 15px;
+  margin-bottom:7px;
+}
+.rcard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.rcard-tag{
+  font-size:9px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;padding:3px 7px;border-radius:4px;
+}
+.tag-y{background:#FFF8D0;color:#9A7700}
+.tag-b{background:#E8F4FF;color:#1A6FA3}
+.tag-g{background:#E6FFF0;color:#1A7A40}
+.tag-p{background:#F3EEFF;color:#5C2FBB}
+
+.ef-group{margin-bottom:9px}
+.ef-label{
+  font-size:10px;font-weight:700;color:var(--sub);
+  letter-spacing:.3px;margin-bottom:4px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+input.ef{
+  width:100%;padding:8px 11px;border:1.5px solid var(--brd);
+  border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;color:var(--txt);background:var(--w);
+}
+textarea.ef{
+  width:100%;padding:8px 11px;border:1.5px solid var(--brd);
+  border-radius:7px;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:13px;color:var(--txt);background:var(--w);
+  resize:vertical;line-height:1.6;
+}
+input.ef:focus,textarea.ef:focus{outline:none;border-color:var(--b)}
+
+/* UTM */
+.utm-wrap{background:#F7FBFF;border:1.5px solid #CCE8F8;border-radius:9px;padding:13px 15px}
+.utm-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:9px 0}
+.utm-out{
+  background:var(--w);border:1px solid var(--brd);border-radius:6px;
+  padding:8px 10px;font-family:'DM Mono',monospace,monospace;
+  font-size:10px;color:var(--sub);word-break:break-all;line-height:1.6;margin-top:5px;
+}
+
+/* BUTTONS */
+.btn-ghost{
+  padding:7px 13px;background:rgba(255,255,255,.15);
+  border:1.5px solid rgba(255,255,255,.3);color:#fff;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:500;
+  border-radius:7px;cursor:pointer;transition:all .12s;
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,.6);background:rgba(255,255,255,.25)}
+.btn-out{
+  padding:8px 15px;background:transparent;
+  border:1.5px solid var(--brd);color:var(--txt);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:500;
+  border-radius:7px;cursor:pointer;transition:all .12s;
+}
+.btn-out:hover{border-color:var(--txt)}
+.btn-cp{
+  padding:3px 7px;background:transparent;
+  border:1px solid var(--brd);color:var(--sub);
+  font-size:10px;border-radius:4px;cursor:pointer;
+  font-family:monospace;transition:all .12s;
+}
+.btn-cp:hover,.btn-cp.ok{border-color:var(--b);color:var(--b)}
+
+/* MC BOX */
+.mc-box{
+  border:2px solid var(--y);border-radius:var(--radius);
+  padding:16px 18px;background:var(--accent-light);
+  margin-top:14px;
+}
+.mc-box h3{
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:800;
+  color:var(--txt);margin-bottom:4px;letter-spacing:-.2px;
+}
+.mc-box p{font-size:12px;color:var(--sub);margin-bottom:12px;line-height:1.6}
+.mc-btns{display:flex;gap:7px;flex-wrap:wrap}
+
+/* STATUS */
+.ok-box{
+  margin-top:10px;background:#F0FDF8;border:1px solid #C0E8D4;
+  border-radius:7px;padding:10px 13px;font-size:12px;color:#2D7A5A;
+}
+
+/* ── RICH TEXT EDITOR ── */
+.rte-wrap{border:1.5px solid var(--brd);border-radius:7px;overflow:hidden;background:var(--w)}
+.rte-wrap:focus-within{border-color:var(--b)}
+.rte-toolbar{
+  display:flex;align-items:center;gap:2px;
+  padding:4px 6px;background:#FAFBFD;
+  border-bottom:1px solid var(--brd);flex-wrap:wrap;
+}
+.rte-btn{
+  width:24px;height:24px;border:none;background:transparent;
+  border-radius:4px;cursor:pointer;font-size:12px;
+  color:var(--txt);display:flex;align-items:center;justify-content:center;
+  transition:background .1s;flex-shrink:0;padding:0;
+}
+.rte-btn:hover{background:var(--brd)}
+.rte-btn.active-fmt{background:#E8F0FF;color:var(--b)}
+.rte-sep{width:1px;height:14px;background:var(--brd);margin:0 2px;flex-shrink:0}
+.rte-color-btn{
+  width:18px;height:18px;border-radius:3px;border:1.5px solid rgba(0,0,0,.1);
+  cursor:pointer;flex-shrink:0;
+}
+.rte-content{
+  padding:10px 13px;min-height:120px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;
+  color:var(--txt);line-height:1.7;outline:none;
+}
+.rte-content p{margin:0 0 5px}
+.rte-content p:last-child{margin-bottom:0}
+
+/* Font size dropdown */
+.rte-fontsize{
+  padding:1px 4px;border:1px solid var(--brd);border-radius:4px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;color:var(--txt);
+  background:var(--w);cursor:pointer;height:24px;
+}
+.rte-fontsize:focus{outline:none;border-color:var(--b)}
+
+/* Emoji picker popover */
+.emoji-pop{
+  position:absolute;top:100%;left:0;z-index:50;
+  background:var(--w);border:1px solid var(--brd);border-radius:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,.16);
+  display:none;width:320px;overflow:hidden;
+}
+.emoji-pop.open{display:flex;flex-direction:column}
+.emoji-search-wrap{padding:8px 8px 4px;}
+.emoji-search{
+  width:100%;padding:7px 10px;border:1.5px solid var(--brd);border-radius:6px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:var(--txt);
+  background:#FAFBFD;outline:none;
+}
+.emoji-search:focus{border-color:var(--b)}
+.emoji-search::placeholder{color:var(--sub)}
+.emoji-cats{
+  display:flex;gap:1px;padding:0 6px;border-bottom:1px solid var(--brd);
+  overflow-x:auto;flex-shrink:0;
+}
+.emoji-cat-btn{
+  border:none;background:transparent;font-size:15px;
+  padding:5px 6px;cursor:pointer;border-radius:5px 5px 0 0;
+  opacity:.5;transition:all .12s;flex-shrink:0;
+}
+.emoji-cat-btn:hover{opacity:.85;background:#F0F0F0}
+.emoji-cat-btn.on{opacity:1;background:var(--accent-light);border-bottom:2px solid var(--y)}
+.emoji-grid{
+  display:flex;flex-wrap:wrap;padding:6px;gap:1px;
+  max-height:220px;overflow-y:auto;align-content:flex-start;
+}
+.emoji-grid button{
+  border:none;background:transparent;font-size:20px;
+  padding:2px;cursor:pointer;border-radius:5px;
+  width:34px;height:34px;display:inline-flex;align-items:center;justify-content:center;
+  transition:background .1s,transform .1s;
+}
+.emoji-grid button:hover{background:#F0F0F0;transform:scale(1.15)}
+.emoji-no-results{
+  padding:16px;text-align:center;font-size:12px;color:var(--sub);
+}
+.rte-toolbar{position:relative}
+
+/* Divider in email */
+.email-divider{
+  border:none;border-top:2px solid #EEEEEE;margin:8px 0;
+}
+
+/* Dates table toggle & editor */
+.dates-toggle{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 16px;background:#FAFBFD;
+  border:1px solid var(--brd);border-radius:var(--radius);
+  margin-bottom:7px;cursor:pointer;transition:all .12s;
+}
+.dates-toggle:hover{border-color:var(--b)}
+.dates-toggle.on{border-color:var(--y);background:var(--accent-light)}
+.dates-toggle-switch{
+  width:38px;height:22px;border-radius:11px;
+  background:#D1D5DB;position:relative;transition:background .2s;flex-shrink:0;
+}
+.dates-toggle.on .dates-toggle-switch{background:var(--y)}
+.dates-toggle-switch::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.15);
+  transition:transform .2s;
+}
+.dates-toggle.on .dates-toggle-switch::after{transform:translateX(16px)}
+.dates-toggle-lbl{font-size:13px;font-weight:600;color:var(--txt)}
+.dates-toggle-hint{font-size:11px;color:var(--sub);margin-left:auto}
+
+.dates-editor{display:none;margin-bottom:7px}
+.dates-editor.show{display:block}
+.dates-tbl{width:100%;border-collapse:collapse;font-size:12px}
+.dates-tbl th{
+  text-align:left;padding:7px 8px;font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;color:var(--sub);
+  border-bottom:2px solid var(--brd);background:#FAFBFD;
+}
+.dates-tbl td{padding:5px 8px;border-bottom:1px solid var(--brd);vertical-align:middle}
+.dates-tbl input{
+  width:100%;padding:5px 7px;border:1px solid var(--brd);border-radius:5px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;color:var(--txt);background:var(--w);
+}
+.dates-tbl input:focus{outline:none;border-color:var(--b)}
+.dates-rm{
+  background:none;border:none;color:#CC0000;font-size:14px;
+  cursor:pointer;padding:2px 6px;border-radius:4px;
+}
+.dates-rm:hover{background:#FFF2F2}
+.dates-add{
+  margin-top:6px;padding:6px 14px;background:transparent;
+  border:1.5px dashed var(--brd);color:var(--sub);
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;font-weight:600;
+  border-radius:7px;cursor:pointer;transition:all .12s;width:100%;
+}
+.dates-add:hover{border-color:var(--b);color:var(--b)}
+.dates-heading-input{
+  margin-bottom:8px;
+}
+
+/* OTHER OPTIONS CARDS EDITOR */
+.oo-card-edit{
+  background:#fff;border:1px solid var(--brd);border-radius:8px;
+  padding:10px 12px;margin-bottom:8px;position:relative;
+}
+.oo-card-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:8px;
+}
+.oo-card-num{
+  width:20px;height:20px;border-radius:4px;
+  background:var(--y);color:#fff;
+  font-size:10px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+}
+.oo-card-rm{
+  background:none;border:none;color:#CC0000;font-size:12px;
+  cursor:pointer;padding:2px 6px;border-radius:4px;
+}
+.oo-card-rm:hover{background:#FFF2F2}
+.oo-card-fields{display:flex;flex-direction:column;gap:6px}
+.oo-card-fields .ef{
+  padding:6px 10px;font-size:12px;
+}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;overflow-y:auto;padding:16px}
+
+/* EMAIL TYPE TOGGLE */
+.etype-wrap{
+  display:flex;gap:6px;margin-bottom:12px;
+}
+
+/* PROMO CONTEXT (PL only) */
+.promo-wrap{display:none}
+.promo-wrap.show{display:block}
+.promo-seasons{display:flex;gap:4px;margin-bottom:10px}
+.promo-season-btn{
+  padding:7px 16px;border:1.5px solid var(--brd);background:var(--w);
+  border-radius:7px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:600;color:var(--sub);transition:all .12s;
+}
+.promo-season-btn:hover{border-color:var(--b);color:var(--b)}
+.promo-season-btn.on{background:var(--y);border-color:var(--y);color:#fff}
+.promo-phases{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.promo-phase{
+  padding:8px 14px;border:1.5px solid var(--brd);background:var(--w);
+  border-radius:8px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:12px;font-weight:600;color:var(--txt);transition:all .12s;
+  display:flex;align-items:center;gap:6px;
+}
+.promo-phase:hover{border-color:var(--y)}
+.promo-phase.on{border-color:var(--y);background:var(--accent-light)}
+.promo-phase .pp-icon{font-size:15px}
+.promo-detail{
+  display:none;padding:12px 14px;
+  background:var(--accent-light);border:1.5px solid var(--y);border-radius:8px;
+  margin-top:6px;
+}
+.promo-detail.show{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.promo-detail .ef-group{margin:0;flex:1;min-width:120px}
+.etype-btn{
+  flex:1;display:flex;align-items:center;gap:10px;
+  padding:14px 16px;border:2px solid var(--brd);
+  background:var(--w);border-radius:10px;cursor:pointer;
+  font-family:'Plus Jakarta Sans',sans-serif;text-align:left;
+  transition:all .15s;position:relative;
+}
+.etype-btn:hover{border-color:#b8baff}
+.etype-btn.on{border-color:var(--y);background:var(--accent-light);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.etype-btn.on::after{
+  content:'✓';position:absolute;top:8px;right:8px;
+  font-size:9px;font-weight:900;color:#fff;
+  background:var(--y);width:18px;height:18px;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+}
+.etype-icon{font-size:22px;flex-shrink:0}
+.etype-t{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:2px}
+.etype-d{font-size:11px;color:var(--sub);line-height:1.4}
+
+.modal.open{display:flex;align-items:flex-start;justify-content:center}
+.modal-box{background:#EEE;border-radius:14px;width:100%;max-width:680px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.modal-box.desktop-mode{max-width:680px;}
+.modal-box.mobile-mode{max-width:400px;}
+.modal-head{background:var(--y);padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+.modal-head span{font-family:'Plus Jakarta Sans',sans-serif;color:#fff;font-weight:800;font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.prev-mode-btn{background:transparent;border:none;color:rgba(255,255,255,.45);border-radius:5px;padding:4px 9px;font-size:11px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all .12s;}
+.prev-mode-btn.active{background:rgba(255,255,255,.13);color:#fff;}
+
+@media(max-width:580px){
+  .topbar{padding:0 14px}
+  .logo-badge{display:none}
+  .wrap{padding:14px 12px 60px}
+  .utm-grid,.prog-grid,.footer-grid{grid-template-columns:1fr}
+  .res-banner{flex-direction:column;align-items:flex-start}
+  .img-gallery{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-mark">A</div>
+    <div>
+      <div class="logo-text">Angloville</div>
+    </div>
+    <div class="logo-badge">Email Generator</div>
+  </div>
+  <div class="mkt-pills">
+    <button class="mkt-pill active" onclick="setMarket('com',this)">🇬🇧 Native Speakers</button>
+    <button class="mkt-pill" onclick="setMarket('pl',this)">🇵🇱 Polska</button>
+    <button class="mkt-pill" onclick="setMarket('it',this)">🇮🇹 Italia</button>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="page-header">
+    <h1>Email <em>Generator</em></h1>
+    <p>Wybierz program, zdjęcia i wygeneruj gotową kampanię AI w kilka sekund</p>
+  </div>
+
+  <!-- STEP 1: PROGRAMMES -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-lbl">Choose programme(s)</div>
+      <div class="step-hint">Multiple selection allowed</div>
+    </div>
+    <div class="step-body">
+      <div id="prog-container"></div>
+      <div class="sel-bar" id="sel-bar"></div>
+    </div>
+  </div>
+
+  <!-- PROMO CONTEXT (PL only) -->
+  <div class="step collapsible promo-wrap" id="promo-step">
+    <div class="step-head" onclick="toggleStep('promo-step')">
+      <div class="step-num" style="background:var(--y);color:var(--dk)">%</div>
+      <div class="step-lbl">Promocja czasowa</div>
+      <span class="step-summary" id="step-promo-sum">Brak</span>
+      <div class="step-chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="promo-seasons" id="promo-seasons"></div>
+      <div class="promo-phases" id="promo-phases"></div>
+      <div class="promo-detail" id="promo-detail"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: IMAGES -->
+  <div class="step collapsible" id="step-images">
+    <div class="step-head" onclick="toggleStep('step-images')">
+      <div class="step-num">2</div>
+      <div class="step-lbl">Choose images</div>
+      <span class="step-summary" id="step-images-sum">Optional</span>
+      <div class="step-chevron">▼</div>
+    </div>
+    <div class="step-body">
+
+      <!-- HERO -->
+      <div style="margin-bottom:18px;">
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:8px;">
+          🖼 Hero image — appears below headline
+        </div>
+        <div id="img-tabs-hero" class="img-tabs"></div>
+        <div id="img-gallery-hero" class="img-gallery"></div>
+        <div id="sel-hero-wrap" style="display:none;margin-top:8px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:6px;">Selected hero</div>
+          <div id="sel-hero-row" class="sel-imgs-row"></div>
+        </div>
+      </div>
+
+      <div style="height:1px;background:var(--brd);margin-bottom:18px;"></div>
+
+      <!-- BODY IMAGES -->
+      <div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--sub);margin-bottom:8px;">
+          📸 Body images — appear between content sections (max 2)
+        </div>
+        <div id="img-tabs-body" class="img-tabs"></div>
+        <div id="img-gallery-body" class="img-gallery"></div>
+        <div id="sel-body-wrap" style="display:none;margin-top:8px;">
+          <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:6px;">Selected body images</div>
+          <div id="sel-body-row" class="sel-imgs-row"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STEP 3: LINKS & UTM -->
+  <div class="step collapsible" id="step-utm">
+    <div class="step-head" onclick="toggleStep('step-utm')">
+      <div class="step-num">3</div>
+      <div class="step-lbl">Links & UTM</div>
+      <span class="step-summary" id="step-utm-sum">Optional</span>
+      <div class="step-chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <div class="utm-wrap">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div class="ef-group" style="margin:0">
+            <div class="ef-label" style="margin-bottom:4px"><span>🟡 Primary CTA link</span></div>
+            <input type="text" class="ef" id="utm-base" placeholder="https://angloville.com/apply/" oninput="utmPrev()">
+          </div>
+          <div class="ef-group" style="margin:0">
+            <div class="ef-label" style="margin-bottom:4px"><span>🔵 Secondary CTA link</span><span style="font-size:9px;color:var(--sub);font-weight:400">puste = tak samo jak primary</span></div>
+            <input type="text" class="ef" id="utm-base2" placeholder="(same as primary)" oninput="utmPrev()">
+          </div>
+        </div>
+        <div style="height:1px;background:var(--brd);margin-bottom:12px"></div>
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:8px">UTM Parameters</div>
+        <div class="utm-grid">
+          <div class="ef-group"><div class="ef-label">utm_source</div><input type="text" class="ef" id="utm-src" value="mailchimp" oninput="utmPrev()"></div>
+          <div class="ef-group"><div class="ef-label">utm_medium</div><input type="text" class="ef" id="utm-med" value="email" oninput="utmPrev()"></div>
+          <div class="ef-group"><div class="ef-label">utm_campaign</div><input type="text" class="ef" id="utm-cmp" value="" placeholder="np. summer-2026" oninput="utmPrev()"></div>
+          <div class="ef-group"><div class="ef-label">utm_content</div><input type="text" class="ef" id="utm-cnt" placeholder="cta_button" oninput="utmPrev()"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px">
+          <div>
+            <div class="ef-label"><span>🟡 Primary full URL</span><button class="btn-cp" onclick="cp2(buildUrl(1),this)">copy</button></div>
+            <div class="utm-out" id="utm-out1">← wpisz URL wyżej</div>
+          </div>
+          <div>
+            <div class="ef-label"><span>🔵 Secondary full URL</span><button class="btn-cp" onclick="cp2(buildUrl(2),this)">copy</button></div>
+            <div class="utm-out" id="utm-out2">← wpisz URL wyżej</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: FOOTER -->
+  <div class="step collapsible" id="step-footer">
+    <div class="step-head" onclick="toggleStep('step-footer')">
+      <div class="step-num">4</div>
+      <div class="step-lbl">Email footer</div>
+      <span class="step-summary" id="step-footer-sum">Default</span>
+      <div class="step-chevron">▼</div>
+    </div>
+    <div class="step-body">
+      <!-- Platform toggle -->
+      <div style="margin-bottom:12px">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:6px">Platforma wysyłkowa</div>
+        <div style="display:flex;gap:4px" id="platform-pills">
+          <button type="button" class="img-tab on" id="plat-mc-btn" onclick="setPlatform('mc')">📬 Mailchimp</button>
+          <button type="button" class="img-tab" id="plat-hs-btn" onclick="setPlatform('hs')">🟠 HubSpot</button>
+        </div>
+      </div>
+      <div class="footer-grid" id="footer-grid"></div>
+      <button type="button" class="footer-edit-btn" id="footer-edit-toggle" onclick="toggleFooterEdit()">✏️ Edytuj footer</button>
+      <div class="footer-edit-wrap" id="footer-edit-wrap">
+        <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:5px;display:flex;justify-content:space-between;align-items:center">
+          <span>Footer content — editable</span>
+          <button class="btn-cp" onclick="resetFooter()">&#8635; Reset to default</button>
+        </div>
+        <textarea id="footer-editor" rows="4"
+          style="width:100%;padding:9px 12px;border:1.5px solid var(--brd);border-radius:8px;font-family:monospace;font-size:11px;color:var(--txt);resize:vertical;line-height:1.6;background:var(--w)"
+          oninput="this.dataset.edited='1'"
+          placeholder="Footer HTML will appear here after selecting a domain above…"></textarea>
+        <div id="footer-tags-ref" style="font-size:10px;color:var(--sub);margin-top:4px;line-height:1.5">
+          <span id="tags-mc">Mailchimp tags: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UNSUB|*</code> &nbsp; <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|UPDATE_PROFILE|*</code> &nbsp; <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px">*|FNAME|*</code></span>
+          <span id="tags-hs" style="display:none">HubSpot tags: <code style="background:#FFF3E0;padding:1px 4px;border-radius:3px">{{ unsubscribe_link }}</code> &nbsp; <code style="background:#FFF3E0;padding:1px 4px;border-radius:3px">{{ unsubscribe_link_all }}</code></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: NOTES -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div class="step-lbl">Additional instructions</div>
+      <div class="step-hint">Optional — AI will follow these</div>
+    </div>
+    <div class="step-body">
+      <textarea class="notes" id="extra" rows="3"
+        placeholder="e.g. Early bird discount ends Friday, only 5 spots left, focus on summer dates 21 June – 8 August…"></textarea>
+    </div>
+  </div>
+
+  <!-- EMAIL TYPE SELECTOR -->
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">6</div>
+      <div class="step-lbl">Email type</div>
+      <div class="step-hint">Marketing campaign or personal email</div>
+    </div>
+    <div class="step-body">
+      <div class="etype-wrap">
+        <button type="button" class="etype-btn on" id="etype-mkt" onclick="setEmailType('marketing')">
+          <div class="etype-icon">📣</div>
+          <div>
+            <div class="etype-t">Marketing Campaign</div>
+            <div class="etype-d">Branded HTML email z hero image, CTA buttons, logo bar i footer</div>
+          </div>
+        </button>
+        <button type="button" class="etype-btn" id="etype-pt" onclick="setEmailType('plaintext')">
+          <div class="etype-icon">✉️</div>
+          <div>
+            <div class="etype-t">Personal Email</div>
+            <div class="etype-d">Zwykły tekst jak od człowieka — person-to-person, bez grafik i przycisków</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- GENERATE -->
+  <div class="gen-row">
+    <button class="btn-gen" id="gen-btn" onclick="generate()">
+      <span style="font-size:16px;position:relative;z-index:1">✦</span>
+      <span class="btn-label">Generate Campaign</span>
+    </button>
+    <div class="prog-req" id="prog-hint">Select at least one programme above ↑</div>
+  </div>
+
+  <div class="loader-wrap" id="loader-wrap">
+    <div class="loader"><span></span><span></span><span></span></div>
+    <div class="loader-txt" id="loader-txt">Crafting your campaign…</div>
+  </div>
+  <div class="err-box" id="err-box"></div>
+
+  <!-- RESULTS -->
+  <div class="results-wrap" id="results"></div>
+
+</div>
+
+<!-- PREVIEW MODAL -->
+<div class="modal" id="prev-modal">
+  <div class="modal-box desktop-mode" id="prev-modal-box">
+    <div class="modal-head">
+      <span id="prev-title">Email Preview</span>
+      <div style="display:flex;align-items:center;gap:4px;">
+        <button class="prev-mode-btn active" id="prev-desktop-btn" onclick="setPreviewMode('desktop')">🖥 Desktop</button>
+        <button class="prev-mode-btn" id="prev-mobile-btn" onclick="setPreviewMode('mobile')">📱 Mobile</button>
+        <button onclick="closePreview()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;margin-left:6px;line-height:1;">✕</button>
+      </div>
+    </div>
+    <div id="prev-body" style="background:#EBEBEB;padding:16px;overflow-y:auto;max-height:82vh;">
+      <div id="prev-content"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  IMAGE LIBRARY (Angloville CDN)
+// ═══════════════════════════════════════════════════════════
+const IMG_LIB = {
+  com:{
+    'Italy Venues':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png',lbl:'Valbonella'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png',lbl:'Casal Cerqueto'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7-f9cb-f93a16385edd.png',lbl:'Torre Burchio'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png',lbl:'Madonna Delle Nevi'},
+    ],
+    'Programme':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png',lbl:'Italy programme hero'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png',lbl:'Italy group'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png',lbl:'Angloville logo'},
+    ],
+  },
+  pl:{
+    'Polska':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png',lbl:'Wioska Językowa'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png',lbl:'Venue Włochy'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png',lbl:'Obóz hero'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png',lbl:'Uczestnicy'},
+    ],
+    'Ogólne':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png',lbl:'Logo Angloville'},
+    ],
+  },
+  it:{
+    'Sedi Italia':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/918028c9-0a72-ca9c-91ae-8d6983e04895.png',lbl:'Valbonella'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4bfb57cd-eb65-fa16-b7bf-4deac4605c54.png',lbl:'Casal Cerqueto'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/dac100c2-77a0-32c7-f9cb-f93a16385edd.png',lbl:'Torre Burchio'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/4112e847-9a0f-0279-ce3b-491274e2f2c1.png',lbl:'Madonna Delle Nevi'},
+    ],
+    'Generale':[
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/5ecb9966-8c30-0e4f-d110-6808717a1137.png',lbl:'Hero Italia'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/0984e528-3b71-9502-d766-22c91f7c5ba8.png',lbl:'Gruppo ragazzi'},
+      {url:'https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png',lbl:'Logo Angloville'},
+    ],
+  },
+};
+
+// ═══════════════════════════════════════════════════════════
+//  FOOTERS — per platform (Mailchimp / HubSpot)
+// ═══════════════════════════════════════════════════════════
+const FOOTERS = {
+  com:[
+    {id:'com-en',name:'angloville.com (EN)',prev:'hello@angloville.com · Unsubscribe · Privacy Policy',
+     mc:`Want to change how you receive these emails?<br>You can <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">update your preferences</a> or <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">unsubscribe from this list</a>.<br><br>Your personal data controller is Angloville International Ltd. <a href="https://angloville.com/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`,
+     hs:`Want to change how you receive these emails?<br>You can <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">update your preferences</a> or <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">unsubscribe from this list</a>.<br><br>Your personal data controller is Angloville International Ltd. <a href="https://angloville.com/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
+  ],
+  pl:[
+    {id:'pl-pl',name:'angloville.pl (PL)',prev:'kontakt@angloville.pl · Wypisz się · Polityka prywatności',
+     mc:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`,
+     hs:`Chcesz zmienić sposób otrzymywania emaili?<br>Możesz <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">zaktualizować preferencje</a> lub <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">wypisać się z listy</a>.<br><br>Administratorem Twoich danych jest Angloville Sp. z o.o. <a href="https://angloville.pl/polityka-prywatnosci/" style="color:#555;text-decoration:underline;">Polityka prywatności</a>`},
+  ],
+  it:[
+    {id:'it-it',name:'angloville.it (IT)',prev:'info@angloville.it · Cancellati · Privacy Policy',
+     mc:`Vuoi modificare come ricevi queste email?<br>Puoi <a href="*|UPDATE_PROFILE|*" style="color:#555;text-decoration:underline;">aggiornare le preferenze</a> o <a href="*|UNSUB|*" style="color:#555;text-decoration:underline;">cancellarti dalla lista</a>.<br><br>Il titolare del trattamento dati è Angloville S.R.L. <a href="https://angloville.it/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`,
+     hs:`Vuoi modificare come ricevi queste email?<br>Puoi <a href="{{ unsubscribe_link_all }}" style="color:#555;text-decoration:underline;">aggiornare le preferenze</a> o <a href="{{ unsubscribe_link }}" style="color:#555;text-decoration:underline;">cancellarti dalla lista</a>.<br><br>Il titolare del trattamento dati è Angloville S.R.L. <a href="https://angloville.it/privacy-policy/" style="color:#555;text-decoration:underline;">Privacy Policy</a>`},
+  ],
+};
+
+// ═══════════════════════════════════════════════════════════
+//  MARKET DATA
+// ═══════════════════════════════════════════════════════════
+const MKT = {
+  com:{
+    lang:'en-gb',
+    ph:'e.g. Early bird ends Friday, only 5 spots left, focus on Italy 21 June–8 August, mention 3-programme package…',
+    ltxt:'Claude is crafting your campaign…',
+    brand:`Angloville.com – international sponsored cultural exchange since 2011.
+Target: native English speakers – gap year, teaching abroad, cultural exchange.
+CRITICAL: NEVER use "volunteer/volunteering". Always say "sponsored place", "sponsored programme" or "cultural exchange".
+Voice: adventurous, warm, community-driven. British English only (programme, colour, travelling, organised).
+Key messages: fully sponsored (free accommodation + meals), no teaching experience required, make international friends.`,
+    cats:[
+      {id:'programmes',lbl:'🎓 Programmes',groups:[0,1]},
+      {id:'roles',lbl:'🤝 Roles & TEFL',groups:[2,3]},
+      {id:'travel',lbl:'✈️ AV Travel',groups:[4]},
+    ],
+    groups:[
+      {lbl:'Junior Programmes',progs:[
+        {id:'poland-jr',  e:'🇵🇱',t:'Poland Junior',                  d:'Warsaw, Wroclaw, Krakow & Poznan'},
+        {id:'italy-jr',   e:'🇮🇹',t:'Italy Junior',                   d:'Bologna, Florence, Rome & Milan'},
+        {id:'malta-jr',   e:'🇲🇹',t:'Malta Junior',                   d:'Valletta, Gozo & Mdina'},
+        {id:'eurotrip',   e:'🌍', t:'Eurotrip & Poland',              d:'Paris, Brussels, Berlin & Amsterdam'},
+        {id:'roehampton', e:'🏛', t:'Roehampton & Kent (UK)',         d:'London, Cambridge & Canterbury'},
+        {id:'uk-trip',    e:'🎡', t:'UK Trip',                        d:'London, Oxford & Cambridge'},
+      ]},
+      {lbl:'Adult Programmes',progs:[
+        {id:'poland-adult',e:'🏡',t:'Poland Adult',                   d:'Warsaw, Wroclaw & Krakow'},
+      ]},
+      {lbl:'Sponsored Roles',progs:[
+        {id:'esl-mentor', e:'🎓',t:'ESL Mentor',                     d:'Sponsored — no experience needed'},
+        {id:'act-leader', e:'🏃',t:'Activity Leader',                d:'Sponsored — lead cultural exchange'},
+        {id:'prog-coord', e:'📋',t:'Programme Coordinator',          d:'Organise programmes across Europe'},
+      ]},
+      {lbl:'TEFL in Asia',progs:[
+        {id:'tefl-th',    e:'🇹🇭',t:'TEFL – Thailand',               d:'Paid teaching placement'},
+        {id:'tefl-kr',    e:'🇰🇷',t:'TEFL – South Korea',            d:'Paid teaching placement'},
+        {id:'tefl-jp',    e:'🇯🇵',t:'TEFL – Japan',                  d:'Paid teaching placement'},
+        {id:'tefl-vn',    e:'🇻🇳',t:'TEFL – Vietnam',                d:'Paid teaching placement'},
+      ]},
+      {lbl:'AV Travel',progs:[
+        {id:'travel-east',e:'🗽',t:'USA East Coast',                 d:'New York, Washington & Boston'},
+        {id:'travel-west',e:'🌴',t:'USA West Coast',                 d:'LA, San Francisco & Grand Canyon'},
+        {id:'travel-jp',  e:'⛩', t:'Japan',                          d:'Tokyo, Kyoto & Osaka'},
+      ]},
+    ],
+  },
+  pl:{
+    lang:'pl',
+    ph:'np. Promocja -15% do piątku, ostatnie 5 miejsc, nowy termin wakacyjny…',
+    ltxt:'Claude tworzy Twoją kampanię…',
+    brand:`Angloville.pl – lider turystyki edukacyjnej w Polsce od 2011 roku.
+Odbiorcy: Polacy – rodzice dzieci, dorośli z barierą językową, menedżerowie.
+Głos: ciepły, energiczny, motywujący. Aktywny język polski. Konkretne korzyści.
+Wartości: pełna immersja – 0 książek – 0 klasy. 7000+ uczestników rocznie. 4.8★
+Język: WYŁĄCZNIE po polsku.`,
+    cats:[
+      {id:'dorosli',lbl:'👤 Dorośli',groups:[0,1,2]},
+      {id:'dzieci',lbl:'🎒 Dzieci i Młodzież',groups:[3,4,5,6]},
+      {id:'wymiana',lbl:'🏫 Wymiana Licealna',groups:[7]},
+    ],
+    groups:[
+      {lbl:'Wyjazdy językowe',progs:[
+        {id:'wioska-d',  e:'🏡',t:'Angielska Wioska',                d:'70h 1:1 z native speakerami w 6 dni'},
+        {id:'wioska-p',  e:'🌱',t:'Wioska – Początkujący',           d:'Nauka online + wyjazd z native speakerami'},
+        {id:'malta-d',   e:'🇲🇹',t:'Malta',                          d:'1:1 lub 2:1 z native speakerami w 8 dni'},
+      ]},
+      {lbl:'Turystyczno-językowe 18–40',progs:[
+        {id:'kali-ya',   e:'🌴',t:'Kalifornia',                      d:'Wyjazd turystyczno-językowy'},
+        {id:'jap-ya',    e:'🗾',t:'Japonia',                         d:'Wyjazd turystyczno-językowy'},
+      ]},
+      {lbl:'Turystyczno-językowe 40+',progs:[
+        {id:'nyc-40',    e:'🗽',t:'Nowy Jork + Toronto',             d:'Wyjazd językowy dla dorosłych'},
+        {id:'kali-40',   e:'🌴',t:'Kalifornia',                      d:'Wyjazd turystyczno-językowy'},
+        {id:'jap-40',    e:'🗾',t:'Japonia',                         d:'Wyjazd turystyczno-językowy'},
+      ]},
+      {lbl:'Obozy w Polsce',progs:[
+        {id:'kids',      e:'🧒',t:'Kids 7–11 lat',                   d:'Obóz przez zabawę'},
+        {id:'junior',    e:'🎒',t:'Junior 11–18 lat',                d:'Obóz dla młodzieży'},
+        {id:'family',    e:'👨‍👩‍👧',t:'Family',                        d:'Dla całych rodzin'},
+      ]},
+      {lbl:'Obozy za granicą',progs:[
+        {id:'malta',     e:'🇲🇹',t:'Malta',                          d:'13–18 lat'},
+        {id:'anglia',    e:'🇬🇧',t:'Anglia',                         d:'13–18 lat'},
+      ]},
+      {lbl:'Europa — Junior Plus',progs:[
+        {id:'uk-trip',   e:'🎡',t:'UK Trip',                         d:'Londyn, Oxford, Cambridge · 12–18'},
+        {id:'eurotrip',  e:'🌍',t:'Eurotrip',                        d:'Paryż, Berlin, Bruksela · 12–18'},
+        {id:'baltic',    e:'🌊',t:'Baltic Trip',                     d:'Kraje bałtyckie · 12–18'},
+        {id:'italy-t',   e:'🍕',t:'Italy Trip',                      d:'Włochy z native speakerami · 12–18'},
+      ]},
+      {lbl:'Świat — Junior',progs:[
+        {id:'nyk',       e:'🗽',t:'Nowy Jork',                       d:'14–18 lat'},
+        {id:'kali',      e:'🌴',t:'Kalifornia',                      d:'14–18 lat'},
+        {id:'floryda',   e:'🏖',t:'Floryda',                         d:'14–18 lat'},
+        {id:'japonia',   e:'⛩', t:'Japonia',                         d:'14–18 lat'},
+      ]},
+      {lbl:'Wymiana Licealna',progs:[
+        {id:'usa',       e:'🏫',t:'Rok w USA',                       d:'High School 15–18.5 lat'},
+        {id:'kanada',    e:'🍁',t:'Rok w Kanadzie',                  d:'Kanadyjskie liceum'},
+        {id:'online',    e:'💻',t:'Liceum Online (USA)',             d:'Amerykański program bez wyjazdu'},
+      ]},
+    ],
+  },
+  it:{
+    lang:'it',
+    ph:"es. Sconto -15% fino a venerdì, ultimi 5 posti, nuove date estive aggiunte…",
+    ltxt:'Claude sta creando la tua campagna…',
+    brand:`Angloville.it – leader full immersion inglese in Italia e in Europa dal 2011.
+Voce: calda, coinvolgente, motivante. Italiano naturale. Parlare direttamente ai genitori o ai ragazzi.
+Valori: Full immersion – 0 libri – 0 lezioni. 70-100h con madrelingua. Metodo naturale.
+Lingua: SOLO italiano.`,
+    cats:[
+      {id:'italia',lbl:'🇮🇹 In Italia',groups:[0]},
+      {id:'estero',lbl:'✈️ All\'Estero',groups:[1,2]},
+      {id:'anno',lbl:'🏫 Anno all\'Estero',groups:[3]},
+    ],
+    groups:[
+      {lbl:'Programmi in Italia',progs:[
+        {id:'kids-it',   e:'🧒',t:'Bambini 7–11',                    d:'60h con madrelingua in 7 giorni'},
+        {id:'jr-it',     e:'🎒',t:'Ragazzi 12–17',                   d:'70h full immersion con madrelingua'},
+        {id:'adult-it',  e:'🏡',t:'Adulti – Full Immersion',         d:'Full immersion per adulti'},
+      ]},
+      {lbl:'Vacanze Studio & Junior Plus',progs:[
+        {id:'londra',    e:'🇬🇧',t:'Londra 13–19',                   d:'College a Londra'},
+        {id:'malta-it',  e:'🇲🇹',t:'Malta 12–17',                    d:'Residence a Malta'},
+        {id:'baltic-it', e:'🌊',t:'Baltic Trip 13–19',               d:'Paesi Baltici'},
+        {id:'euro-it',   e:'🌍',t:'Eurotrip 13–19',                  d:'Parigi, Berlino, Bruxelles'},
+      ]},
+      {lbl:'Junior Adventure',progs:[
+        {id:'ny-it',     e:'🗽',t:'New York 13–19',                  d:'Times Square, Central Park'},
+        {id:'miami-it',  e:'🏖',t:'Florida 13–19',                   d:'Miami & Florida'},
+        {id:'jap-it',    e:'⛩', t:'Giappone 13–19',                  d:'Tokyo, Kyoto, Osaka'},
+      ]},
+      {lbl:"Anno all'Estero",progs:[
+        {id:'anno-usa',  e:'🏫',t:'Anno in USA',                     d:'Liceo americano 12–18 anni'},
+      ]},
+    ],
+  },
+};
+
+// ═══════════════════════════════════════════════════════════
+//  CUSTOM IMAGE LIBRARY (in-memory, session only)
+// ═══════════════════════════════════════════════════════════
+let _customImgs = [];
+function loadCustom(){ return _customImgs; }
+function saveCustom(arr){ _customImgs = arr; }
+function addToCustomLib(img){
+  if(img.url.startsWith('data:')) return; // skip base64
+  if(!_customImgs.find(x=>x.url===img.url)){ _customImgs.unshift(img); }
+}
+function removeFromCustomLib(url){
+  _customImgs = _customImgs.filter(x=>x.url!==url);
+  if(selHero && selHero.url===url) selHero=null;
+  selBody = selBody.filter(s=>s.url!==url);
+  renderGallery('hero'); renderGallery('body');
+  renderSelImages();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════
+let market   = 'com';
+let selected = new Set();
+let activeCat = null; // active category tab
+let selHero  = null;   // single hero image {url, thumb, label}
+let selBody  = [];     // max 2 body images
+let selFoot  = null;
+let selPlatform = 'mc'; // 'mc' = Mailchimp, 'hs' = HubSpot
+let emailType   = 'marketing'; // 'marketing' or 'plaintext'
+let libCat   = null;
+let activeSlot = 'hero'; // 'hero' or 'body' — which gallery is active
+
+// Dates table state
+let datesEnabled = false;
+let datesRows = []; // [{programme:'', dates:'', note:''}]
+let datesHeading = ''; // heading above the table
+
+// "Other options" section state
+let otherOptionsEnabled = false;
+let otherOptionsHeading = '';
+let otherOptionsCards = []; // [{name, tagline, product_url, signup_url}]
+
+// Mailchimp library state
+let mcImages   = [];
+let mcFolders  = [];
+let mcFolder   = null;
+let mcLoaded   = false;
+let mcLoading  = false;
+
+// Cloudinary library state
+let cldImages     = [];
+let cldFolders    = [];
+let cldFolder     = '';   // active folder filter
+let cldLoaded     = false;
+let cldLoading    = false;
+let cldNextCursor = null;
+
+// Promo context state (PL only)
+let promoSeason = null;  // 'wakacje' or 'ferie'
+let promoPhase  = null;  // phase id or null
+let promoDate   = '';     // editable deadline
+let promoDiscount = '';   // e.g. '-15%', '-500 zł'
+
+const PROMO_DATA = {
+  wakacje: {
+    label: '🏖 Wakacje',
+    phases: [
+      {id:'super-early', icon:'🔥', name:'Super Early Bird', defaultDate:'31.03', desc:'Najwcześniejsza zniżka'},
+      {id:'early',       icon:'⏰', name:'Early Bird',       defaultDate:'30.05', desc:'Przed sezonem'},
+    ]
+  },
+  ferie: {
+    label: '❄️ Ferie zimowe',
+    phases: [
+      {id:'super-early', icon:'🔥', name:'Super Early Bird', defaultDate:'30.10', desc:'Najwcześniejsza zniżka'},
+      {id:'black-week',  icon:'🖤', name:'Black Week',       defaultDate:'30.11', desc:'Koniec listopada'},
+    ]
+  },
+};
+
+// ═══════════════════════════════════════════════════════════
+//  INIT / MARKET SWITCH
+// ═══════════════════════════════════════════════════════════
+function setMarket(mkt, btn) {
+  market = mkt; selected.clear(); selHero = null; selBody = []; selFoot = null; libCat = null; activeCat = null;
+  promoSeason = null; promoPhase = null; promoDate = ''; promoDiscount = '';
+  otherOptionsEnabled = false; otherOptionsHeading = ''; otherOptionsCards = [];
+  document.querySelectorAll('.mkt-pill').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('extra').placeholder = MKT[mkt].ph;
+  document.getElementById('loader-txt').textContent = MKT[mkt].ltxt;
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('results').innerHTML = '';
+  document.getElementById('err-box').style.display = 'none';
+  renderAll();
+}
+
+function renderAll(){
+  renderProgs(); updateSelBar();
+  initLibCat(); renderLibTabs(); renderGallery('hero'); renderGallery('body');
+  renderSelImages(); renderFooters(); renderPromo(); updateStepSummaries();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PROMO CONTEXT (PL only)
+// ═══════════════════════════════════════════════════════════
+function renderPromo(){
+  const wrap = document.getElementById('promo-step');
+  if(!wrap) return;
+  // Only show for PL market
+  wrap.classList.toggle('show', market === 'pl');
+  if(market !== 'pl') return;
+
+  // Season tabs
+  const seasonsEl = document.getElementById('promo-seasons');
+  seasonsEl.innerHTML = `<button type="button" class="promo-season-btn${promoSeason===null?' on':''}" onclick="selectPromoSeason(null)">❌ Brak promocji</button>` +
+    Object.entries(PROMO_DATA).map(([key,s])=>
+      `<button type="button" class="promo-season-btn${promoSeason===key?' on':''}" onclick="selectPromoSeason('${key}')">${s.label}</button>`
+    ).join('');
+
+  // Phase pills
+  const phasesEl = document.getElementById('promo-phases');
+  const detailEl = document.getElementById('promo-detail');
+  if(!promoSeason){
+    phasesEl.innerHTML = '';
+    detailEl.classList.remove('show');
+    return;
+  }
+
+  const season = PROMO_DATA[promoSeason];
+  phasesEl.innerHTML = season.phases.map(p =>
+    `<button type="button" class="promo-phase${promoPhase===p.id?' on':''}" onclick="selectPromoPhase('${p.id}')">
+      <span class="pp-icon">${p.icon}</span>
+      <div><div style="font-size:12px;font-weight:700">${p.name}</div><div style="font-size:10px;color:var(--sub)">${p.desc}</div></div>
+    </button>`
+  ).join('');
+
+  // Detail row
+  if(promoPhase){
+    const phase = season.phases.find(p=>p.id===promoPhase);
+    const yr = new Date().getFullYear();
+    if(!promoDate && phase) promoDate = phase.defaultDate + '.' + yr;
+    detailEl.classList.add('show');
+    detailEl.innerHTML = `
+      <div class="ef-group">
+        <div class="ef-label"><span>📅 Deadline promocji</span></div>
+        <input type="text" class="ef" id="promo-date-input" value="${esc(promoDate)}" placeholder="np. 31.03.2026" oninput="promoDate=this.value">
+      </div>
+      <div class="ef-group">
+        <div class="ef-label"><span>💰 Zniżka (opcjonalnie)</span></div>
+        <input type="text" class="ef" id="promo-discount-input" value="${esc(promoDiscount)}" placeholder="np. -15%, -500 zł" oninput="promoDiscount=this.value">
+      </div>`;
+  } else {
+    detailEl.classList.remove('show');
+  }
+  updateStepSummaries();
+}
+
+function selectPromoSeason(key){
+  promoSeason = key;
+  promoPhase = null;
+  promoDate = '';
+  promoDiscount = '';
+  // Auto-select first phase if season chosen
+  if(key && PROMO_DATA[key]){
+    const first = PROMO_DATA[key].phases[0];
+    if(first){
+      promoPhase = first.id;
+      const yr = new Date().getFullYear();
+      promoDate = first.defaultDate + '.' + yr;
+    }
+  }
+  renderPromo();
+}
+
+function selectPromoPhase(id){
+  if(promoPhase === id){ promoPhase = null; promoDate = ''; promoDiscount = ''; }
+  else {
+    promoPhase = id;
+    const season = PROMO_DATA[promoSeason];
+    const phase = season?.phases.find(p=>p.id===id);
+    const yr = new Date().getFullYear();
+    promoDate = phase ? phase.defaultDate + '.' + yr : '';
+    promoDiscount = '';
+  }
+  renderPromo();
+}
+
+function getPromoContext(){
+  if(market !== 'pl' || !promoSeason || !promoPhase) return '';
+  const season = PROMO_DATA[promoSeason];
+  const phase = season?.phases.find(p=>p.id===promoPhase);
+  if(!phase) return '';
+  let ctx = `PROMO CONTEXT (treat as secondary info, not the main topic): ${phase.name} promotion, deadline: ${promoDate || 'TBD'}.`;
+  if(promoDiscount) ctx += ` Discount: ${promoDiscount}.`;
+  ctx += ` Mention this naturally as urgency/limitation near the end or in PS — do NOT make it the headline or main focus of the email.`;
+  return ctx;
+}
+
+function setEmailType(type){
+  emailType = type;
+  document.getElementById('etype-mkt').classList.toggle('on', type==='marketing');
+  document.getElementById('etype-pt').classList.toggle('on', type==='plaintext');
+  const lbl = document.querySelector('.btn-label');
+  if(lbl) lbl.textContent = type==='plaintext' ? 'Generate Personal Email' : 'Generate Campaign';
+}
+
+function toggleStep(id){
+  const el = document.getElementById(id);
+  if(el) el.classList.toggle('open');
+}
+
+function toggleFooterEdit(){
+  const wrap = document.getElementById('footer-edit-wrap');
+  if(wrap) wrap.classList.toggle('show');
+}
+
+function updateStepSummaries(){
+  // Images summary
+  const imgCount = (selHero?1:0) + selBody.length;
+  const imgSum = document.getElementById('step-images-sum');
+  if(imgSum) imgSum.textContent = imgCount > 0 ? imgCount + ' selected' : 'Optional';
+
+  // UTM summary
+  const utmBase = (document.getElementById('utm-base')?.value||'').trim();
+  const utmSum = document.getElementById('step-utm-sum');
+  if(utmSum) utmSum.textContent = utmBase ? utmBase.replace(/https?:\/\//,'').slice(0,30) : 'Optional';
+
+  // Footer summary
+  const opts = FOOTERS[market]||[];
+  const foot = opts.find(f=>f.id===selFoot)||opts[0];
+  const footSum = document.getElementById('step-footer-sum');
+  if(footSum) footSum.textContent = foot ? foot.name : 'Default';
+
+  // Promo summary
+  const promoSum = document.getElementById('step-promo-sum');
+  if(promoSum){
+    if(promoSeason && promoPhase){
+      const season = PROMO_DATA[promoSeason];
+      const phase = season?.phases.find(p=>p.id===promoPhase);
+      promoSum.textContent = phase ? phase.name + (promoDate ? ' → ' + promoDate : '') : 'Brak';
+    } else {
+      promoSum.textContent = 'Brak';
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PROGRAMMES
+// ═══════════════════════════════════════════════════════════
+function renderProgs(){
+  const M = MKT[market];
+  const cats = M.cats || [];
+  // Default to first cat
+  if(!activeCat && cats.length) activeCat = cats[0].id;
+
+  // Count selected per cat
+  const allProgs = M.groups.flatMap(g=>g.progs);
+  const catCounts = {};
+  cats.forEach(c=>{
+    const ids = c.groups.flatMap(gi=>M.groups[gi]?.progs||[]).map(p=>p.id);
+    catCounts[c.id] = ids.filter(id=>selected.has(id)).length;
+  });
+
+  // Tabs
+  let tabsH = cats.map(c=>{
+    const cnt = catCounts[c.id];
+    const badge = cnt > 0 ? `<span class="cat-count">${cnt}</span>` : '';
+    return `<button type="button" class="cat-tab${activeCat===c.id?' on':''}"
+      onclick="activeCat='${c.id}';renderProgs();updateSelBar();">${c.lbl}${badge}</button>`;
+  }).join('');
+
+  // Visible groups
+  const visibleCat = cats.find(c=>c.id===activeCat);
+  const visibleIdx = visibleCat ? visibleCat.groups : M.groups.map((_,i)=>i);
+
+  let groupsH = visibleIdx.map(i=>{
+    const g = M.groups[i];
+    if(!g) return '';
+    return `<div class="prog-section">
+      <div class="prog-section-lbl">${g.lbl}</div>
+      <div class="prog-grid">
+        ${g.progs.map(p=>`
+          <button type="button" class="prog-btn${selected.has(p.id)?' on':''}" onclick="toggleP('${p.id}')">
+            <span class="prog-e">${p.e}</span>
+            <div><div class="prog-t">${p.t}</div><div class="prog-d">${p.d}</div></div>
+          </button>`).join('')}
+      </div>
+    </div>`;
+  }).join('');
+
+  document.getElementById('prog-container').innerHTML =
+    (cats.length ? `<div class="cat-tabs">${tabsH}</div>` : '') + groupsH;
+}
+function toggleP(id){
+  selected.has(id)?selected.delete(id):selected.add(id);
+  renderProgs(); updateSelBar();
+  if(selected.size>0) document.getElementById('prog-hint').style.display='none';
+}
+function updateSelBar(){
+  const el=document.getElementById('sel-bar');
+  if(!selected.size){el.classList.remove('show');return;}
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  el.textContent='✓ '+[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
+  el.classList.add('show');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  IMAGE LIBRARY
+// ═══════════════════════════════════════════════════════════
+function initLibCat(){
+  if(!libCat) libCat = '📷 Cloudinary';
+}
+function escAttr(s){ return s.replace(/'/g,"\\'"); }
+
+function renderLibTabs(){
+  ['hero','body'].forEach(slot => {
+    const el = document.getElementById('img-tabs-'+slot);
+    if(!el) return;
+    let h = `<button type="button" class="img-tab on" onclick="switchCat('${slot}')">📷 Wszystkie</button>`;
+    if(cldLoaded && cldFolders.length){
+      h += cldFolders.map(f =>
+        `<button type="button" class="img-tab"
+          onclick="cldFolder='${escAttr(f.path)}';renderGallery('${slot}')">📁 ${esc(f.name)}</button>`
+      ).join('');
+    }
+    el.innerHTML = h;
+  });
+}
+
+function switchCat(slot){
+  libCat = '📷 Cloudinary';
+  cldFolder = '';
+  if(!cldLoaded) loadCldLibrary(null, slot);
+  else { renderLibTabs(); renderGallery(slot); }
+}
+
+async function loadCldLibrary(next_cursor, slot){
+  if(cldLoading) return;
+  cldLoading = true;
+  if(!next_cursor) cldImages = [];
+  ['hero','body'].forEach(s => {
+    const g = document.getElementById('img-gallery-'+s);
+    if(g) g.innerHTML = `<div style="grid-column:1/-1;padding:20px 0;text-align:center;font-size:12px;color:var(--sub)">⏳ Wczytywanie z Cloudinary…</div>`;
+  });
+  try {
+    const res  = await fetch('/api/proxy', { method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'cloudinary_images', folder: cldFolder, next_cursor: next_cursor||'', max_results:50 }) });
+    const data = await res.json();
+    if(!data.ok) throw new Error(data.error);
+    cldImages     = next_cursor ? [...cldImages, ...data.files] : data.files;
+    cldFolders    = data.folders || [];
+    cldNextCursor = data.next_cursor || null;
+    cldLoaded     = true;
+    renderLibTabs();
+    renderGallery('hero');
+    renderGallery('body');
+  } catch(e) {
+    ['hero','body'].forEach(s => {
+      const g = document.getElementById('img-gallery-'+s);
+      if(g) g.innerHTML = `<div style="grid-column:1/-1;padding:16px;background:#FFF2F2;border-radius:8px;font-size:12px;color:#CC0000;">
+        ❌ ${e.message}<br>
+        <button class="btn-out" style="margin-top:8px;font-size:11px" onclick="cldLoaded=false;loadCldLibrary(null,'hero')">Spróbuj ponownie</button>
+      </div>`;
+    });
+  }
+  cldLoading = false;
+}
+
+function renderGallery(slot){
+  const gallery = document.getElementById('img-gallery-'+slot);
+  if(!gallery) return;
+
+  const imgs = cldFolder
+    ? cldImages.filter(i => i.folder === cldFolder || i.id.startsWith(cldFolder + '/'))
+    : cldImages;
+
+  if(!cldLoaded){
+    gallery.innerHTML = `<div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub);cursor:pointer" onclick="loadCldLibrary(null,'${slot}')">
+      🖼 Kliknij żeby wczytać bibliotekę Cloudinary</div>`;
+    return;
+  }
+  if(!imgs.length){
+    gallery.innerHTML = `<div style="grid-column:1/-1;padding:16px 0;text-align:center;font-size:12px;color:var(--sub)">Brak zdjęć</div>`;
+    return;
+  }
+
+  gallery.innerHTML = imgs.map(img=>{
+    const lbl = img.label || '';
+    const heroUrl = (img.hero || img.url).replace(/'/g,"\\'");
+    const bodyUrl = (img.body || img.url).replace(/'/g,"\\'");
+    let on, badge;
+    if(slot === 'hero'){
+      on = selHero && selHero.url === img.url;
+      badge = on ? '✓' : '';
+    } else {
+      const idx = selBody.findIndex(s=>s.url===img.url);
+      on = idx >= 0;
+      badge = on ? idx+1 : '';
+    }
+    return `<div class="gal-item${on?' on':''}" onclick="toggleSlotImg('${slot}','${img.url.replace(/'/g,"\\'")}','${(img.thumb||img.url).replace(/'/g,"\\'")}','${esc(lbl)}','${heroUrl}','${bodyUrl}')">
+      <img src="${img.thumb||img.url}" alt="${esc(lbl)}" loading="lazy" onerror="this.parentElement.style.background='#DDD';this.style.display='none'">
+      <div class="gnum">${badge}</div>
+      <div class="glbl">${esc(lbl)}</div>
+    </div>`;
+  }).join('');
+
+  if(cldNextCursor){
+    const more = document.createElement('div');
+    more.style.cssText = 'grid-column:1/-1;text-align:center;margin-top:8px;';
+    more.innerHTML = `<button class="btn-out" style="font-size:11px" onclick="loadCldLibrary('${cldNextCursor}','${slot}')">Wczytaj więcej…</button>`;
+    gallery.appendChild(more);
+  }
+  const ref = document.createElement('div');
+  ref.style.cssText = 'grid-column:1/-1;text-align:right;margin-top:4px;';
+  ref.innerHTML = `<button class="btn-cp" style="font-size:10px" onclick="cldLoaded=false;cldNextCursor=null;loadCldLibrary(null,'${slot}')">↻ Odśwież</button>`;
+  gallery.appendChild(ref);
+}
+
+function toggleSlotImg(slot, url, thumb, label, heroUrl, bodyUrl){
+  if(slot === 'hero'){
+    selHero = (selHero && selHero.url === url) ? null : {url, thumb, label, heroUrl: heroUrl||url, bodyUrl: bodyUrl||url};
+  } else {
+    const idx = selBody.findIndex(s=>s.url===url);
+    if(idx >= 0) selBody.splice(idx,1);
+    else if(selBody.length < 2) selBody.push({url, thumb, label, heroUrl: heroUrl||url, bodyUrl: bodyUrl||url});
+    // max 2 body images — ignore click if already 2 selected
+  }
+  renderGallery('hero'); renderGallery('body');
+  renderSelImages();
+}
+
+function renderSelImages(){
+  // Hero
+  const heroWrap = document.getElementById('sel-hero-wrap');
+  const heroRow  = document.getElementById('sel-hero-row');
+  if(heroWrap && heroRow){
+    if(selHero){
+      heroWrap.style.display = 'block';
+      heroRow.innerHTML = `<div class="sel-thumb">
+        <img src="${selHero.thumb}" alt="${esc(selHero.label)}" onerror="this.style.display='none'">
+        <button class="rm" onclick="selHero=null;renderGallery('hero');renderSelImages()">✕</button>
+      </div>`;
+    } else {
+      heroWrap.style.display = 'none';
+      heroRow.innerHTML = '';
+    }
+  }
+  // Body
+  const bodyWrap = document.getElementById('sel-body-wrap');
+  const bodyRow  = document.getElementById('sel-body-row');
+  if(bodyWrap && bodyRow){
+    if(selBody.length){
+      bodyWrap.style.display = 'block';
+      bodyRow.innerHTML = selBody.map((img,i)=>`<div class="sel-thumb">
+        <img src="${img.thumb}" alt="${esc(img.label)}" onerror="this.style.display='none'">
+        <button class="rm" onclick="selBody.splice(${i},1);renderGallery('body');renderSelImages()">✕</button>
+        <div class="sn">${i+1}</div>
+      </div>`).join('');
+    } else {
+      bodyWrap.style.display = 'none';
+      bodyRow.innerHTML = '';
+    }
+  }
+  updateStepSummaries();
+}
+// ═══════════════════════════════════════════════════════════
+function renderFooters(){
+  const opts=FOOTERS[market]||[];
+  if(!selFoot&&opts.length) selFoot=opts[0].id;
+  const current=opts.find(f=>f.id===selFoot)||opts[0];
+  const el=document.getElementById('footer-editor');
+  if(el && !el.dataset.edited) el.value=current?.[selPlatform]||'';
+
+  // Update platform pill styles
+  document.querySelectorAll('#platform-pills .img-tab').forEach(b=>b.classList.remove('on'));
+  const platBtn = document.getElementById('plat-'+selPlatform+'-btn');
+  if(platBtn) platBtn.classList.add('on');
+
+  // Show correct tags reference
+  const tagsMc = document.getElementById('tags-mc');
+  const tagsHs = document.getElementById('tags-hs');
+  if(tagsMc) tagsMc.style.display = selPlatform==='mc' ? '' : 'none';
+  if(tagsHs) tagsHs.style.display = selPlatform==='hs' ? '' : 'none';
+
+  const footerGrid = document.getElementById('footer-grid');
+  if(opts.length <= 1){
+    // Single option — just show name, no grid needed
+    footerGrid.innerHTML = current
+      ? `<div style="font-size:12px;color:var(--txt);padding:6px 0"><strong>${current.name}</strong> <span style="color:var(--sub);font-size:11px">— ${current.prev}</span></div>`
+      : '';
+    footerGrid.style.display = 'block';
+  } else {
+    footerGrid.style.display = '';
+    footerGrid.innerHTML=opts.map(f=>`
+      <button type="button" class="footer-opt${selFoot===f.id?' on':''}" onclick="selectFoot('${f.id}')">
+        <div class="footer-opt-name">${f.name}</div>
+        <div class="footer-opt-prev">${f.prev}</div>
+      </button>`).join('');
+  }
+  updateStepSummaries();
+}
+function setPlatform(p){
+  selPlatform = p;
+  // Reset editor to new platform's template
+  const el=document.getElementById('footer-editor');
+  if(el) delete el.dataset.edited;
+  renderFooters();
+}
+function selectFoot(id){
+  selFoot=id;
+  // Update editor with this footer's default html for current platform, reset edited flag
+  const opts=FOOTERS[market]||[];
+  const f=opts.find(x=>x.id===id);
+  const el=document.getElementById('footer-editor');
+  if(el){ el.value=f?.[selPlatform]||''; delete el.dataset.edited; }
+  renderFooters();
+}
+function resetFooter(){
+  const opts=FOOTERS[market]||[];
+  const f=opts.find(x=>x.id===selFoot)||opts[0];
+  const el=document.getElementById('footer-editor');
+  if(el){ el.value=f?.[selPlatform]||''; delete el.dataset.edited; }
+}
+function getFooterHtml(){
+  const el=document.getElementById('footer-editor');
+  if(el&&el.value.trim()) return el.value.trim();
+  const opts=FOOTERS[market]||[];
+  return (opts.find(f=>f.id===selFoot)||opts[0])?.[selPlatform]||'';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  GENERATE
+// ═══════════════════════════════════════════════════════════
+async function generate(){
+  if(!selected.size){document.getElementById('prog-hint').style.display='';return;}
+  const M=MKT[market];
+  const all=M.groups.flatMap(g=>g.progs);
+  const progs=[...selected].map(id=>{const p=all.find(x=>x.id===id);return p?p.t+' – '+p.d:id;});
+
+  document.getElementById('loader-wrap').style.display='block';
+  document.getElementById('err-box').style.display='none';
+  document.getElementById('results').style.display='none';
+  document.getElementById('gen-btn').disabled=true;
+
+  const promoCtx = getPromoContext();
+  const extraText = [document.getElementById('extra').value, promoCtx].filter(Boolean).join('\n\n');
+
+  try{
+    const res=await fetch('/api/proxy',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'generate',market,lang:M.lang,brand:M.brand,
+        programmes:progs,extra:extraText,
+        imageCount:emailType==='plaintext'?0:((selHero?1:0)+selBody.length),
+        emailType})
+    });
+    const raw=await res.text();
+    let data;
+    try{data=JSON.parse(raw);}catch{showErr('Server error: '+raw.slice(0,300));return;}
+    if(!data.ok) throw new Error(data.error||'Unknown error');
+    if(emailType==='plaintext') renderPlaintextResults(data.campaign,progs);
+    else renderResults(data.campaign,progs);
+  }catch(e){showErr('Error: '+e.message);}
+
+  document.getElementById('loader-wrap').style.display='none';
+  document.getElementById('gen-btn').disabled=false;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RICH TEXT EDITOR
+// ═══════════════════════════════════════════════════════════
+const RTE_COLORS = [
+  {c:'#111111',t:'Black'},{c:'#333333',t:'Dark'},{c:'#888888',t:'Gray'},
+  {c:'#E03E3E',t:'Red'},{c:'#FCD23A',t:'Yellow'},{c:'#3A9AD9',t:'Blue'},
+  {c:'#2ECC71',t:'Green'},{c:'#FFFFFF',t:'White'},
+];
+
+const EMOJI_DATA = {
+  '⭐ Popularne': {icon:'⭐',emojis:[
+    {e:'✅',k:'check yes ok'},{e:'⭐',k:'star'},{e:'🔥',k:'fire hot'},{e:'✨',k:'sparkle magic'},{e:'💡',k:'idea bulb'},{e:'❤️',k:'heart love'},
+    {e:'👉',k:'point right'},{e:'👋',k:'wave hello hi'},{e:'🙌',k:'hands celebrate'},{e:'💪',k:'muscle strong'},{e:'🎯',k:'target goal'},
+    {e:'💰',k:'money bag'},{e:'🎁',k:'gift present'},{e:'📌',k:'pin'},{e:'📅',k:'calendar date'},{e:'⏰',k:'clock time alarm'},
+    {e:'🤝',k:'handshake deal'},{e:'👍',k:'thumbs up'},{e:'🏆',k:'trophy winner'},{e:'🎉',k:'party tada celebrate'},
+    {e:'💯',k:'hundred percent perfect'},{e:'⚡',k:'lightning fast energy'},{e:'🚀',k:'rocket launch'},
+    {e:'📣',k:'megaphone announce'},{e:'🔔',k:'bell notification'},{e:'💬',k:'speech bubble chat'},
+    {e:'📧',k:'email mail letter'},{e:'🆓',k:'free gratis'},{e:'🆕',k:'new nowy'},
+    {e:'⚠️',k:'warning caution'},{e:'❗',k:'exclamation important'},{e:'❓',k:'question'},
+    {e:'🔗',k:'link chain url'},{e:'📎',k:'paperclip attach'},{e:'✏️',k:'pencil edit write'},
+  ]},
+  '😊 Twarze': {icon:'😊',emojis:[
+    {e:'😊',k:'smile happy'},{e:'😀',k:'grin happy'},{e:'😍',k:'love eyes heart'},{e:'🤩',k:'star struck excited'},
+    {e:'😎',k:'cool sunglasses'},{e:'🥳',k:'party celebrate'},{e:'😄',k:'laugh happy'},{e:'🤗',k:'hug warm'},
+    {e:'😇',k:'angel innocent'},{e:'🤔',k:'thinking hmm'},{e:'😮',k:'surprised wow'},{e:'😢',k:'cry sad'},
+    {e:'🫶',k:'heart hands love'},{e:'🥰',k:'love smiling hearts'},{e:'😁',k:'grin beam'},
+    {e:'👀',k:'eyes look see'},{e:'🫡',k:'salute respect'},{e:'😏',k:'smirk'},
+  ]},
+  '🏡 Angloville': {icon:'🏡',emojis:[
+    {e:'🏡',k:'house home village wioska'},{e:'🎓',k:'graduation education nauka learn'},
+    {e:'✈️',k:'airplane plane travel podróż lot'},{e:'🌍',k:'globe world earth świat'},
+    {e:'🗣️',k:'speaking talk mówić conversation'},{e:'📚',k:'books reading nauka study'},
+    {e:'🏫',k:'school szkoła liceum'},{e:'💻',k:'laptop computer online zdalnie'},
+    {e:'🎒',k:'backpack school plecak szkoła'},{e:'🧒',k:'child kid dziecko'},
+    {e:'👨‍👩‍👧',k:'family rodzina'},{e:'🏕️',k:'camp obóz kemping'},
+    {e:'🤝',k:'handshake meet people spotkanie'},{e:'📋',k:'clipboard list plan'},
+    {e:'🏃',k:'running sport activity aktywność'},{e:'🧑‍🏫',k:'teacher mentor nauczyciel'},
+    {e:'🗺️',k:'map mapa travel'},{e:'🎭',k:'arts culture kultura'},
+    {e:'🎤',k:'microphone speak talk conversation'},{e:'🏰',k:'castle zamek culture'},
+  ]},
+  '🇵🇱 Flagi': {icon:'🇵🇱',emojis:[
+    {e:'🇵🇱',k:'poland polska'},{e:'🇮🇹',k:'italy italia włochy'},{e:'🇬🇧',k:'uk england anglia wielkaBrytania'},
+    {e:'🇲🇹',k:'malta'},{e:'🇺🇸',k:'usa america ameryka stanyZjednoczone'},{e:'🇨🇦',k:'canada kanada'},
+    {e:'🇯🇵',k:'japan japonia'},{e:'🇰🇷',k:'korea południowa south'},{e:'🇹🇭',k:'thailand tajlandia'},
+    {e:'🇻🇳',k:'vietnam wietnam'},{e:'🇫🇷',k:'france francja'},{e:'🇩🇪',k:'germany niemcy'},
+    {e:'🇪🇸',k:'spain hiszpania'},{e:'🇧🇪',k:'belgium belgia'},{e:'🇳🇱',k:'netherlands holandia'},
+    {e:'🇦🇹',k:'austria'},{e:'🇨🇿',k:'czech czechy'},{e:'🇭🇺',k:'hungary węgry'},
+    {e:'🇱🇹',k:'lithuania litwa'},{e:'🇱🇻',k:'latvia łotwa'},{e:'🇪🇪',k:'estonia'},
+    {e:'🇪🇺',k:'eu europe europa unia'},{e:'🇦🇺',k:'australia'},
+  ]},
+  '🌴 Podróże': {icon:'🌴',emojis:[
+    {e:'🌴',k:'palm tropical tropik'},{e:'🗽',k:'statue liberty new york nowy jork'},
+    {e:'⛩',k:'shrine japan torii japonia'},{e:'🏖',k:'beach plaża morze'},
+    {e:'🎡',k:'ferris wheel london londyn'},{e:'🗾',k:'japan map japonia'},
+    {e:'🌊',k:'wave ocean morze baltic'},{e:'🍕',k:'pizza italy włochy'},
+    {e:'🍁',k:'maple leaf canada kanada jesień'},{e:'🏔️',k:'mountain góra'},
+    {e:'🏝️',k:'island wyspa'},{e:'🌅',k:'sunrise sunset zachód wschód'},
+    {e:'🚆',k:'train pociąg transport'},{e:'🚌',k:'bus autobus transport'},
+    {e:'🛫',k:'takeoff start odlot samolot'},{e:'🛬',k:'landing lądowanie przylot'},
+    {e:'🗼',k:'tower wieża paris paryż'},{e:'🌆',k:'city miasto skyline'},
+    {e:'🏛️',k:'museum muzeum classical'},{e:'⛱️',k:'beach umbrella parasol plaża'},
+    {e:'🧳',k:'luggage baggage walizka'},
+  ]},
+  '🍎 Jedzenie': {icon:'🍎',emojis:[
+    {e:'🍎',k:'apple jabłko'},{e:'☕',k:'coffee kawa'},{e:'🍽️',k:'plate dining jedzenie meal posiłek'},
+    {e:'🥐',k:'croissant breakfast śniadanie'},{e:'🍕',k:'pizza italy'},
+    {e:'🍝',k:'pasta spaghetti makaron'},{e:'🥗',k:'salad salátka healthy'},
+    {e:'🧁',k:'cupcake cake ciasto'},{e:'🍰',k:'cake tort'},{e:'🍷',k:'wine wino'},
+    {e:'🥤',k:'drink napój'},{e:'🍔',k:'burger hamburger'},{e:'🌮',k:'taco mexican'},
+    {e:'🥘',k:'cooking gotowanie pan'},{e:'🍳',k:'egg jajko breakfast'},
+  ]},
+  '⏰ Czas & Finanse': {icon:'⏰',emojis:[
+    {e:'⏰',k:'alarm clock czas time budzik'},{e:'📅',k:'calendar kalendarz date termin'},
+    {e:'⏳',k:'hourglass time waiting czekanie czas'},{e:'🕐',k:'clock one godzina'},
+    {e:'📆',k:'tear-off calendar kalendarz'},{e:'🗓️',k:'spiral calendar plan'},
+    {e:'💰',k:'money bag pieniądze'},{e:'💳',k:'credit card karta płatność payment'},
+    {e:'💸',k:'money wings wydatki spending'},{e:'🏷️',k:'tag price cena etykieta label'},
+    {e:'📉',k:'chart down spadek discount'},{e:'📈',k:'chart up wzrost growth'},
+    {e:'🎫',k:'ticket bilet'},{e:'🧾',k:'receipt paragon rachunek'},
+    {e:'💎',k:'gem diamond diament premium'},{e:'👑',k:'crown korona premium king'},
+    {e:'🆓',k:'free gratis darmowe bezpłatne'},
+  ]},
+  '🔢 Numery': {icon:'🔢',emojis:[
+    {e:'1️⃣',k:'one jeden'},{e:'2️⃣',k:'two dwa'},{e:'3️⃣',k:'three trzy'},
+    {e:'4️⃣',k:'four cztery'},{e:'5️⃣',k:'five pięć'},{e:'6️⃣',k:'six sześć'},
+    {e:'7️⃣',k:'seven siedem'},{e:'8️⃣',k:'eight osiem'},{e:'9️⃣',k:'nine dziewięć'},
+    {e:'🔟',k:'ten dziesięć'},{e:'0️⃣',k:'zero'},{e:'#️⃣',k:'hash number numer'},
+    {e:'🅰️',k:'a letter'},{e:'🅱️',k:'b letter'},{e:'🆎',k:'ab blood'},
+    {e:'➡️',k:'arrow right strzałka'},{e:'⬅️',k:'arrow left strzałka'},
+    {e:'⬆️',k:'arrow up strzałka góra'},{e:'⬇️',k:'arrow down strzałka dół'},
+    {e:'↗️',k:'arrow up right'},
+  ]},
+};
+
+// Flatten for search
+const ALL_EMOJIS = Object.entries(EMOJI_DATA).flatMap(([cat,{emojis}]) =>
+  emojis.map(em => ({...em, cat}))
+);
+
+function rteField(id, html, opts){
+  opts = opts || {};
+  const colorBtns = RTE_COLORS.map(({c,t})=>
+    `<button type="button" class="rte-color-btn" title="${t}" style="background:${c};"
+      onmousedown="event.preventDefault();rteCmd('foreColor','${c}')"></button>`
+  ).join('');
+  return `<div class="rte-wrap">
+    <div class="rte-toolbar" id="tb-${id}">
+      <button type="button" class="rte-btn" title="Bold" onmousedown="event.preventDefault();rteCmd('bold')"><b>B</b></button>
+      <button type="button" class="rte-btn" title="Italic" onmousedown="event.preventDefault();rteCmd('italic')"><i style="font-style:italic">I</i></button>
+      <button type="button" class="rte-btn" title="Underline" onmousedown="event.preventDefault();rteCmd('underline')"><u>U</u></button>
+      <div class="rte-sep"></div>
+      <select class="rte-fontsize" title="Font size" onchange="rteFontSize(this.value);this.value='';">
+        <option value="" disabled selected>Aa</option>
+        <option value="1">S — 12px</option>
+        <option value="3">M — 16px</option>
+        <option value="4">L — 18px</option>
+        <option value="5">XL — 22px</option>
+        <option value="6">XXL — 28px</option>
+      </select>
+      <div class="rte-sep"></div>
+      ${colorBtns}
+      <div class="rte-sep"></div>
+      <button type="button" class="rte-btn" title="Insert emoji" onmousedown="event.preventDefault();toggleEmojiPicker('ep-${id}','${id}')" style="font-size:14px">😊</button>
+      <button type="button" class="rte-btn" title="Insert divider" onmousedown="event.preventDefault();rteInsertDivider('${id}')" style="font-size:10px;width:32px">― ―</button>
+      <button type="button" class="rte-btn" title="Clear formatting" onmousedown="event.preventDefault();rteCmd('removeFormat')" style="font-size:10px;width:32px">✕fmt</button>
+      <div class="rte-sep"></div>
+      <button class="btn-cp" style="font-size:10px" onmousedown="event.preventDefault();cp2(document.getElementById('${id}').innerText,this)">copy</button>
+      <div class="emoji-pop" id="ep-${id}"></div>
+    </div>
+    <div class="rte-content" id="${id}" contenteditable="true">${html}</div>
+  </div>`;
+}
+function rteCmd(cmd, val){
+  document.execCommand(cmd, false, val||null);
+}
+function rteFontSize(size){
+  if(size) document.execCommand('fontSize', false, size);
+}
+
+// ── EMOJI PICKER ──
+let _epEditorId = null; // which editor the picker is for
+let _epCat = null;      // active category
+
+function toggleEmojiPicker(pickerId, editorId){
+  const el = document.getElementById(pickerId);
+  if(!el) return;
+  // Close all other pickers
+  document.querySelectorAll('.emoji-pop.open').forEach(p=>{if(p.id!==pickerId) p.classList.remove('open');});
+  const wasOpen = el.classList.contains('open');
+  if(wasOpen){ el.classList.remove('open'); return; }
+  _epEditorId = editorId;
+  _epCat = Object.keys(EMOJI_DATA)[0];
+  renderEmojiPicker(pickerId, '');
+  el.classList.add('open');
+  // Focus search after render
+  setTimeout(()=>{const s=el.querySelector('.emoji-search');if(s)s.focus();},50);
+}
+
+function renderEmojiPicker(pickerId, query){
+  const el = document.getElementById(pickerId);
+  if(!el) return;
+  const q = (query||'').toLowerCase().trim();
+
+  // Category tabs
+  const catTabs = Object.entries(EMOJI_DATA).map(([name,{icon}])=>
+    `<button type="button" class="emoji-cat-btn${_epCat===name?' on':''}"
+      onmousedown="event.preventDefault();_epCat='${name.replace(/'/g,"\\'")}';updateEmojiGrid('${pickerId}')"
+      title="${name}">${icon}</button>`
+  ).join('');
+
+  // Filter emojis
+  let filtered;
+  if(q){
+    filtered = ALL_EMOJIS.filter(em => em.e.includes(q) || em.k.toLowerCase().includes(q));
+  } else {
+    const catData = EMOJI_DATA[_epCat];
+    filtered = catData ? catData.emojis : ALL_EMOJIS;
+  }
+
+  let gridHtml;
+  if(filtered.length === 0){
+    gridHtml = `<div class="emoji-no-results">Brak wyników dla "${esc(q)}"</div>`;
+  } else {
+    gridHtml = filtered.map(em =>
+      `<button type="button" title="${esc(em.k)}" onmousedown="event.preventDefault();rteInsertText('${_epEditorId}','${em.e}')">${em.e}</button>`
+    ).join('');
+  }
+
+  // Check if structure already exists (search input rendered) — if so, only update grid + cats
+  const existingSearch = el.querySelector('.emoji-search');
+  if(existingSearch){
+    const catsEl = el.querySelector('.emoji-cats-wrap');
+    if(catsEl) catsEl.innerHTML = q ? '' : '<div class="emoji-cats">'+catTabs+'</div>';
+    const gridEl = el.querySelector('.emoji-grid');
+    if(gridEl) gridEl.innerHTML = gridHtml;
+  } else {
+    // First render — build full structure
+    el.innerHTML = `
+      <div class="emoji-search-wrap">
+        <input type="text" class="emoji-search" placeholder="🔍 Szukaj emoji… np. heart, fire, polska"
+          value="${esc(q)}"
+          oninput="updateEmojiGrid('${pickerId}')"
+          onkeydown="if(event.key==='Escape'){document.querySelectorAll('.emoji-pop.open').forEach(p=>p.classList.remove('open'));}">
+      </div>
+      <div class="emoji-cats-wrap">${q ? '' : '<div class="emoji-cats">'+catTabs+'</div>'}</div>
+      <div class="emoji-grid">${gridHtml}</div>`;
+  }
+}
+
+function updateEmojiGrid(pickerId){
+  const el = document.getElementById(pickerId);
+  if(!el) return;
+  const searchInput = el.querySelector('.emoji-search');
+  const q = searchInput ? searchInput.value : '';
+  renderEmojiPicker(pickerId, q);
+}
+
+function rteInsertText(editorId, text){
+  const ed = document.getElementById(editorId);
+  if(ed) ed.focus();
+  document.execCommand('insertText', false, text);
+  // Don't close picker — let user add multiple emojis
+}
+function rteInsertDivider(editorId){
+  const ed = document.getElementById(editorId);
+  if(ed) ed.focus();
+  document.execCommand('insertHTML', false, '<hr class="email-divider" style="border:none;border-top:2px solid #EEEEEE;margin:12px 0;">');
+}
+function textToHtml(txt){
+  // Convert newline-separated plain text to HTML paragraphs
+  if(/<[a-z][\s\S]*>/i.test(txt)) return txt; // already HTML
+  return txt.split(/\n/).map(l=>l.trim()).filter(Boolean)
+    .map(l=>`<p style="margin:0 0 6px;">${esc(l)}</p>`).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  RESULTS
+// ═══════════════════════════════════════════════════════════
+function fa(id,val,rows){
+  if(rows===1) return `<input type="text" class="ef" id="${id}" value="${esc(val)}">`;
+  return `<textarea class="ef" id="${id}" rows="${rows}">${esc(val)}</textarea>`;
+}
+function rcard(tag,tagCls,fields,extraHead){
+  let h=`<div class="rcard"><div class="rcard-head"><span class="rcard-tag ${tagCls}">${tag}</span>${extraHead||''}</div>`;
+  fields.forEach(([id,lbl,val,rows])=>{
+    h+=`<div class="ef-group">
+      <div class="ef-label"><span>${lbl}</span><button class="btn-cp" onclick="cp('${id}',this)">copy</button></div>
+      ${fa(id,val,rows||1)}
+    </div>`;
+  });
+  return h+'</div>';
+}
+
+// ═══════════════════════════════════════════════════════════
+//  DATES TABLE
+// ═══════════════════════════════════════════════════════════
+function toggleDates(){
+  datesEnabled = !datesEnabled;
+  const toggle = document.querySelector('.dates-toggle');
+  const editor = document.getElementById('dates-editor');
+  if(toggle) toggle.classList.toggle('on', datesEnabled);
+  if(toggle){
+    const hint = toggle.querySelector('.dates-toggle-hint');
+    if(hint) hint.textContent = datesEnabled ? 'ON — tabela dat w mailu' : 'OFF — kliknij żeby włączyć';
+  }
+  if(editor) editor.classList.toggle('show', datesEnabled);
+  // Add one empty row if enabling with no rows
+  if(datesEnabled && !datesRows.length){
+    addDateRow();
+    // Set default heading
+    const defaultHeadings = {com:'Upcoming dates',pl:'Najbliższe terminy',it:'Prossime date'};
+    datesHeading = defaultHeadings[market] || 'Upcoming dates';
+    const hEl = document.getElementById('dates-heading');
+    if(hEl) hEl.value = datesHeading;
+  }
+}
+
+function addDateRow(){
+  datesRows.push({programme:'', dates:'', note:''});
+  renderDatesTable();
+}
+
+function removeDateRow(i){
+  datesRows.splice(i, 1);
+  renderDatesTable();
+}
+
+function updateDateRow(i, field, val){
+  if(datesRows[i]) datesRows[i][field] = val;
+}
+
+function renderDatesTable(){
+  const tbody = document.getElementById('dates-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = datesRows.map((r,i) => `<tr>
+    <td><input type="text" value="${esc(r.programme)}" placeholder="np. Italy Junior" oninput="updateDateRow(${i},'programme',this.value)"></td>
+    <td><input type="text" value="${esc(r.dates)}" placeholder="21 Jun – 28 Jun" oninput="updateDateRow(${i},'dates',this.value)"></td>
+    <td><input type="text" value="${esc(r.note)}" placeholder="last spots!" oninput="updateDateRow(${i},'note',this.value)"></td>
+    <td><button type="button" class="dates-rm" onclick="removeDateRow(${i})">✕</button></td>
+  </tr>`).join('');
+}
+
+function renderResults(c,progs){
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const names=[...selected].map(id=>all.find(p=>p.id===id)?.t||id);
+
+  let h=`<div class="res-banner">
+    <div class="res-banner-left">
+      <div class="tag">✦ Campaign Ready</div>
+      <div class="meta">${esc(names.join(' + '))}</div>
+    </div>
+    <div class="res-actions">
+      <button class="btn-ghost" onclick="showPreview()">👁 Preview</button>
+      <button class="btn-ghost" id="cp-html-btn" onclick="cpHtml(this)">⬇ Copy HTML</button>
+    </div>
+  </div>`;
+
+  h+=rcard('Subject Lines','tag-y',[
+    ['e-sub','Without emoji',c.subject,1],
+    ['e-sub-em','With emoji',c.subject_emoji,1],
+    ['e-pre','Preheader',c.preheader,1],
+  ]);
+
+  // Headline + Opening — now with RTE
+  h+=`<div class="rcard">
+    <div class="rcard-head"><span class="rcard-tag tag-b">Headline + Opening</span></div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Headline (H2 in email)</span></div>
+      ${rteField('e-h1', esc(c.headline))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Opening paragraph</span></div>
+      ${rteField('e-intro', textToHtml(c.intro))}
+    </div>
+  </div>`;
+  // Greeting per market
+  const fn = fnameTag();
+  const greetOpts = {
+    com: [{id:'hi-fname',lbl:`Hi ${fn},`},{id:'hello',lbl:'Hello!'},{id:'custom-g',lbl:'Custom…'}],
+    pl: [{id:'dzien-dobry',lbl:`Dzień dobry ${fn}!`},{id:'czesc',lbl:`Cześć ${fn}!`},{id:'hi-fname',lbl:`Hi ${fn},`},{id:'custom-g',lbl:'Custom…'}],
+    it: [{id:'ciao',lbl:`Ciao ${fn}!`},{id:'buongiorno',lbl:`Buongiorno ${fn}!`},{id:'hi-fname',lbl:`Hi ${fn},`},{id:'custom-g',lbl:'Custom…'}],
+  };
+  const gOpts = greetOpts[market]||greetOpts.com;
+  h+=`<div class="rcard" style="margin-top:-6px;padding:12px 16px;background:#FAFBFD;">
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--sub);margin-bottom:8px">Powitanie na początku emaila</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:6px">
+      <button type="button" class="img-tab on" id="greet-none-btn" onclick="setGreeting('none')">❌ Brak</button>
+      ${gOpts.map((g,i)=>`<button type="button" class="img-tab" id="greet-${g.id}-btn" onclick="setGreeting('${g.id}')">${esc(g.lbl)}</button>`).join('')}
+    </div>
+    <input type="text" class="ef" id="greeting-custom" placeholder="Wpisz własne powitanie…" style="display:none;margin-top:6px" oninput="updateGreetingVal()">
+    <input type="hidden" id="greeting-val" value="">
+  </div>`;
+
+  // Body — RTE fields
+  h+=`<div class="rcard">
+    <div class="rcard-head"><span class="rcard-tag tag-b">Body</span></div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Section 1</span></div>
+      ${rteField('e-p1', textToHtml(c.body_p1))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Section 2 — emoji lines</span></div>
+      ${rteField('e-p2', textToHtml(c.body_p2))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Section 3</span></div>
+      ${rteField('e-p3', textToHtml(c.body_p3))}
+    </div>
+  </div>`;
+
+  // ── DATES TABLE (optional) ──
+  const hasDates = c.dates_table && c.dates_table.length > 0;
+  if(hasDates && !datesRows.length){
+    datesEnabled = true;
+    datesRows = c.dates_table.map(d=>({programme:d.programme||'', dates:d.dates||'', note:d.note||''}));
+    const defaultHeadings = {com:'Upcoming dates',pl:'Najbliższe terminy',it:'Prossime date'};
+    datesHeading = defaultHeadings[market] || 'Upcoming dates';
+  }
+
+  h+=`<div class="dates-toggle${datesEnabled?' on':''}" onclick="toggleDates()">
+    <div class="dates-toggle-switch"></div>
+    <div class="dates-toggle-lbl">📅 Dates table</div>
+    <div class="dates-toggle-hint">${datesEnabled ? 'ON — tabela dat w mailu' : 'OFF — kliknij żeby włączyć'}</div>
+  </div>`;
+
+  const dtLabels = {com:['Programme','Dates','Note'],pl:['Program','Terminy','Uwagi'],it:['Programma','Date','Note']};
+  const [dtProg,dtDates,dtNote] = dtLabels[market]||dtLabels.com;
+
+  h+=`<div class="dates-editor${datesEnabled?' show':''}" id="dates-editor">
+    <div class="rcard" style="border-color:#CCE8F8;background:#F7FBFF">
+      <div class="rcard-head"><span class="rcard-tag tag-b">📅 Dates Table</span></div>
+      <div class="dates-heading-input ef-group">
+        <div class="ef-label"><span>Nagłówek sekcji dat</span></div>
+        <input type="text" class="ef" id="dates-heading" value="${esc(datesHeading)}" placeholder="np. Najbliższe terminy" oninput="datesHeading=this.value">
+      </div>
+      <table class="dates-tbl" id="dates-tbl">
+        <thead><tr>
+          <th style="width:38%">${dtProg}</th>
+          <th style="width:30%">${dtDates}</th>
+          <th style="width:25%">${dtNote}</th>
+          <th style="width:7%"></th>
+        </tr></thead>
+        <tbody id="dates-tbody"></tbody>
+      </table>
+      <button type="button" class="dates-add" onclick="addDateRow()">+ Dodaj wiersz</button>
+    </div>
+  </div>`;
+
+  // ── OTHER OPTIONS SECTION (kafelki z innymi programami) ──
+  const hasOtherOptions = c.other_options && c.other_options.length > 0;
+  if(hasOtherOptions && !otherOptionsCards.length){
+    otherOptionsEnabled = true;
+    otherOptionsCards = c.other_options.map(o => ({
+      name: o.name || '',
+      tagline: o.tagline || '',
+      product_url: o.product_url || o.cta_url || '',
+      signup_url: o.signup_url || ''
+    }));
+    const defaultHeadings = {com:'Explore other Angloville programmes', pl:'Zobacz inne programy Angloville', it:'Scopri altri programmi Angloville'};
+    otherOptionsHeading = defaultHeadings[market] || defaultHeadings.com;
+  }
+
+  h+=`<div class="dates-toggle other-options-toggle${otherOptionsEnabled?' on':''}" onclick="toggleOtherOptions()">
+    <div class="dates-toggle-switch"></div>
+    <div class="dates-toggle-lbl">🎯 Inne programy Angloville</div>
+    <div class="dates-toggle-hint other-options-toggle-hint">${otherOptionsEnabled ? 'ON — kafelki w mailu' : 'OFF — kliknij żeby włączyć'}</div>
+  </div>`;
+
+  h+=`<div class="dates-editor${otherOptionsEnabled?' show':''}" id="other-options-editor">
+    <div class="rcard" style="border-color:#D4EDDA;background:#F8FFF9">
+      <div class="rcard-head"><span class="rcard-tag tag-g">🎯 Kafelki z innymi programami</span></div>
+      <div class="ef-group">
+        <div class="ef-label"><span>Nagłówek sekcji</span></div>
+        <input type="text" class="ef" id="other-options-heading" value="${esc(otherOptionsHeading)}" placeholder="np. Zobacz inne programy Angloville">
+      </div>
+      <div style="font-size:10px;font-weight:600;color:var(--sub);margin:12px 0 8px;letter-spacing:0.5px">KAFELKI PROGRAMÓW</div>
+      <div id="oo-cards-container"></div>
+      <button type="button" class="dates-add" onclick="addOtherOptionCard()" style="margin-top:8px">+ Dodaj kafelek</button>
+      <div style="font-size:10px;color:var(--sub);margin-top:10px;line-height:1.5;padding:8px;background:#fff;border-radius:6px">
+        💡 <strong>Tip:</strong> W "Additional instructions" wpisz "dodaj inne opcje" lub "cross-sell" — AI automatycznie zaproponuje powiązane programy.
+      </div>
+    </div>
+  </div>`;
+
+  h+=rcard('CTA Buttons + PS','tag-g',[
+    ['e-cta1','Primary CTA (yellow button)',c.cta,1],
+    ['e-cta2','Secondary CTA (blue button)',c.cta2||c.cta,1],
+    ['e-ps','PS line',c.ps||'',1],
+  ]);
+
+  // Link info from Step 3
+  h+=`<div class="rcard" style="background:#F7FBFF;border-color:#CCE8F8">
+    <div class="rcard-head"><span class="rcard-tag tag-p">🔗 Links (from Step 3)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div style="font-size:11px;color:var(--sub)">🟡 Primary: <strong style="color:var(--txt);word-break:break-all">${esc(buildUrl(1)||'nie ustawiono')}</strong></div>
+      <div style="font-size:11px;color:var(--sub)">🔵 Secondary: <strong style="color:var(--txt);word-break:break-all">${esc(buildUrl(2)||'nie ustawiono')}</strong></div>
+    </div>
+    <div style="margin-top:6px;font-size:10px;color:var(--sub)">← Zmień linki i UTM w kroku 3 wyżej</div>
+  </div>`;
+
+  h+=rcard('A/B Subject Variants','tag-p',[
+    ['e-ab1','Variant A',c.ab1,1],
+    ['e-ab2','Variant B',c.ab2,1],
+  ]);
+
+  if(c.send_time) h+=`<div style="background:#F0FDF8;border:1px solid #C0E8D4;border-radius:9px;padding:10px 14px;font-size:12px;color:#2D7A5A;margin-bottom:8px">⏱ ${esc(c.send_time)}</div>`;
+
+  h+=`<div class="mc-box">
+    <h3>📧 Send to Mailchimp</h3>
+    <p>Email is built automatically with Angloville layout, rounded images and correct footer.</p>
+    <div class="mc-btns">
+      <button class="btn-out" onclick="showPreview()">👁 Preview email</button>
+      <button class="btn-gen" id="mc-btn" onclick="sendMC()" style="padding:10px 22px;font-size:13px">📧 Create Mailchimp draft</button>
+    </div>
+    <div id="mc-status"></div>
+  </div>`;
+
+  h+=`<div style="text-align:center;margin-top:20px"><button class="btn-out" onclick="resetAll()">← New campaign</button></div>`;
+
+  const el=document.getElementById('results');
+  el.innerHTML=h; el.style.display='block';
+  renderDatesTable();
+  renderOtherOptionsCards();
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ═══════════════════════════════════════════════════════════
+//  PLAIN TEXT RESULTS
+// ═══════════════════════════════════════════════════════════
+function renderPlaintextResults(c, progs){
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const names=[...selected].map(id=>all.find(p=>p.id===id)?.t||id);
+
+  let h=`<div class="res-banner">
+    <div class="res-banner-left">
+      <div class="tag">✉️ Personal Email Ready</div>
+      <div class="meta">${esc(names.join(' + '))}</div>
+    </div>
+    <div class="res-actions">
+      <button class="btn-ghost" onclick="showPlaintextPreview()">👁 Preview</button>
+      <button class="btn-ghost" id="cp-pt-btn" onclick="cpPlaintext(this)">📋 Copy text</button>
+      <button class="btn-ghost" id="cp-pt-html-btn" onclick="cpPlaintextHtml(this)">⬇ Copy HTML</button>
+    </div>
+  </div>`;
+
+  h+=rcard('Subject Lines','tag-y',[
+    ['pt-sub','Subject',c.subject,1],
+    ['pt-sub-em','With emoji',c.subject_emoji||'',1],
+  ]);
+
+  h+=`<div class="rcard">
+    <div class="rcard-head"><span class="rcard-tag tag-b">✉️ Email Body</span></div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Greeting</span></div>
+      ${rteField('pt-greeting', esc(c.greeting||''))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Body — main content</span></div>
+      ${rteField('pt-body', textToHtml(c.body))}
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>CTA / link w tekście</span></div>
+      <input type="text" class="ef" id="pt-cta" value="${esc(c.cta||'')}">
+    </div>
+    <div class="ef-group">
+      <div class="ef-label"><span>Closing + signature</span></div>
+      ${rteField('pt-closing', textToHtml(c.closing||''))}
+    </div>
+  </div>`;
+
+  h+=rcard('A/B Subject Variants','tag-p',[
+    ['pt-ab1','Variant A',c.ab1||'',1],
+    ['pt-ab2','Variant B',c.ab2||'',1],
+  ]);
+
+  if(c.send_time) h+=`<div style="background:#F0FDF8;border:1px solid #C0E8D4;border-radius:9px;padding:10px 14px;font-size:12px;color:#2D7A5A;margin-bottom:8px">⏱ ${esc(c.send_time)}</div>`;
+
+  h+=`<div class="mc-box">
+    <h3>📧 Send to Mailchimp</h3>
+    <p>Personal email — plain text style, full width, no images or buttons. Ready for Mailchimp.</p>
+    <div class="mc-btns">
+      <button class="btn-out" onclick="showPlaintextPreview()">👁 Preview email</button>
+      <button class="btn-gen" id="pt-mc-btn" onclick="sendPtMC()" style="padding:10px 22px;font-size:13px">📧 Create Mailchimp draft</button>
+    </div>
+    <div id="pt-mc-status"></div>
+  </div>`;
+
+  h+=`<div style="text-align:center;margin-top:20px"><button class="btn-out" onclick="resetAll()">← New campaign</button></div>`;
+
+  const el=document.getElementById('results');
+  el.innerHTML=h; el.style.display='block';
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function getPlaintextCurrent(){
+  const g=id=>(document.getElementById(id)?.value||'').trim();
+  const gh=id=>(document.getElementById(id)?.innerHTML||'').trim();
+  return {
+    subject: g('pt-sub'),
+    subject_emoji: g('pt-sub-em'),
+    greeting: gh('pt-greeting'),
+    body: gh('pt-body'),
+    cta: g('pt-cta'),
+    closing: gh('pt-closing'),
+  };
+}
+
+function stripHtml(html){
+  const tmp=document.createElement('div');
+  tmp.innerHTML=html;
+  return tmp.innerText||tmp.textContent||'';
+}
+
+function cpPlaintext(btn){
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'';
+  const lines=[
+    stripHtml(c.greeting),
+    '',
+    stripHtml(c.body),
+    '',
+    c.cta && url ? c.cta+': '+url : c.cta || '',
+    '',
+    stripHtml(c.closing),
+  ].filter((l,i,a)=>!(l===''&&a[i-1]==='')).join('\n').trim();
+  cp2(lines,btn);
+}
+
+function cpPlaintextHtml(btn){
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'#';
+  const html=buildPlaintextEmailHtml(c,url);
+  cp2(html,btn);
+}
+
+function buildPtSigBlock(FONT){
+  const siteUrls={com:'https://angloville.com',pl:'https://angloville.pl',it:'https://angloville.it'};
+  const siteUrl=siteUrls[market]||'https://angloville.com';
+  const links = getActiveSocialLinks()[0]; // primary social set
+
+  const socialLink = (url, label) => url
+    ? `<a href="${url}" target="_blank" style="color:#888;text-decoration:none;font-family:${FONT};font-size:11px;font-weight:500;">${label}</a>`
+    : '';
+
+  const socialParts = [
+    socialLink(links.instagram, 'Instagram'),
+    socialLink(links.youtube, 'YouTube'),
+    socialLink(links.tiktok, 'TikTok'),
+  ].filter(Boolean);
+
+  const socialLine = socialParts.length
+    ? `<div style="margin-top:8px;">${socialParts.join('<span style="color:#ccc;margin:0 6px;">·</span>')}</div>`
+    : '';
+
+  return `<div style="margin-top:20px;padding-top:14px;border-top:1px solid #e0e0e0;">
+<a href="${siteUrl}" target="_blank" style="text-decoration:none;display:inline-block;"><img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png" alt="Angloville" height="20" style="display:block;height:20px;width:auto;border:0;"></a>
+${socialLine}
+</div>`;
+}
+
+function buildPlaintextEmailHtml(c, url){
+  const FONT="Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const footerHtml=getFooterHtml();
+
+  const ctaHtml = c.cta && url && url!=='#'
+    ? `<p style="margin:14px 0;font-family:${FONT};font-size:14px;line-height:170%;color:#333;"><a href="${url}" style="color:#1a73e8;text-decoration:underline;">${c.cta}</a></p>`
+    : '';
+
+  const sigBlock = buildPtSigBlock(FONT);
+
+  // Full-width email — no card, no grey background, no max-width box
+  // Just white background edge to edge, like a real person's email
+  return `<!DOCTYPE html>
+<html><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#ffffff;-webkit-text-size-adjust:100%;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff;">
+<tr><td style="padding:20px 24px;font-family:${FONT};font-size:14px;line-height:180%;color:#222;">
+${c.greeting}
+<br><br>
+${c.body}
+${ctaHtml}
+<br>
+<div style="color:#555;">${c.closing}</div>
+${sigBlock}
+</td></tr>
+<tr><td style="padding:12px 24px 20px;font-family:${FONT};font-size:11px;color:#999;line-height:160%;border-top:1px solid #eee;">
+${footerHtml}
+</td></tr>
+</table>
+</body></html>`;
+}
+
+function showPlaintextPreview(){
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'#';
+  const FONT="Arial,'Helvetica Neue',Helvetica,sans-serif";
+
+  // Build Gmail-like preview chrome
+  const senderNames={com:'Angloville Team',pl:'Zespół Angloville',it:'Team Angloville'};
+  const senderEmails={com:'hello@angloville.com',pl:'kontakt@angloville.pl',it:'info@angloville.it'};
+  const sender=senderNames[market]||'Angloville';
+  const senderEmail=senderEmails[market]||'hello@angloville.com';
+  const subject=c.subject||'(no subject)';
+  const fnTag=fnameTag();
+  const toName=selPlatform==='hs'?'{{ contact.firstname }}':'*|FNAME|*';
+  const sigBlock=buildPtSigBlock(FONT);
+
+  const gmailHtml=`
+  <div style="background:#fff;border-radius:0;font-family:${FONT};width:100%;margin:0;">
+    <!-- Subject bar -->
+    <div style="padding:18px 20px 14px;border-bottom:1px solid #e8e8e8;">
+      <div style="font-size:20px;font-weight:400;color:#202124;line-height:1.3;">${esc(subject)}</div>
+    </div>
+    <!-- Sender row -->
+    <div style="padding:14px 20px;display:flex;align-items:flex-start;gap:10px;">
+      <div style="width:36px;height:36px;border-radius:50%;background:#1a73e8;color:#fff;font-size:16px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${sender.charAt(0)}</div>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:13px;color:#202124;"><strong>${esc(sender)}</strong> <span style="color:#5f6368;font-weight:400;">&lt;${esc(senderEmail)}&gt;</span></div>
+        <div style="font-size:12px;color:#5f6368;margin-top:1px;">to ${esc(toName)}</div>
+      </div>
+      <div style="font-size:11px;color:#5f6368;white-space:nowrap;">just now</div>
+    </div>
+    <!-- Email body -->
+    <div style="padding:4px 20px 28px 66px;font-size:14px;line-height:180%;color:#222;">
+      <div>${c.greeting}</div>
+      <br>
+      <div>${c.body}</div>
+      ${c.cta && url && url!=='#' ? '<p style="margin:14px 0;"><a href="'+url+'" style="color:#1a73e8;text-decoration:underline;">'+esc(c.cta)+'</a></p>' : ''}
+      <br>
+      <div style="color:#555;">${c.closing}</div>
+      ${sigBlock}
+    </div>
+  </div>`;
+
+  document.getElementById('prev-content').innerHTML=gmailHtml;
+  document.getElementById('prev-body').style.background='#FFFFFF';
+  document.getElementById('prev-title').textContent='Gmail Preview';
+  setPreviewMode('desktop');
+  document.getElementById('prev-modal').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+//  UTM
+// ═══════════════════════════════════════════════════════════
+function buildUrl(which){
+  const base1=(document.getElementById('utm-base')?.value||'').trim();
+  const base2=(document.getElementById('utm-base2')?.value||'').trim();
+  const base = which===2 ? (base2||base1) : base1;
+  if(!base) return '';
+  const pts=[];
+  [['utm-src','utm_source'],['utm-med','utm_medium'],['utm-cmp','utm_campaign'],['utm-cnt','utm_content']].forEach(([id,k])=>{
+    const v=(document.getElementById(id)?.value||'').trim();
+    if(v) pts.push(k+'='+encodeURIComponent(v));
+  });
+  return base+(pts.length?(base.includes('?')?'&':'?')+pts.join('&'):'');
+}
+function utmPrev(){
+  const el1=document.getElementById('utm-out1');if(el1)el1.textContent=buildUrl(1)||'← wpisz URL wyżej';
+  const el2=document.getElementById('utm-out2');if(el2)el2.textContent=buildUrl(2)||'← wpisz URL wyżej';
+  updateStepSummaries();
+}
+
+// ═══════════════════════════════════════════════════════════
+//  EMAIL HTML BUILDER — clean editorial style (like EF/screenshot)
+// ═══════════════════════════════════════════════════════════
+function buildEmailHTML(c, ctaUrl1, ctaUrl2, imgs) {
+  const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const e = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const footerHtml = getFooterHtml();
+
+  const bullets = txt => {
+    if(/<[a-z][\s\S]*>/i.test(txt)) return txt;
+    return txt.split(/\n/).map(l=>l.trim()).filter(Boolean)
+      .map(l=>`<p style="margin:0 0 10px;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">${e(l)}</p>`).join('');
+  };
+
+  const imgRow = (src) => `
+<tr><td style="padding:20px 20px 0;line-height:0;">
+  <img src="${src}" alt="" width="100%"
+    style="display:block;width:100%;height:auto;border-radius:16px;border:0;">
+</td></tr>`;
+
+  const logoBar = `
+<tr><td style="background:#F4F4F4;padding:16px 20px;" align="center">
+  <img src="https://mcusercontent.com/817823f284cb8a245fdb9d298/images/1551754b-a92b-4c6a-bb5a-156a3b75d2f4.png"
+    alt="Angloville" height="32" style="display:inline-block;height:32px;width:auto;border:0;max-width:180px;">
+</td></tr>`;
+
+  const headline = `
+<tr><td style="padding:28px 20px 6px;">
+  <h1 style="margin:0;font-family:${FONT};font-size:26px;font-weight:900;line-height:118%;color:#111111;letter-spacing:-0.3px;">${c.headline}</h1>
+</td></tr>`;
+
+  const heroImg = imgs[0] ? imgRow(imgs[0].heroUrl||imgs[0].thumb||imgs[0].url) : '';
+
+  const greetingLine = c.greetingHtml
+    ? `<p style="margin:0 0 14px;font-size:17px;color:#111;font-family:${FONT};">${c.greetingHtml}</p>` : '';
+  const intro = `
+<tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333;">
+  ${greetingLine}${c.intro}
+</td></tr>`;
+
+  const cta1 = `
+<tr><td style="padding:24px 20px 0;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#FCD23A" style="border-radius:50px;padding:18px 20px;">
+      <a href="${ctaUrl1}" target="_blank"
+        style="color:#111111;text-decoration:none;font-weight:800;font-family:${FONT};font-size:17px;display:block;">${e(c.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+  const p1 = `
+<tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  ${c.body_p1}
+</td></tr>`;
+
+  const img2 = imgs[1] ? imgRow(imgs[1].bodyUrl||imgs[1].thumb||imgs[1].url) : '';
+
+  const p2 = `
+<tr><td style="padding:20px 20px 0;font-family:${FONT};font-size:16px;line-height:160%;color:#1a1a1a;">
+  ${bullets(c.body_p2)}
+</td></tr>`;
+
+  const img3 = imgs[2] ? imgRow(imgs[2].bodyUrl||imgs[2].thumb||imgs[2].url) : '';
+
+  const p3 = `
+<tr><td style="padding:16px 20px 0;font-family:${FONT};font-size:16px;line-height:170%;color:#333333;">
+  ${c.body_p3}
+</td></tr>`;
+
+  const datesTableRow = buildDatesTableHtml();
+
+  const ps = c.ps ? `
+<tr><td style="padding:12px 20px 0;font-family:${FONT};font-size:14px;line-height:160%;color:#888888;font-style:italic;">
+  <p style="margin:0;">${e(c.ps)}</p>
+</td></tr>` : '';
+
+  const cta2 = `
+<tr><td style="padding:14px 20px 24px;">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">
+    <tr><td align="center" bgcolor="#3A9AD9" style="border-radius:50px;padding:16px 20px;">
+      <a href="${ctaUrl2}" target="_blank"
+        style="color:#FFFFFF;text-decoration:none;font-weight:800;font-family:${FONT};font-size:16px;display:block;">${e(c.cta2||c.cta)}</a>
+    </td></tr>
+  </table>
+</td></tr>`;
+
+  const img4 = imgs[3] ? imgRow(imgs[3].bodyUrl||imgs[3].thumb||imgs[3].url) : '';
+
+  const otherOptionsRow = buildOtherOptionsHtml();
+
+  const socialRow = buildSocialRow();
+
+  const dividerBeforeSocial = `
+<tr><td style="padding:0 20px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr><td style="border-top:2px solid #EEEEEE;font-size:0;line-height:0;">&nbsp;</td></tr>
+  </table>
+</td></tr>`;
+
+  const rows = [logoBar,headline,heroImg,intro,cta1,p1,img2,p2,img3,p3,datesTableRow,ps,cta2,img4,otherOptionsRow,dividerBeforeSocial,socialRow].filter(Boolean).join('\n');
+
+  return `<div style="background:#EBEBEB;padding:0;">
+<style>
+  @media only screen and (max-width:620px){
+    .aw-wrap{width:100%!important;}
+    .aw-td{padding-left:16px!important;padding-right:16px!important;}
+    .aw-h1{font-size:22px!important;}
+  }
+</style>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#EBEBEB;">
+<tr><td align="center">
+<table role="presentation" class="aw-wrap" cellpadding="0" cellspacing="0" border="0"
+  width="620" style="max-width:620px;width:100%;background:#FFFFFF;">
+  ${rows}
+  <tr><td class="aw-td" style="padding:16px 20px 24px;font-family:${FONT};font-size:12px;color:#AAAAAA;line-height:160%;border-top:1px solid #EEEEEE;">
+    ${footerHtml}
+  </td></tr>
+</table>
+</td></tr></table></div>`;
+}
+// ═══════════════════════════════════════════════════════════
+//  PREVIEW
+// ═══════════════════════════════════════════════════════════
+function setPreviewMode(mode){
+  const box = document.getElementById('prev-modal-box');
+  const dBtn = document.getElementById('prev-desktop-btn');
+  const mBtn = document.getElementById('prev-mobile-btn');
+  if(mode === 'mobile'){
+    box.classList.remove('desktop-mode'); box.classList.add('mobile-mode');
+    mBtn.classList.add('active'); dBtn.classList.remove('active');
+  } else {
+    box.classList.remove('mobile-mode'); box.classList.add('desktop-mode');
+    dBtn.classList.add('active'); mBtn.classList.remove('active');
+  }
+}
+function showPreview(){
+  const c=getCurrent();
+  const url1=buildUrl(1)||'https://angloville.com/apply/';
+  const url2=buildUrl(2)||url1;
+  document.getElementById('prev-content').innerHTML=buildEmailHTML(c,url1,url2,[selHero,...selBody].filter(Boolean));
+  document.getElementById('prev-body').style.background='#EBEBEB';
+  document.getElementById('prev-title').textContent='Email Preview';
+  setPreviewMode('desktop');
+  document.getElementById('prev-modal').classList.add('open');
+}
+function closePreview(){document.getElementById('prev-modal').classList.remove('open');}
+
+// ═══════════════════════════════════════════════════════════
+//  MAILCHIMP
+// ═══════════════════════════════════════════════════════════
+async function sendMC(){
+  const btn=document.getElementById('mc-btn');
+  btn.disabled=true;btn.textContent='Creating draft…';
+  document.getElementById('mc-status').innerHTML='';
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const name=[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
+  const c=getCurrent();const url1=buildUrl(1)||'https://angloville.com/apply/';const url2=buildUrl(2)||url1;
+  try{
+    const res=await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'mailchimp_draft',campaign:c,cta_url:url1,cta_url2:url2,
+        images:[selHero,...selBody].filter(i=>i&&!i.url.startsWith('data:')),
+        program_name:name,footer_html:getFooterHtml(),social_html:buildSocialRow(),
+        dates_table_html:buildDatesTableHtml()})
+    });
+    const data=await res.json();
+    if(!data.ok) throw new Error(data.error||'Mailchimp error');
+    document.getElementById('mc-status').innerHTML=`<div class="ok-box">
+      ✅ <strong>Draft created!</strong>
+      <a href="${data.draft_url}" target="_blank" style="color:#428BCA;font-weight:700;margin-left:6px;">→ Open in Mailchimp</a>
+    </div>`;
+    btn.textContent='✓ Done!';
+  }catch(e){
+    document.getElementById('mc-status').innerHTML=`<div class="err-box" style="display:block;margin-top:8px">Error: ${e.message}</div>`;
+    btn.disabled=false;btn.textContent='📧 Create Mailchimp draft';
+  }
+}
+
+async function sendPtMC(){
+  const btn=document.getElementById('pt-mc-btn');
+  btn.disabled=true;btn.textContent='Creating draft…';
+  document.getElementById('pt-mc-status').innerHTML='';
+  const all=MKT[market].groups.flatMap(g=>g.progs);
+  const name=[...selected].map(id=>all.find(p=>p.id===id)?.t||id).join(' + ');
+  const c=getPlaintextCurrent();
+  const url=buildUrl(1)||'https://angloville.com/apply/';
+  const fullHtml=buildPlaintextEmailHtml(c,url);
+  try{
+    const res=await fetch('/api/proxy',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'mailchimp_draft_raw',
+        html:fullHtml,
+        subject:c.subject_emoji||c.subject,
+        preheader:'',
+        program_name:name})
+    });
+    const data=await res.json();
+    if(!data.ok) throw new Error(data.error||'Mailchimp error');
+    document.getElementById('pt-mc-status').innerHTML=`<div class="ok-box">
+      ✅ <strong>Draft created!</strong>
+      <a href="${data.draft_url}" target="_blank" style="color:#428BCA;font-weight:700;margin-left:6px;">→ Open in Mailchimp</a>
+    </div>`;
+    btn.textContent='✓ Done!';
+  }catch(e){
+    document.getElementById('pt-mc-status').innerHTML=`<div class="err-box" style="display:block;margin-top:8px">Error: ${e.message}</div>`;
+    btn.disabled=false;btn.textContent='📧 Create Mailchimp draft';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  GREETING
+// ═══════════════════════════════════════════════════════════
+function fnameTag(){ return selPlatform==='hs' ? '{{ contact.firstname }}' : '*|FNAME|*'; }
+function greetMap(){
+  const fn = fnameTag();
+  return {
+    'hi-fname':`Hi <strong>${fn}</strong>,`,
+    'hello':'Hello!',
+    'dzien-dobry':`Dzień dobry <strong>${fn}</strong>!`,
+    'czesc':`Cześć <strong>${fn}</strong>!`,
+    'ciao':`Ciao <strong>${fn}</strong>!`,
+    'buongiorno':`Buongiorno <strong>${fn}</strong>!`,
+  };
+}
+let activeGreeting = 'none';
+function setGreeting(id){
+  activeGreeting = id;
+  document.querySelectorAll('[id^="greet-"][id$="-btn"]').forEach(b=>b.classList.remove('on'));
+  const btn = document.getElementById('greet-'+id+'-btn');
+  if(btn) btn.classList.add('on');
+  const customEl = document.getElementById('greeting-custom');
+  if(customEl) customEl.style.display = id==='custom-g' ? 'block' : 'none';
+  const valEl = document.getElementById('greeting-val');
+  const gm = greetMap();
+  if(valEl) valEl.value = id==='none' ? '' : (id==='custom-g' ? customEl?.value||'' : gm[id]||'');
+}
+function updateGreetingVal(){
+  const valEl = document.getElementById('greeting-val');
+  const customEl = document.getElementById('greeting-custom');
+  if(valEl && customEl) valEl.value = customEl.value;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  SOCIAL MEDIA
+// ═══════════════════════════════════════════════════════════
+const SOCIAL_LINKS = {
+  com: {
+    instagram: 'https://www.instagram.com/anglovillementors/',
+    youtube: 'https://www.youtube.com/@anglovilleInternational/featured',
+    tiktok: 'https://www.tiktok.com/@anglovillementors',
+  },
+  pl: {
+    instagram: 'https://www.instagram.com/anglovillepoland/',
+    youtube: 'https://www.youtube.com/@angloville',
+    tiktok: 'https://www.tiktok.com/@angloville',
+  },
+  pl_wymiana: {
+    instagram: 'https://www.instagram.com/angloville_usa/',
+    tiktok: 'https://www.tiktok.com/@angloville_usa',
+  },
+  it: {
+    instagram: 'https://www.instagram.com/anglovilleitalia/',
+    youtube: 'https://www.youtube.com/@angloville-italia/featured',
+    tiktok: 'https://www.tiktok.com/@anglovilleitalia',
+  },
+};
+
+const PL_WYMIANA_IDS = new Set(['usa','kanada','online']);
+
+function getActiveSocialLinks(){
+  // For PL: if ONLY wymiana products selected, use wymiana profiles
+  // If mix or non-wymiana, use main PL profiles
+  // If wymiana + other, show both rows
+  if(market === 'pl' && selected.size > 0){
+    const hasWymiana = [...selected].some(id => PL_WYMIANA_IDS.has(id));
+    const hasOther   = [...selected].some(id => !PL_WYMIANA_IDS.has(id));
+    if(hasWymiana && !hasOther) return [SOCIAL_LINKS.pl_wymiana];
+    if(hasWymiana && hasOther)  return [SOCIAL_LINKS.pl, SOCIAL_LINKS.pl_wymiana];
+  }
+  return [SOCIAL_LINKS[market] || SOCIAL_LINKS.com];
+}
+
+function buildSocialRow(){
+  const linkSets = getActiveSocialLinks();
+  const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const followLabel = market==='pl' ? 'Obserwuj nas' : market==='it' ? 'Seguici' : 'Follow us';
+
+  const pill = (url, label, bg) => url
+    ? `<a href="${url}" target="_blank" style="display:inline-block;margin:0 4px 6px;padding:8px 16px;background:${bg};color:#FFFFFF;font-family:${FONT};font-size:12px;font-weight:700;text-decoration:none;border-radius:20px;letter-spacing:0.3px;">${label}</a>`
+    : '';
+
+  const renderIcons = (links) => {
+    let h = '';
+    if(links.instagram) h += pill(links.instagram, 'Instagram', '#E1306C');
+    if(links.youtube)   h += pill(links.youtube,   'YouTube',   '#FF0000');
+    if(links.tiktok)    h += pill(links.tiktok,    'TikTok',    '#000000');
+    return h;
+  };
+
+  let rows = '';
+  if(linkSets.length === 1){
+    rows = `<div style="font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#BBBBBB;margin-bottom:14px;">${followLabel}</div>
+    <div>${renderIcons(linkSets[0])}</div>`;
+  } else {
+    rows = `<div style="font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#BBBBBB;margin-bottom:10px;">Angloville Polska</div>
+    <div style="margin-bottom:16px;">${renderIcons(linkSets[0])}</div>
+    <div style="font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#BBBBBB;margin-bottom:10px;">Angloville USA</div>
+    <div>${renderIcons(linkSets[1])}</div>`;
+  }
+
+  return `
+<tr><td style="padding:32px 20px 28px;text-align:center;">
+  ${rows}
+</td></tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  DATES TABLE
+// ═══════════════════════════════════════════════════════════
+function toggleDates(){
+  datesEnabled = !datesEnabled;
+  if(datesEnabled && !datesRows.length) addDateRow();
+  // Re-render toggle
+  const tog = document.querySelector('.dates-toggle');
+  if(tog){
+    tog.classList.toggle('on', datesEnabled);
+    tog.querySelector('.dates-toggle-hint').textContent = datesEnabled ? 'ON — tabela dat w mailu' : 'OFF — kliknij żeby włączyć';
+  }
+  const ed = document.getElementById('dates-editor');
+  if(ed) ed.classList.toggle('show', datesEnabled);
+}
+
+function renderDatesTable(){
+  const tbody = document.getElementById('dates-tbody');
+  if(!tbody) return;
+  tbody.innerHTML = datesRows.map((r,i) => `<tr>
+    <td><input type="text" value="${esc(r.programme)}" onchange="datesRows[${i}].programme=this.value" placeholder="np. Italy Junior"></td>
+    <td><input type="text" value="${esc(r.dates)}" onchange="datesRows[${i}].dates=this.value" placeholder="21 Jun – 28 Jun"></td>
+    <td><input type="text" value="${esc(r.note)}" onchange="datesRows[${i}].note=this.value" placeholder="last spots!"></td>
+    <td><button type="button" class="dates-rm" onclick="removeDateRow(${i})" title="Usuń">✕</button></td>
+  </tr>`).join('');
+}
+
+function addDateRow(){
+  datesRows.push({programme:'', dates:'', note:''});
+  renderDatesTable();
+}
+
+function removeDateRow(i){
+  datesRows.splice(i, 1);
+  renderDatesTable();
+  if(!datesRows.length){ datesEnabled = false; toggleDates(); toggleDates(); /* force re-render off */ }
+}
+
+function readDatesFromDOM(){
+  // Read current values from DOM inputs (in case user typed but didn't trigger onchange)
+  const rows = document.querySelectorAll('#dates-tbody tr');
+  rows.forEach((tr,i) => {
+    const inputs = tr.querySelectorAll('input');
+    if(datesRows[i] && inputs.length >= 3){
+      datesRows[i].programme = inputs[0].value;
+      datesRows[i].dates = inputs[1].value;
+      datesRows[i].note = inputs[2].value;
+    }
+  });
+  const headEl = document.getElementById('dates-heading');
+  if(headEl) datesHeading = headEl.value;
+}
+
+function buildDatesTableHtml(){
+  if(!datesEnabled || !datesRows.length) return '';
+  readDatesFromDOM();
+  const validRows = datesRows.filter(r => r.programme || r.dates);
+  if(!validRows.length) return '';
+  const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const e = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const heading = datesHeading || 'Dates';
+
+  const thLabels = {
+    com: ['Programme','Dates',''],
+    pl: ['Program','Terminy',''],
+    it: ['Programma','Date',''],
+  };
+  const [thProg, thDates, thNote] = thLabels[market] || thLabels.com;
+
+  let tblRows = validRows.map(r => `
+    <tr>
+      <td style="padding:10px 12px;font-family:${FONT};font-size:14px;font-weight:700;color:#111;border-bottom:1px solid #EEEEEE;">${e(r.programme)}</td>
+      <td style="padding:10px 12px;font-family:${FONT};font-size:14px;color:#333;border-bottom:1px solid #EEEEEE;white-space:nowrap;">${e(r.dates)}</td>
+      <td style="padding:10px 12px;font-family:${FONT};font-size:13px;color:#E03E3E;font-weight:600;border-bottom:1px solid #EEEEEE;">${e(r.note)}</td>
+    </tr>`).join('');
+
+  const thStyle = `padding:10px 12px;font-family:${FONT};font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#666;text-align:left;border-bottom:2px solid #E0E0E0;`;
+
+  return `
+<tr><td style="padding:20px 20px 0;">
+  <p style="margin:0 0 10px;font-family:${FONT};font-size:18px;font-weight:800;color:#111;">${e(heading)}</p>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+    style="border-collapse:collapse;border:1px solid #EEEEEE;border-radius:10px;overflow:hidden;">
+    <thead>
+      <tr style="background:#F4F4F4;">
+        <th style="${thStyle}">${e(thProg)}</th>
+        <th style="${thStyle}">${e(thDates)}</th>
+        <th style="${thStyle}"></th>
+      </tr>
+    </thead>
+    <tbody>${tblRows}</tbody>
+  </table>
+</td></tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  OTHER OPTIONS SECTION (optional "Zobacz inne opcje")
+// ═══════════════════════════════════════════════════════════
+function toggleOtherOptions(){
+  otherOptionsEnabled = !otherOptionsEnabled;
+  const tog = document.querySelector('.other-options-toggle');
+  if(tog){
+    tog.classList.toggle('on', otherOptionsEnabled);
+    tog.querySelector('.other-options-toggle-hint').textContent = otherOptionsEnabled 
+      ? 'ON — kafelki w mailu' 
+      : 'OFF — kliknij żeby włączyć';
+  }
+  const ed = document.getElementById('other-options-editor');
+  if(ed) ed.classList.toggle('show', otherOptionsEnabled);
+}
+
+function addOtherOptionCard(){
+  otherOptionsCards.push({
+    name: '',
+    tagline: '',
+    product_url: '',
+    signup_url: ''
+  });
+  renderOtherOptionsCards();
+}
+
+function removeOtherOptionCard(i){
+  otherOptionsCards.splice(i, 1);
+  renderOtherOptionsCards();
+}
+
+function renderOtherOptionsCards(){
+  const container = document.getElementById('oo-cards-container');
+  if(!container) return;
+  
+  const labels = {
+    com: {product: 'Learn more', signup: 'Apply now'},
+    pl: {product: 'Zobacz program', signup: 'Zapisz się'},
+    it: {product: 'Scopri', signup: 'Iscriviti'}
+  };
+  const lbl = labels[market] || labels.com;
+  
+  container.innerHTML = otherOptionsCards.map((card, i) => `
+    <div class="oo-card-edit" data-index="${i}">
+      <div class="oo-card-header">
+        <span class="oo-card-num">${i+1}</span>
+        <button type="button" class="oo-card-rm" onclick="removeOtherOptionCard(${i})" title="Usuń">✕</button>
+      </div>
+      <div class="oo-card-fields">
+        <input type="text" class="ef oo-name" value="${esc(card.name)}" placeholder="Nazwa programu, np. Włochy Junior">
+        <input type="text" class="ef oo-tagline" value="${esc(card.tagline)}" placeholder="Krótki opis, np. Toskania, 6 dni immersji">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+          <input type="text" class="ef oo-product-url" value="${esc(card.product_url)}" placeholder="${lbl.product} URL">
+          <input type="text" class="ef oo-signup-url" value="${esc(card.signup_url)}" placeholder="${lbl.signup} URL">
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function readOtherOptionsFromDOM(){
+  const headEl = document.getElementById('other-options-heading');
+  if(headEl) otherOptionsHeading = headEl.value;
+  
+  const cardEls = document.querySelectorAll('.oo-card-edit');
+  cardEls.forEach((card, i) => {
+    if(otherOptionsCards[i]){
+      otherOptionsCards[i].name = card.querySelector('.oo-name')?.value || '';
+      otherOptionsCards[i].tagline = card.querySelector('.oo-tagline')?.value || '';
+      otherOptionsCards[i].product_url = card.querySelector('.oo-product-url')?.value || '';
+      otherOptionsCards[i].signup_url = card.querySelector('.oo-signup-url')?.value || '';
+    }
+  });
+}
+
+function buildOtherOptionsHtml(){
+  if(!otherOptionsEnabled) return '';
+  readOtherOptionsFromDOM();
+  
+  const validCards = otherOptionsCards.filter(c => c.name && (c.product_url || c.signup_url));
+  if(!validCards.length) return '';
+  
+  const FONT = "Arial,'Helvetica Neue',Helvetica,sans-serif";
+  const e = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  
+  const defaultHeadings = {
+    com: 'Explore other Angloville programmes',
+    pl: 'Zobacz inne programy Angloville',
+    it: 'Scopri altri programmi Angloville'
+  };
+  const heading = otherOptionsHeading || defaultHeadings[market] || defaultHeadings.com;
+  
+  const labels = {
+    com: {product: 'Learn more', signup: 'Apply now'},
+    pl: {product: 'Zobacz', signup: 'Zapisz się'},
+    it: {product: 'Scopri', signup: 'Iscriviti'}
+  };
+  const lbl = labels[market] || labels.com;
+  
+  // Simple table layout - works everywhere
+  const rowsHtml = validCards.map(card => {
+    let links = '';
+    if(card.product_url){
+      links += `<a href="${e(card.product_url)}" style="color:#3A9AD9;text-decoration:underline;font-weight:600;">${lbl.product}</a>`;
+    }
+    if(card.product_url && card.signup_url) links += ' &nbsp;|&nbsp; ';
+    if(card.signup_url){
+      links += `<a href="${e(card.signup_url)}" style="color:#3A9AD9;text-decoration:underline;font-weight:600;">${lbl.signup}</a>`;
+    }
+    
+    return `
+    <tr>
+      <td style="padding:12px 16px;border-bottom:1px solid #EEEEEE;">
+        <p style="margin:0 0 4px;font-family:${FONT};font-size:15px;font-weight:700;color:#111111;">${e(card.name)}</p>
+        ${card.tagline ? `<p style="margin:0 0 8px;font-family:${FONT};font-size:13px;color:#666666;">${e(card.tagline)}</p>` : ''}
+        <p style="margin:0;font-family:${FONT};font-size:13px;">${links}</p>
+      </td>
+    </tr>`;
+  }).join('');
+
+  return `
+<tr><td style="padding:24px 20px;background:#F9F9F9;">
+  <p style="margin:0 0 16px;font-family:${FONT};font-size:17px;font-weight:800;color:#111111;text-align:center;">${e(heading)}</p>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#FFFFFF;border-radius:8px;border:1px solid #EEEEEE;">
+    ${rowsHtml}
+  </table>
+</td></tr>`;
+}
+
+// ═══════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════
+function renderGreetingPreview(){ /* preview updates via getCurrent */ }
+function getCurrent(){
+  const g=id=>(document.getElementById(id)?.value||'').trim();
+  const gh=id=>(document.getElementById(id)?.innerHTML||'').trim();
+  const greetingHtml = g('greeting-val');
+  return{subject:g('e-sub'),subject_emoji:g('e-sub-em'),preheader:g('e-pre'),
+    headline:gh('e-h1'),intro:gh('e-intro'),greetingHtml,
+    body_p1:gh('e-p1'),body_p2:gh('e-p2'),body_p3:gh('e-p3'),
+    cta:g('e-cta1'),cta2:g('e-cta2'),ps:g('e-ps'),ab1:g('e-ab1'),ab2:g('e-ab2')};
+}
+function cpHtml(btn){
+  const c=getCurrent();
+  const url1=buildUrl(1)||'https://angloville.com/apply/';
+  const url2=buildUrl(2)||url1;
+  const imgs=[selHero,...selBody].filter(Boolean);
+  const html=buildEmailHTML(c,url1,url2,imgs);
+  cp2(html,btn);
+}
+function cpAll(){
+  const c=getCurrent();
+  navigator.clipboard.writeText(['SUBJECT: '+c.subject,'WITH EMOJI: '+c.subject_emoji,
+    'PREHEADER: '+c.preheader,'',c.headline,'',c.intro,'',c.body_p1,'',c.body_p2,'',c.body_p3,'',
+    '[ '+c.cta+' ]',buildUrl(1)?'PRIMARY URL: '+buildUrl(1):'',
+    buildUrl(2)?'SECONDARY URL: '+buildUrl(2):'',c.ps?'PS: '+c.ps:''].filter(Boolean).join('\n'));
+}
+function cp(id,btn){
+  const el = document.getElementById(id);
+  const text = el?.value !== undefined && el?.tagName !== 'DIV' ? el.value : (el?.innerText || '');
+  cp2(text, btn);
+}
+function cp2(text,btn){
+  navigator.clipboard.writeText(text);
+  const o=btn.textContent;btn.textContent='✓';btn.classList.add('ok');
+  setTimeout(()=>{btn.textContent=o;btn.classList.remove('ok');},1400);
+}
+function showErr(m){const el=document.getElementById('err-box');el.textContent=m;el.style.display='block';}
+function resetAll(){
+  selected.clear();selHero=null;selBody=[];selFoot=null;libCat=null;activeCat=null;
+  datesEnabled=false;datesRows=[];datesHeading='';
+  otherOptionsEnabled=false;otherOptionsHeading='';otherOptionsCards=[];
+  emailType='marketing';
+  promoSeason=null;promoPhase=null;promoDate='';promoDiscount='';
+  document.getElementById('extra').value='';
+  document.getElementById('results').style.display='none';
+  document.getElementById('results').innerHTML='';
+  document.getElementById('err-box').style.display='none';
+  document.getElementById('prog-hint').style.display='';
+  setEmailType('marketing');
+  renderAll();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+// INIT
+document.addEventListener('click', function(ev){
+  if(!ev.target.closest('.emoji-pop') && !ev.target.closest('.rte-btn[title="Insert emoji"]')){
+    document.querySelectorAll('.emoji-pop.open').forEach(p=>p.classList.remove('open'));
+  }
+});
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', renderAll);
+} else {
+  renderAll();
+}
+</script>
+</body>
+</html>
